@@ -67,4 +67,4 @@ Concentrations in nM, first-order constants in s^-1, second-order constants in n
 
 ## Following the CURE guidelines
 
-The model is given in a standard format (SBML) as well as XPPAUT, every result and figure has a script, the parameter samples are included, and the scripts run without toolboxes. Deposit this folder on Zenodo for a DOI and submit `SBML/p4e_full.xml` to BioModels.
+The model is given in a standard format (SBML) as well as XPPAUT, every result and figure has a script, the parameter samples are included, and the scripts run without toolboxes. The code and data are archived at Zenodo (https://doi.org/10.5281/zenodo.24357091) and on GitHub (https://github.com/HarikaGL/4EBP1-eIF4F-tristability); `SBML/p4e_full.xml` will be submitted to BioModels.
