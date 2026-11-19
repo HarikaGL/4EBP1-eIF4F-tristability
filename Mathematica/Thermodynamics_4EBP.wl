@@ -22,8 +22,13 @@ ClearAll["Global`*"]
 (* ::Text:: *)
 (*The 22 forward and 22 backward rate constants of R1-R22 at the reference set, in the order R1, R2, ..., R22. The backward constants of the catalytic steps (R2, R4, ..., R16) and kb21 are the values computed below (Sections 5-7); they are listed here so that every check can be made against the numbers used in the simulations.*)
 
-kfRef = {0.031, 0.0029, 0.1, 17.0, 0.023, 0.027, 0.03, 0.14, 0.1, 0.002, 0.013, 30.0, 0.02, 0.24, 0.012, 0.15, 10.0, 0.095, 0.061, 0.076, 0.0065, 0.1};
-kbRef = {0.11, 1.8118049126429878*10^(-8), 0.032, 5.248190926288552*10^(-6), 0.63, 2.5119421075763224*10^(-5), 5.5, 8.671843526089229*10^(-8), 0.42, 1.2059530144173232*10^(-8), 1.2, 7.161218699078797*10^(-6), 0.016, 3.427574767082689*10^(-5), 3.1, 5.772054026273275*10^(-8), 0.0020408163265306124, 2.565, 14.03, 4.256, 0.7208035714285713, 0.5};
+kfRef = {0.031, 0.0029, 0.1, 17.0, 0.023, 0.027, 0.03, 0.14, 0.1, 0.002, 0.013,
+  30.0, 0.02, 0.24, 0.012, 0.15, 10.0, 0.095, 0.061, 0.076, 0.0065, 0.1};
+kbRef = {0.11, 1.8118049126429878*10^(-8), 0.032, 5.248190926288552*10^(-6), 0.63,
+  2.5119421075763224*10^(-5), 5.5, 8.671843526089229*10^(-8), 0.42,
+  1.2059530144173232*10^(-8), 1.2, 7.161218699078797*10^(-6), 0.016,
+  3.427574767082689*10^(-5), 3.1, 5.772054026273275*10^(-8), 0.0020408163265306124,
+  2.565, 14.03, 4.256, 0.7208035714285713, 0.5};
 Length /@ {kfRef, kbRef}
 
 
@@ -54,7 +59,8 @@ Keq = ab/(a b) /. First[Solve[r == 0, ab]]
 
 Q = ab/(a b); dG0 = -rt Log[kf/kb]; dG = dG0 + rt Log[Q];
 Simplify[PowerExpand[dG - (-rt Log[vplus/vminus])]]
-Chop[dG - (-rt Log[vplus/vminus]) /. Thread[{kf, kb, a, b, ab, rt} -> RandomReal[{0.1, 10}, 6]]]
+Chop[dG - (-rt Log[vplus/vminus]) /. Thread[{kf, kb, a, b, ab,
+  rt} -> RandomReal[{0.1, 10}, 6]]]
 
 
 (* ::Section:: *)
@@ -67,7 +73,8 @@ v1p = kf1 s0 k; v1m = kb1 c1;
 v2p = kf2 c1;   v2m = kb2 s1 k;
 v7p = kf7 s1 p; v7m = kb7 c4;
 v8p = kf8 c4;   v8m = kb8 s0 p;
-TableForm[{{"R1", v1p, v1m}, {"R2", v2p, v2m}, {"R7", v7p, v7m}, {"R8", v8p, v8m}}, TableHeadings -> {None, {"reaction", "forward", "backward"}}]
+TableForm[{{"R1", v1p, v1m}, {"R2", v2p, v2m}, {"R7", v7p, v7m}, {"R8", v8p, v8m}},
+  TableHeadings -> {None, {"reaction", "forward", "backward"}}]
 
 
 (* ::Text:: *)
@@ -96,7 +103,8 @@ FreeQ[Gamma1, s0 | s1 | k | p | c1 | c4]
 
 sumdG = -rt (Log[v1p/v1m] + Log[v2p/v2m] + Log[v7p/v7m] + Log[v8p/v8m]);
 Simplify[PowerExpand[sumdG - (-rt Log[Gamma1])]]
-Chop[sumdG - (-rt Log[Gamma1]) /. Thread[{kf1, kb1, kf2, kb2, kf7, kb7, kf8, kb8, s0, s1, k, p, c1, c4, rt} -> RandomReal[{0.1, 10}, 15]]]
+Chop[sumdG - (-rt Log[Gamma1]) /. Thread[{kf1, kb1, kf2, kb2, kf7, kb7, kf8, kb8,
+  s0, s1, k, p, c1, c4, rt} -> RandomReal[{0.1, 10}, 15]]]
 
 
 (* ::Section:: *)
@@ -143,7 +151,8 @@ lnGammaExample = dGc/RT
 (* ::Text:: *)
 (*Reference constants of cycle 1 (Table 3).*)
 
-num1 = {kf1 -> kfRef[[1]], kb1 -> kbRef[[1]], kf2 -> kfRef[[2]], kb2 -> kbRef[[2]], kf7 -> kfRef[[7]], kb7 -> kbRef[[7]], kf8 -> kfRef[[8]], kb8 -> kbRef[[8]]}
+num1 = {kf1 -> kfRef[[1]], kb1 -> kbRef[[1]], kf2 -> kfRef[[2]], kb2 -> kbRef[[2]],
+  kf7 -> kfRef[[7]], kb7 -> kbRef[[7]], kf8 -> kfRef[[8]], kb8 -> kbRef[[8]]}
 
 
 (* ::Text:: *)
@@ -178,26 +187,36 @@ cycles = {{1, 2, 7, 8}, {3, 4, 5, 6}, {9, 10, 15, 16}, {11, 12, 13, 14}};
 
 
 (* ::Text:: *)
-(*For each cycle: the six given constants, rho from lnGamma = 19.8, the two rebinding constants with u = -0.34, and the checks lnKkin, lnKp, lnGamma and DeltaGc recomputed from all eight constants. Every cycle gives lnGamma = 19.800 and DeltaGc = 51.06 kJ/mol.*)
+(*For each cycle: the six given constants, rho from lnGamma = 19.8, the two rebinding constants with u = -0.34, and the checks lnKkin, lnKp, lnGamma and DeltaGc recomputed from all eight constants (one column per cycle). Every cycle gives lnGamma = 19.800 and DeltaGc = 51.06 kJ/mol.*)
 
 row[{a_, b_, c_, d_}] := Module[{rh, kbb, kbd},
-  rh = kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbRef[[c]] Exp[19.8]);
+  rh = kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbRef[[c]]
+  Exp[19.8]);
   kbb = Sqrt[rh] 10^-0.34; kbd = Sqrt[rh] 10^0.34;
-  {StringJoin["R", ToString[a], ",R", ToString[b], "|R", ToString[c], ",R", ToString[d]],
-   kfRef[[a]], kbRef[[a]], kfRef[[b]], kfRef[[c]], kbRef[[c]], kfRef[[d]], ScientificForm[rh, 4], ScientificForm[kbb, 4], ScientificForm[kbd, 4],
-   NumberForm[Log[kfRef[[a]] kfRef[[b]]/(kbRef[[a]] kbb)], {6, 3}], NumberForm[Log[kfRef[[c]] kfRef[[d]]/(kbRef[[c]] kbd)], {6, 3}],
-   NumberForm[Log[kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbb kbRef[[c]] kbd)], {6, 3}],
-   NumberForm[RT Log[kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbb kbRef[[c]] kbd)], {5, 2}]}]
+  {StringJoin["R", ToString[a], ",R", ToString[b], "|R", ToString[c], ",R",
+  ToString[d]],
+   kfRef[[a]], kbRef[[a]], kfRef[[b]], kfRef[[c]], kbRef[[c]], kfRef[[d]],
+  ScientificForm[rh, 4], ScientificForm[kbb, 4], ScientificForm[kbd, 4],
+   NumberForm[Log[kfRef[[a]] kfRef[[b]]/(kbRef[[a]] kbb)], {6, 3}],
+  NumberForm[Log[kfRef[[c]] kfRef[[d]]/(kbRef[[c]] kbd)], {6, 3}],
+   NumberForm[Log[kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbb
+  kbRef[[c]] kbd)], {6, 3}],
+   NumberForm[RT Log[kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbb
+  kbRef[[c]] kbd)], {5, 2}]}]
 
 
-TableForm[row /@ cycles, TableHeadings -> {None, {"cycle", "kfa", "kba", "kfb", "kfc", "kbc", "kfd", "rho", "kbb", "kbd", "lnKkin", "lnKp", "lnGamma", "DeltaGc"}}]
+TableForm[Transpose[row /@ cycles], TableHeadings -> {{"reactions", "kfa", "kba",
+  "kfb", "kfc", "kbc", "kfd", "rho", "kbb", "kbd", "lnKkin", "lnKp", "lnGamma",
+  "DeltaGc"}, {"cycle 1", "cycle 2", "cycle 3", "cycle 4"}}]
 
 
 (* ::Text:: *)
 (*Check against the constants used in the simulations (Table 3): the ratio computed/used is 1 for all eight rebinding constants.*)
 
-Table[With[{rh = kfRef[[c[[1]]]] kfRef[[c[[2]]]] kfRef[[c[[3]]]] kfRef[[c[[4]]]]/(kbRef[[c[[1]]]] kbRef[[c[[3]]]] Exp[19.8])},
-  {Sqrt[rh] 10^-0.34/kbRef[[c[[2]]]], Sqrt[rh] 10^0.34/kbRef[[c[[4]]]]}], {c, cycles}]
+Table[With[{rh = kfRef[[c[[1]]]] kfRef[[c[[2]]]] kfRef[[c[[3]]]]
+  kfRef[[c[[4]]]]/(kbRef[[c[[1]]]] kbRef[[c[[3]]]] Exp[19.8])},
+  {Sqrt[rh] 10^-0.34/kbRef[[c[[2]]]], Sqrt[rh] 10^0.34/kbRef[[c[[4]]]]}], {c,
+  cycles}]
 
 
 (* ::Section:: *)
@@ -233,10 +252,14 @@ kb21n = KD21n kfRef[[21]]
 (* ::Text:: *)
 (*Species, in the order of the MATLAB code (p4e_ssa_tables): kin, P, e4E, BP, e4G, e4A, S0 (BPe4E), S1, S2, S3, S4, BPp4, C1-C8, e4GE, e4GA, e4F. Each reaction is {reactants, products} as species numbers.*)
 
-species = {"kin", "P", "e4E", "BP", "e4G", "e4A", "S0", "S1", "S2", "S3", "S4", "BPp4", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "e4GE", "e4GA", "e4F"};
-rx = {{{7, 1}, {13}}, {{13}, {8, 1}}, {{8, 1}, {14}}, {{14}, {9, 1}}, {{9, 2}, {15}}, {{15}, {8, 2}}, {{8, 2}, {16}}, {{16}, {7, 2}},
-  {{9, 1}, {17}}, {{17}, {10, 1}}, {{10, 1}, {18}}, {{18}, {11, 1}}, {{11, 2}, {19}}, {{19}, {10, 2}}, {{10, 2}, {20}}, {{20}, {9, 2}},
-  {{11}, {3, 12}}, {{3, 5}, {21}}, {{21, 6}, {23}}, {{5, 6}, {22}}, {{22, 3}, {23}}, {{4, 3}, {7}}};
+species = {"kin", "P", "e4E", "BP", "e4G", "e4A", "S0", "S1", "S2", "S3", "S4",
+  "BPp4", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "e4GE", "e4GA", "e4F"};
+rx = {{{7, 1}, {13}}, {{13}, {8, 1}}, {{8, 1}, {14}}, {{14}, {9, 1}}, {{9, 2},
+  {15}}, {{15}, {8, 2}}, {{8, 2}, {16}}, {{16}, {7, 2}},
+  {{9, 1}, {17}}, {{17}, {10, 1}}, {{10, 1}, {18}}, {{18}, {11, 1}}, {{11, 2},
+  {19}}, {{19}, {10, 2}}, {{10, 2}, {20}}, {{20}, {9, 2}},
+  {{11}, {3, 12}}, {{3, 5}, {21}}, {{21, 6}, {23}}, {{5, 6}, {22}}, {{22, 3}, {23}},
+  {{4, 3}, {7}}};
 Length[rx]
 
 
@@ -267,7 +290,8 @@ Dimensions[loops]
 (* ::Text:: *)
 (*Write each loop as a list of signed reactions. The five loops are the four PdP cycles L1-L4 and the scaffold loop L5.*)
 
-loopText[v_] := StringRiffle[Table[If[v[[j]] > 0, "+R", "-R"] <> ToString[j], {j, Flatten[Position[v, x_ /; x != 0]]}], " "];
+loopText[v_] := StringRiffle[Table[If[v[[j]] > 0, "+R", "-R"] <> ToString[j], {j,
+  Flatten[Position[v, x_ /; x != 0]]}], " "];
 loopsN = Map[If[First[Select[#, # != 0 &]] < 0, -#, #] &, loops];
 loopText /@ loopsN
 
@@ -310,7 +334,8 @@ lnK = Log[kfRef/kbRef];
 (*Chemical reaction network theory: complexes (the distinct left- and right-hand sides), linkage classes (connected components of the reaction graph) and deficiency = complexes - linkage classes - rank = 5, equal to the number of loops; the number of circuit conditions is p - (n - l) = 0.*)
 
 cx = DeleteDuplicates[Flatten[Map[{Sort[#[[1]]], Sort[#[[2]]]} &, rx], 1]];
-g = Graph[Range[Length[cx]], Map[UndirectedEdge[Position[cx, Sort[#[[1]]]][[1, 1]], Position[cx, Sort[#[[2]]]][[1, 1]]] &, rx]];
+g = Graph[Range[Length[cx]], Map[UndirectedEdge[Position[cx, Sort[#[[1]]]][[1, 1]],
+  Position[cx, Sort[#[[2]]]][[1, 1]]] &, rx]];
 {nC, nL} = {Length[cx], Length[ConnectedComponents[g]]};
 {nC, nL, MatrixRank[S], nC - nL - MatrixRank[S], 22 - (nC - nL)}
 
@@ -331,22 +356,29 @@ rhoS3 = kfa kfb kfc kfd/(kba kbc gam)
 
 kbbU = Sqrt[rh] 10^uu; kbdU = Sqrt[rh] 10^-uu;
 Simplify[{kbbU kbdU, kbbU/kbdU}, rh > 0]
-With[{r0 = RandomReal[{10^-16, 10^-8}], u0 = RandomReal[{-3, 3}]}, {kbbU kbdU/r0, Log10[kbbU/kbdU]/2 - u0} /. {rh -> r0, uu -> u0}]
+With[{r0 = RandomReal[{10^-16, 10^-8}], u0 = RandomReal[{-3, 3}]}, {kbbU kbdU/r0,
+  Log10[kbbU/kbdU]/2 - u0} /. {rh -> r0, uu -> u0}]
 
 
 (* ::Text:: *)
 (*Step 11. Eq (1) holds exactly for every u (Eqs S7, S8): inserting Eq S4 and rho from Eq S3 gives back gam, with no u left.*)
 
-Simplify[kfa kfb kfc kfd/(kba kbc kbbU kbdU) /. rh -> rhoS3, {kfa > 0, kfb > 0, kfc > 0, kfd > 0, kba > 0, kbc > 0, gam > 0}]
+Simplify[kfa kfb kfc kfd/(kba kbc kbbU kbdU) /. rh -> rhoS3, {kfa > 0, kfb > 0,
+  kfc > 0, kfd > 0, kba > 0, kbc > 0, gam > 0}]
 
 
 (* ::Text:: *)
 (*Step 12. How u shares the drive between the two half-cycles (Eqs S9-S11). lnKkin = lnKkin0 - u Log[10] and lnKP = lnKP0 + u Log[10]; their sum is lnGamma for every u. Each unit of u moves RT Log[10] = 5.94 kJ/mol between the half-cycles; the +-0.3 of the local ensembles moves 1.78 kJ/mol.*)
 
 lnKkinU = Log[kfa kfb/(kba kbbU)]; lnKPU = Log[kfc kfd/(kbc kbdU)];
-Simplify[PowerExpand[{lnKkinU - (Log[kfa kfb/(kba Sqrt[rh])] - uu Log[10]), lnKPU - (Log[kfc kfd/(kbc Sqrt[rh])] + uu Log[10])}]]
+Simplify[PowerExpand[{lnKkinU - (Log[kfa kfb/(kba Sqrt[rh])] - uu Log[10]),
+  lnKPU - (Log[kfc kfd/(kbc Sqrt[rh])] + uu Log[10])}]]
 Simplify[PowerExpand[lnKkinU + lnKPU /. rh -> rhoS3]]
-Chop[{lnKkinU - (Log[kfa kfb/(kba Sqrt[rh])] - uu Log[10]), lnKPU - (Log[kfc kfd/(kbc Sqrt[rh])] + uu Log[10]), (lnKkinU + lnKPU /. rh -> rhoS3) - Log[gam]} /. Thread[{kfa, kfb, kfc, kfd, kba, kbc, gam, rh, uu} -> Join[RandomReal[{0.1, 10}, 8], {RandomReal[{-2, 2}]}]], 10^-9]
+Chop[{lnKkinU - (Log[kfa kfb/(kba Sqrt[rh])] - uu Log[10]),
+  lnKPU - (Log[kfc kfd/(kbc Sqrt[rh])] + uu Log[10]),
+  (lnKkinU + lnKPU /. rh -> rhoS3) - Log[gam]} /. Thread[{kfa, kfb, kfc, kfd, kba,
+  kbc, gam, rh, uu} -> Join[RandomReal[{0.1, 10}, 8], {RandomReal[{-2, 2}]}]],
+  10^-9]
 {RT Log[10], 0.3 RT Log[10]}
 
 
@@ -354,31 +386,45 @@ Chop[{lnKkinU - (Log[kfa kfb/(kba Sqrt[rh])] - uu Log[10]), lnKPU - (Log[kfc kfd
 (*Supplementary Table 6, all four cycles at the reference set (lnGamma = 19.8, u = -0.34): Sqrt[rho]; kbb/kbd = 10^(2u); lnKkin0 and lnKP0 (u = 0); lnKkin and lnKP (u = -0.34); the half-cycle shares RT lnK in kJ/mol (they add up to 51.06); the largest admissible |u| = Log10[0.1/Sqrt[rho]] (Eq S13, diffusion limit 0.1 1/(nM s)); the coefficients a, c, d, b of Eq S14; and the window of K/P inside which rebinding changes S(j+1)/S(j) by less than 1% (Eq S15), with its width in orders of magnitude (4.60 for every cycle). For cycle 1 the shares are 27.64 and 23.42 kJ/mol.*)
 
 uRow[{ia_, ib_, ic_, id_}] := Module[{rh0, kbb0, kbd0, l0k, l0p, aj, cj, dj, bj},
-  rh0 = kfRef[[ia]] kfRef[[ib]] kfRef[[ic]] kfRef[[id]]/(kbRef[[ia]] kbRef[[ic]] Exp[19.8]);
+  rh0 = kfRef[[ia]] kfRef[[ib]] kfRef[[ic]] kfRef[[id]]/(kbRef[[ia]] kbRef[[ic]]
+  Exp[19.8]);
   kbb0 = Sqrt[rh0] 10^-0.34; kbd0 = Sqrt[rh0] 10^0.34;
-  l0k = Log[kfRef[[ia]] kfRef[[ib]]/(kbRef[[ia]] Sqrt[rh0])]; l0p = Log[kfRef[[ic]] kfRef[[id]]/(kbRef[[ic]] Sqrt[rh0])];
-  aj = kfRef[[ia]] kfRef[[ib]]/(kbRef[[ia]] + kfRef[[ib]]); cj = kbRef[[ia]] kbb0/(kbRef[[ia]] + kfRef[[ib]]);
-  dj = kfRef[[ic]] kfRef[[id]]/(kbRef[[ic]] + kfRef[[id]]); bj = kbRef[[ic]] kbd0/(kbRef[[ic]] + kfRef[[id]]);
-  {ScientificForm[Sqrt[rh0], 4], NumberForm[kbb0/kbd0, 4], NumberForm[{l0k, l0p}, {5, 3}], NumberForm[{l0k + 0.34 Log[10], l0p - 0.34 Log[10]}, {5, 3}],
-   NumberForm[RT {l0k + 0.34 Log[10], l0p - 0.34 Log[10]}, {4, 2}], NumberForm[Log10[0.1/Sqrt[rh0]], {3, 2}],
-   ScientificForm[{aj, cj, dj, bj}, 3], ScientificForm[{100 bj/aj, dj/(100 cj)}, 2], NumberForm[Log10[(dj/(100 cj))/(100 bj/aj)], {3, 2}]}]
+  l0k = Log[kfRef[[ia]] kfRef[[ib]]/(kbRef[[ia]] Sqrt[rh0])]; l0p = Log[kfRef[[ic]]
+  kfRef[[id]]/(kbRef[[ic]] Sqrt[rh0])];
+  aj = kfRef[[ia]] kfRef[[ib]]/(kbRef[[ia]] + kfRef[[ib]]); cj = kbRef[[ia]]
+  kbb0/(kbRef[[ia]] + kfRef[[ib]]);
+  dj = kfRef[[ic]] kfRef[[id]]/(kbRef[[ic]] + kfRef[[id]]); bj = kbRef[[ic]]
+  kbd0/(kbRef[[ic]] + kfRef[[id]]);
+  {ScientificForm[Sqrt[rh0], 4], NumberForm[kbb0/kbd0, 4], NumberForm[{l0k, l0p},
+  {5, 3}], NumberForm[{l0k + 0.34 Log[10], l0p - 0.34 Log[10]}, {5, 3}],
+   NumberForm[RT {l0k + 0.34 Log[10], l0p - 0.34 Log[10]}, {4, 2}],
+  NumberForm[Log10[0.1/Sqrt[rh0]], {3, 2}],
+   ScientificForm[aj, 3], ScientificForm[cj, 3], ScientificForm[dj, 3],
+  ScientificForm[bj, 3], ScientificForm[100 bj/aj, 2], ScientificForm[dj/(100 cj),
+  2], NumberForm[Log10[(dj/(100 cj))/(100 bj/aj)], {3, 2}]}]
 
 
-TableForm[Transpose[uRow /@ cycles], TableHeadings -> {{"Sqrt[rho]", "kbb/kbd", "lnKkin0, lnKP0", "lnKkin, lnKP", "RT lnK (kJ/mol)", "max |u|", "a, c, d, b", "K/P window", "window width (decades)"}, {"cycle 1", "cycle 2", "cycle 3", "cycle 4"}}]
+TableForm[Transpose[uRow /@ cycles], TableHeadings -> {{"Sqrt[rho]", "kbb/kbd",
+  "lnKkin0, lnKP0", "lnKkin, lnKP", "RT lnK (kJ/mol)", "max |u|", "a", "c", "d",
+  "b", "K/P window, low", "K/P window, high", "window width (decades)"}, {"cycle 1",
+  "cycle 2", "cycle 3", "cycle 4"}}]
 
 
 (* ::Text:: *)
 (*Step 13. What u means chemically (Eq S12): with the nucleotides explicit, kbb = k'bb [ADP] and kbd = k'bd [Pi], so u = (1/2) Log10[k'bb/k'bd] + (1/2) Log10[ADP/Pi]. With free ADP = 0.1 mM and Pi = 10 mM the second term is -1, and u = -0.34 corresponds to k'bb/k'bd = 10^1.32 = 21.*)
 
-Simplify[PowerExpand[Log10[(kpbb adp)/(kpbd pi)]/2 - (Log10[kpbb/kpbd]/2 + Log10[adp/pi]/2)]]
-Chop[Log10[(kpbb adp)/(kpbd pi)]/2 - (Log10[kpbb/kpbd]/2 + Log10[adp/pi]/2) /. Thread[{kpbb, kpbd, adp, pi} -> RandomReal[{0.1, 10}, 4]], 10^-12]
+Simplify[PowerExpand[Log10[(kpbb adp)/(kpbd pi)]/2 - (Log10[kpbb/kpbd]/2 +
+  Log10[adp/pi]/2)]]
+Chop[Log10[(kpbb adp)/(kpbd pi)]/2 - (Log10[kpbb/kpbd]/2 + Log10[adp/pi]/2) /.
+  Thread[{kpbb, kpbd, adp, pi} -> RandomReal[{0.1, 10}, 4]], 10^-12]
 {Log10[0.1/10]/2, 10^(2 (-0.34 + 1))}
 
 
 (* ::Text:: *)
 (*Step 14, when u matters. The width of the K/P window is proportional to 1/rho and therefore to Gamma. Lowering lnGamma from 19.8 narrows it by (19.8 - lnGamma)/Log[10] decades: about 0.7 decades at lnGamma = 10.8 (where tristability appears) and closed (negative width) at lnGamma = 4.9 (where bistability appears).*)
 
-{4.60 - (19.8 - 10.8)/Log[10], 4.60 - (19.8 - 4.9)/Log[10], Exp[19.8 - 10.8], Exp[19.8 - 4.9]}
+{4.60 - (19.8 - 10.8)/Log[10], 4.60 - (19.8 - 4.9)/Log[10], Exp[19.8 - 10.8],
+  Exp[19.8 - 4.9]}
 
 
 (* ::Text:: *)
