@@ -1,97 +1,759 @@
-(* Content-type: application/vnd.wolfram.mathematica *)
-(* Thermodynamics_4EBP.nb: open in Mathematica and evaluate the cells in order (Shift+Enter). *)
+Notebook[{Cell[
+"\<Thermodynamics of the 4E-BP1 / eIF4F model: every derivation and calculation, step by step\>",
+"Title",ExpressionUUID -> "9d9af9be-e507-4348-ae44-7028754f039a"],Cell[
+"\<Companion to: Harika GL, Sriram K. Staged 4E-BP1 phosphorylation creates two switches in series that give eIF4F memory (npj Systems Biology and Applications version). Each section names the equation, section, note or table of the manuscript that it derives or computes. Run the cells one by one, from the top (Shift+Enter), or all at once (Evaluation > Evaluate Notebook). Text in blue explains the cell below it. Units: concentrations in nM, first-order constants in 1/s, second-order constants in 1/(nM s).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "823b8367-ccf3-4282-82d1-3b4c5bbe29cd"],Cell[
 
-Notebook[{
-Cell["Thermodynamics of the 4E-BP1 / eIF4F model: every derivation and calculation, step by step", "Title"],
-Cell["Companion to: Harika GL, Sriram K. Staged 4E-BP1 phosphorylation creates two switches in series that give eIF4F memory (npj Systems Biology and Applications version). Each section names the equation, section, note or table of the manuscript that it derives or computes. Run the cells one by one, from the top (Shift+Enter), or all at once (Evaluation > Evaluate Notebook). Text in blue explains the cell below it. Units: concentrations in nM, first-order constants in 1/s, second-order constants in 1/(nM s).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["Map to the manuscript. Sections 1-4: Supplementary Note 2, Steps 1-6; Methods 4.2, Steps 1-4; Results 2.2, Eq (1). Section 5: Supplementary Note 2, Steps 7-8; Methods 4.2, Step 5. Section 6: Supplementary Table 6. Section 7: Methods 4.2, Step 6; Eq (2); Supplementary Table 7. Section 8: Results 2.6 (driving strength). Sections 9-11: Supplementary Note 3; Supplementary Figs 9-11; Supplementary Table 8.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["0. Reference parameter set (Supplementary Table 1; MATLAB model/p4e_ref.m)", "Section"],
-Cell["Clear any earlier definitions so that the notebook can be rerun from the top.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["ClearAll[\"Global`*\"]", "Input"],
-Cell["The 22 forward and 22 backward rate constants of R1-R22 at the reference set, in the order R1, R2, ..., R22. The backward constants of the catalytic steps (R2, R4, ..., R16) and kb21 are the values computed below (Sections 5-7); they are listed here so that every check can be made against the numbers used in the simulations.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["kfRef = {0.031, 0.0029, 0.1, 17.0, 0.023, 0.027, 0.03, 0.14, 0.1, 0.002, 0.013, 30.0, 0.02, 0.24, 0.012, 0.15, 10.0, 0.095, 0.061, 0.076, 0.0065, 0.1};\nkbRef = {0.11, 1.8118049126429878*10^(-8), 0.032, 5.248190926288552*10^(-6), 0.63, 2.5119421075763224*10^(-5), 5.5, 8.671843526089229*10^(-8), 0.42, 1.2059530144173232*10^(-8), 1.2, 7.161218699078797*10^(-6), 0.016, 3.427574767082689*10^(-5), 3.1, 5.772054026273275*10^(-8), 0.0020408163265306124, 2.565, 14.03, 4.256, 0.7208035714285713, 0.5};\nLength /@ {kfRef, kbRef}", "Input"],
-Cell["Gas constant, temperature (37 degC) and RT in kJ/mol (Methods 4.2: RT = 2.579 kJ/mol).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["R = 8.314462618*10^-3; Tk = 310.15; RT = R Tk", "Input"],
-Cell["1. One reversible reaction (Supplementary Note 2, Step 3; Methods 4.2, Step 1)", "Section"],
-Cell["A reversible elementary reaction A + B <-> AB with forward constant kf and backward constant kb. By mass action, the one-way rates are vplus = kf [A][B] and vminus = kb [AB]; the net rate is r = vplus - vminus.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["vplus = kf a b; vminus = kb ab; r = vplus - vminus", "Input"],
-Cell["At equilibrium r = 0. Solving for [AB] shows that [AB]/([A][B]) = kf/kb: the equilibrium constant is K = kf/kb for the reaction as written (for binding, K = 1/KD).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["Solve[r == 0, ab]\nKeq = ab/(a b) /. First[Solve[r == 0, ab]]", "Input"],
-Cell["Free energy. With chemical potentials mu = mu0 + RT Log[c], DeltaG = DeltaG0 + RT Log[Q], DeltaG0 = -RT Log[K], Q = [AB]/([A][B]). The cell checks that DeltaG equals -RT Log[vplus/vminus] (the difference simplifies to 0; the second line checks it numerically with random positive values): a reaction runs forward exactly when its DeltaG is negative.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["Q = ab/(a b); dG0 = -rt Log[kf/kb]; dG = dG0 + rt Log[Q];\nSimplify[PowerExpand[dG - (-rt Log[vplus/vminus])]]\nChop[dG - (-rt Log[vplus/vminus]) /. Thread[{kf, kb, a, b, ab, rt} -> RandomReal[{0.1, 10}, 6]]]", "Input"],
-Cell["2. Cycle 1: the four reactions and their one-way rates (Supplementary Note 2, Steps 1-2)", "Section"],
-Cell["Cycle 1 is the first phosphorylation site. R1: BPe4E + kin <-> C1 (kinase binding). R2: C1 <-> BPe4Ep + kin (catalysis). R7: BPe4Ep + P <-> C4 (phosphatase binding). R8: C4 <-> BPe4E + P (dephosphorylation). Symbols: s0 = [BPe4E], s1 = [BPe4Ep], k = [kin], p = [P], c1 = [C1], c4 = [C4]. In Eq (1), a = R1, b = R2, c = R7, d = R8.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["v1p = kf1 s0 k; v1m = kb1 c1;\nv2p = kf2 c1;   v2m = kb2 s1 k;\nv7p = kf7 s1 p; v7m = kb7 c4;\nv8p = kf8 c4;   v8m = kb8 s0 p;\nTableForm[{{\"R1\", v1p, v1m}, {\"R2\", v2p, v2m}, {\"R7\", v7p, v7m}, {\"R8\", v8p, v8m}}, TableHeadings -> {None, {\"reaction\", \"forward\", \"backward\"}}]", "Input"],
-Cell["Reaction quotients of the four reactions (products over reactants).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["q1 = c1/(s0 k); q2 = s1 k/c1; q7 = c4/(s1 p); q8 = s0 p/c4;", "Input"],
-Cell["3. Sum of the free energies around the cycle (Supplementary Note 2, Step 4; Eq S1)", "Section"],
-Cell["Adding the four free energies is the same as multiplying the four ratios vplus/vminus. Every concentration appears once above and once below the line and cancels, leaving only rate constants: this is Gamma1.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["Gamma1 = Simplify[(v1p/v1m) (v2p/v2m) (v7p/v7m) (v8p/v8m)]", "Input"],
-Cell["Check that no concentration is left: the result does not depend on s0, s1, k, p, c1 or c4. The cancellation holds at every instant; no reaction has to be at equilibrium.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["FreeQ[Gamma1, s0 | s1 | k | p | c1 | c4]", "Input"],
-Cell["The sum of the four free-energy changes equals -RT Log[Gamma1] (Eq S1): the difference simplifies to 0, and is 0 numerically for random positive values.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["sumdG = -rt (Log[v1p/v1m] + Log[v2p/v2m] + Log[v7p/v7m] + Log[v8p/v8m]);\nSimplify[PowerExpand[sumdG - (-rt Log[Gamma1])]]\nChop[sumdG - (-rt Log[Gamma1]) /. Thread[{kf1, kb1, kf2, kb2, kf7, kb7, kf8, kb8, s0, s1, k, p, c1, c4, rt} -> RandomReal[{0.1, 10}, 15]]]", "Input"],
-Cell["4. Half-cycles and ATP (Supplementary Note 2, Steps 5-6; Methods 4.2, Steps 3-4; Eq 1)", "Section"],
-Cell["Haldane relations: the kinase half-cycle (R1 then R2) converts BPe4E to BPe4Ep with overall constant Kkin = kf1 kf2/(kb1 kb2); the phosphatase half-cycle (R7 then R8) converts it back with Kp = kf7 kf8/(kb7 kb8). Their product is Gamma1.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["Kkin1 = (kf1 kf2)/(kb1 kb2); Kp1 = (kf7 kf8)/(kb7 kb8);\nSimplify[Kkin1 Kp1 == Gamma1]", "Input"],
-Cell["Where ATP enters. With the nucleotides explicit (primed constants), the kinase binds as kin-ATP and releases ADP at catalysis, and the phosphatase releases Pi. The model constants absorb the constant cellular levels: kf1 = kf1x [ATP], kb2 = kb2x [ADP], kb8 = kb8x [Pi]. With the nucleotides explicit the loop is closed and obeys detailed balance: its constant equals Khyd, the equilibrium constant of ATP hydrolysis.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["explicit = {kf1 -> kf1x atp, kb2 -> kb2x adp, kb8 -> kb8x pi};\nGammaExplicit = Gamma1 /. explicit", "Input"],
-Cell["Impose detailed balance on the explicit loop (kf1x kf2 kf7 kf8/(kb1 kb2x kb7 kb8x) = Khyd) and express Gamma1 through ATP, ADP and Pi: Gamma1 = Khyd [ATP]/([ADP][Pi]) = Exp[DeltaGc/RT] (Eq 1).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["Simplify[GammaExplicit /. kf1x -> khyd kb1 kb2x kb7 kb8x/(kf2 kf7 kf8)]", "Input"],
-Cell["Size of DeltaGc. Illustration (Supplementary Note 2, Step 6): DeltaG0' of ATP hydrolysis = -30.5 kJ/mol, [ATP] = 3 mM, free [ADP] = 0.1 mM, [Pi] = 10 mM (concentrations in M for the standard state). DeltaGc = -DeltaG0' + RT Log[[ATP]/([ADP][Pi])].", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["dG0hyd = -30.5; atpM = 3*10^-3; adpM = 1*10^-4; piM = 10^-2;\nratio = atpM/(adpM piM)\ndGc = -dG0hyd + RT Log[ratio]\nlnGammaExample = dGc/RT", "Input"],
-Cell["The manuscript uses lnGamma = 19.8 for all four cycles: DeltaGc = RT x 19.8 (Methods 4.2, Step 4). The range DeltaGc = 50-55 kJ/mol corresponds to lnGamma = 19.4-21.3.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["{RT 19.8, 50/RT, 55/RT}", "Input"],
-Cell["5. Cycle 1 with numbers: check and rebinding constants (Supplementary Note 2, Steps 7-8; Methods 4.2, Step 5)", "Section"],
-Cell["Reference constants of cycle 1 (Supplementary Table 1).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["num1 = {kf1 -> kfRef[[1]], kb1 -> kbRef[[1]], kf2 -> kfRef[[2]], kb2 -> kbRef[[2]], kf7 -> kfRef[[7]], kb7 -> kbRef[[7]], kf8 -> kfRef[[8]], kb8 -> kbRef[[8]]}", "Input"],
-Cell["Half-cycle constants, Gamma1, lnGamma1 = 19.80 and DeltaGc = RT lnGamma1 = 51.06 kJ/mol (Supplementary Note 2, Step 7; Methods 4.2, Step 5).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["{Kkin1, Kp1, Gamma1} /. num1\n{Log[Kkin1], Log[Kp1], Log[Gamma1], RT Log[Gamma1]} /. num1", "Input"],
-Cell["Computing the rebinding constants. kb2 and kb8 have not been measured. Setting Gamma1 = Exp[19.8] and solving for their product rho1 = kb2 kb8 gives rho1 = kf1 kf2 kf7 kf8/(kb1 kb7 Gamma) (Methods 4.2, Step 5, Eq for rho).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["rhoSol = Solve[Gamma1 == gam /. kb8 -> rho/kb2, rho]\nrho1 = rho /. First[rhoSol] /. gam -> Exp[19.8] /. num1", "Input"],
-Cell["The split u shares rho between kinase and phosphatase: kb2 = Sqrt[rho] 10^u, kb8 = Sqrt[rho] 10^-u, so kb2 kb8 = rho for any u. With u = -0.34 this gives the reference values 1.8118*10^-8 and 8.6718*10^-8 1/(nM s).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["u = -0.34;\n{kb2calc, kb8calc} = {Sqrt[rho1] 10^u, Sqrt[rho1] 10^-u}\n{kb2calc kb8calc == rho1, kb2calc/kbRef[[2]], kb8calc/kbRef[[8]]}", "Input"],
-Cell["6. All four PdP cycles (Supplementary Table 6)", "Section"],
-Cell["The four cycles, each listed as {a, b, c, d} = {kinase binding, kinase catalysis, phosphatase binding, phosphatase catalysis}.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["cycles = {{1, 2, 7, 8}, {3, 4, 5, 6}, {9, 10, 15, 16}, {11, 12, 13, 14}};", "Input"],
-Cell["For each cycle: the six given constants, rho from lnGamma = 19.8, the two rebinding constants with u = -0.34, and the checks lnKkin, lnKp, lnGamma and DeltaGc recomputed from all eight constants. Every cycle gives lnGamma = 19.800 and DeltaGc = 51.06 kJ/mol.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["row[{a_, b_, c_, d_}] := Module[{rh, kbb, kbd},\n  rh = kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbRef[[c]] Exp[19.8]);\n  kbb = Sqrt[rh] 10^-0.34; kbd = Sqrt[rh] 10^0.34;\n  {StringJoin[\"R\", ToString[a], \",R\", ToString[b], \"|R\", ToString[c], \",R\", ToString[d]],\n   kfRef[[a]], kbRef[[a]], kfRef[[b]], kfRef[[c]], kbRef[[c]], kfRef[[d]], ScientificForm[rh, 4], ScientificForm[kbb, 4], ScientificForm[kbd, 4],\n   NumberForm[Log[kfRef[[a]] kfRef[[b]]/(kbRef[[a]] kbb)], {6, 3}], NumberForm[Log[kfRef[[c]] kfRef[[d]]/(kbRef[[c]] kbd)], {6, 3}],\n   NumberForm[Log[kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbb kbRef[[c]] kbd)], {6, 3}],\n   NumberForm[RT Log[kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbb kbRef[[c]] kbd)], {5, 2}]}]", "Input"],
-Cell["TableForm[row /@ cycles, TableHeadings -> {None, {\"cycle\", \"kfa\", \"kba\", \"kfb\", \"kfc\", \"kbc\", \"kfd\", \"rho\", \"kbb\", \"kbd\", \"lnKkin\", \"lnKp\", \"lnGamma\", \"DeltaGc\"}}]", "Input"],
-Cell["Check against the constants used in the simulations (Supplementary Table 1): the ratio computed/used is 1 for all eight rebinding constants.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["Table[With[{rh = kfRef[[c[[1]]]] kfRef[[c[[2]]]] kfRef[[c[[3]]]] kfRef[[c[[4]]]]/(kbRef[[c[[1]]]] kbRef[[c[[3]]]] Exp[19.8])},\n  {Sqrt[rh] 10^-0.34/kbRef[[c[[2]]]], Sqrt[rh] 10^0.34/kbRef[[c[[4]]]]}], {c, cycles}]", "Input"],
-Cell["7. The scaffold loop (Methods 4.2, Step 6; Eq 2; Supplementary Table 7)", "Section"],
-Cell["eIF4F forms by two routes: R18 then R19 (e4E + e4G -> e4GE, e4GE + e4A -> e4F) or R20 then R21 (e4G + e4A -> e4GA, e4GA + e4E -> e4F). No ATP is used, so both routes must have the same overall equilibrium constant (Wegscheider condition, Gamma = 1): 1/(KD18 KD19) = 1/(KD20 KD21). Solving for KD21 gives Eq (2).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["Solve[1/(KD18 KD19) == 1/(KD20 KD21), KD21]", "Input"],
-Cell["Numbers: KD = kb/kf for these binding reactions; KD18 = 27, KD19 = 230, KD20 = 56 nM give KD21 = 110.9 nM and kb21 = KD21 kf21.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["{KD18n, KD19n, KD20n} = Table[kbRef[[i]]/kfRef[[i]], {i, 18, 20}]\nKD21n = KD18n KD19n/KD20n\nkb21n = KD21n kfRef[[21]]\n{kb21n/kbRef[[21]], KD20n KD21n/(KD18n KD19n)}", "Input"],
-Cell["8. Driving strength in kJ/mol (Results 2.6)", "Section"],
-Cell["The network becomes bistable at lnGamma = 4.9 and tristable at lnGamma = 10.8 (Results 2.6, computed by MATLAB M06). Converted to free energy: 12.6 and 27.8 kJ/mol. The reference lnGamma = 19.8 is about 9 RT above the minimum for tristability, and 19.8/10.8 = 1.8 times it.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["{4.9 RT, 10.8 RT, 19.8 - 10.8, 19.8/10.8}", "Input"],
-Cell["9. Stoichiometric matrix of R1-R22 (Supplementary Note 3)", "Section"],
-Cell["Species, in the order of the MATLAB code (p4e_ssa_tables): kin, P, e4E, BP, e4G, e4A, S0 (BPe4E), S1, S2, S3, S4, BPp4, C1-C8, e4GE, e4GA, e4F. Each reaction is {reactants, products} as species numbers.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["species = {\"kin\", \"P\", \"e4E\", \"BP\", \"e4G\", \"e4A\", \"S0\", \"S1\", \"S2\", \"S3\", \"S4\", \"BPp4\", \"C1\", \"C2\", \"C3\", \"C4\", \"C5\", \"C6\", \"C7\", \"C8\", \"e4GE\", \"e4GA\", \"e4F\"};\nrx = {{{7, 1}, {13}}, {{13}, {8, 1}}, {{8, 1}, {14}}, {{14}, {9, 1}}, {{9, 2}, {15}}, {{15}, {8, 2}}, {{8, 2}, {16}}, {{16}, {7, 2}},\n  {{9, 1}, {17}}, {{17}, {10, 1}}, {{10, 1}, {18}}, {{18}, {11, 1}}, {{11, 2}, {19}}, {{19}, {10, 2}}, {{10, 2}, {20}}, {{20}, {9, 2}},\n  {{11}, {3, 12}}, {{3, 5}, {21}}, {{21, 6}, {23}}, {{5, 6}, {22}}, {{22, 3}, {23}}, {{4, 3}, {7}}};\nLength[rx]", "Input"],
-Cell["Stoichiometric matrix S: one row per reaction, one column per species; -1 for a reactant, +1 for a product.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["S = Table[Table[Count[rx[[j, 2]], s] - Count[rx[[j, 1]], s], {s, 23}], {j, 22}];\n{Dimensions[S], MatrixRank[S]}", "Input"],
-Cell["Rank 17: 23 - 17 = 6 conservation relations (total kinase, phosphatase, eIF4E, 4E-BP, eIF4G, eIF4A) and 22 - 17 = 5 independent loops.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["{23 - MatrixRank[S], 22 - MatrixRank[S]}", "Input"],
-Cell["10. Loops by row reduction of [S | I] (Stanbury and Hoffman; Supplementary Note 3, Supplementary Fig 9A)", "Section"],
-Cell["Append the 22 x 22 identity matrix to S and row-reduce. Rows whose S-part (first 23 columns) is zero give, in the identity part, a loop: a combination of reactions with no net change of any species.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["rr = RowReduce[Join[S, IdentityMatrix[22], 2]];\nloops = Select[rr, AllTrue[#[[1 ;; 23]], # == 0 &] &][[All, 24 ;;]];\nDimensions[loops]", "Input"],
-Cell["Write each loop as a list of signed reactions. The five loops are the four PdP cycles L1-L4 and the scaffold loop L5.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["loopText[v_] := StringRiffle[Table[If[v[[j]] > 0, \"+R\", \"-R\"] <> ToString[j], {j, Flatten[Position[v, x_ /; x != 0]]}], \" \"];\nloopsN = Map[If[First[Select[#, # != 0 &]] < 0, -#, #] &, loops];\nloopText /@ loopsN", "Input"],
-Cell["Check: S^T applied to each loop is zero (no species changes).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["Max[Abs[loopsN . S]]", "Input"],
-Cell["Every reaction of the model is reversible, including the catalytic steps: all 22 backward constants are positive and finite, so every loop has a finite cycle ratio Gamma (Supplementary Note 3).", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["{AllTrue[kbRef, # > 0 &], Min[kbRef]}", "Input"],
-Cell["11. ATP, ADP and Pi explicit; Gamma of every loop; deficiency (Supplementary Note 3; Supplementary Figs 9B, 11; Supplementary Table 8)", "Section"],
-Cell["Add three species, ATP (24), ADP (25) and Pi (26): ATP consumed and ADP released in the kinase catalytic steps R2, R4, R10, R12; Pi released in the phosphatase catalytic steps R6, R8, R14, R16. The rank rises to 18 and four loops remain; none hydrolyses net ATP.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["S2 = Map[Join[#, {0, 0, 0}] &, S];\nDo[S2[[j, 24]] = -1; S2[[j, 25]] = 1, {j, {2, 4, 10, 12}}];\nDo[S2[[j, 26]] = 1, {j, {6, 8, 14, 16}}];\nrrF = RowReduce[Join[S2, IdentityMatrix[22], 2]];\nloopsF = Select[rrF, AllTrue[#[[1 ;; 26]], # == 0 &] &][[All, 27 ;;]];\nloopsF = Map[If[First[Select[#, # != 0 &]] < 0, -#, #] &, loopsF];\n{MatrixRank[S2], loopText /@ loopsF}", "Input"],
-Cell["Gamma of a loop with coefficients nu: lnGamma = Sum nu_j Log[kf_j/kb_j]. With the reference constants, the four PdP cycles carry lnGamma = 19.8 (one ATP per turn) and every ATP-free loop has lnGamma = 0, as thermodynamics requires (Wegscheider condition). That the ATP-free loops F1-F3 combine one PdP cycle forward with cycle 4 backward is why all four cycles must share one value of Gamma.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["lnK = Log[kfRef/kbRef];\n{Chop[loopsN . lnK, 10^-9], Chop[loopsF . lnK, 10^-9]}", "Input"],
-Cell["Chemical reaction network theory: complexes (the distinct left- and right-hand sides), linkage classes (connected components of the reaction graph) and deficiency = complexes - linkage classes - rank = 5, equal to the number of loops; the number of circuit conditions is p - (n - l) = 0.", "Text", FontColor->RGBColor[0, 0, 1]],
-Cell["cx = DeleteDuplicates[Flatten[Map[{Sort[#[[1]]], Sort[#[[2]]]} &, rx], 1]];\ng = Graph[Range[Length[cx]], Map[UndirectedEdge[Position[cx, Sort[#[[1]]]][[1, 1]], Position[cx, Sort[#[[2]]]][[1, 1]]] &, rx]];\n{nC, nL} = {Length[cx], Length[ConnectedComponents[g]]};\n{nC, nL, MatrixRank[S], nC - nL - MatrixRank[S], 22 - (nC - nL)}", "Input"],
-Cell["End of the notebook. Every number printed above is quoted in the manuscript or its Supplementary Information at the place named in the section title.", "Text", FontColor->RGBColor[0, 0, 1]]
-},
-WindowSize->{1100, 800},
-StyleDefinitions->"Default.nb"
-]
+"\<Map to the manuscript. Sections 1-4: Supplementary Note 2, Steps 1-6; Methods 4.2, Steps 1-4; Results 2.2, Eq (1). Section 5: Supplementary Note 2, Steps 7-8; Methods 4.2, Step 5. Section 6: Supplementary Table 5. Section 7: Methods 4.2, Step 6; Eq (2); Supplementary Table 7. Section 8: Results 2.6 (driving strength). Sections 9-11: Supplementary Note 3; Supplementary Figs 9-11; Supplementary Table 8. Section 12: the split parameter u, Supplementary Note 2, Steps 9-14; Supplementary Table 6; Methods 4.2.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "ad472800-8c54-46b4-b1cb-8aef955be7ce"],Cell[
+
+"\<0. Reference parameter set (Table 3, Methods 4.1; MATLAB model/p4e_ref.m)\>","Section",
+ExpressionUUID -> "829684bd-f5b6-455e-928b-d24d416126b9"],Cell[
+"\<Clear any earlier definitions so that the notebook can be rerun from the top.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "8e75ea49-2f0a-46fe-ad40-5758ec3ef507"],Cell[
+
+"\<ClearAll[\"Global`*\"]\>","Input",CellLabel -> "In[1]:= ",ExpressionUUID -> "312e8986-2a06-40c8-86dc-03020261815a"],Cell[
+
+"\<The 22 forward and 22 backward rate constants of R1-R22 at the reference set, in the order R1, R2, ..., R22. The backward constants of the catalytic steps (R2, R4, ..., R16) and kb21 are the values computed below (Sections 5-7); they are listed here so that every check can be made against the numbers used in the simulations.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "fb967404-05e5-4c8d-aff2-ea2894e6aa40"],Cell[
+CellGroupData[
+{Cell[
+"\<kfRef = {0.031, 0.0029, 0.1, 17.0, 0.023, 0.027, 0.03, 0.14, 0.1, 0.002, 0.013, 30.0, 0.02, 0.24, 0.012, 0.15, 10.0, 0.095, 0.061, 0.076, 0.0065, 0.1};
+kbRef = {0.11, 1.8118049126429878*10^(-8), 0.032, 5.248190926288552*10^(-6), 0.63, 2.5119421075763224*10^(-5), 5.5, 8.671843526089229*10^(-8), 0.42, 1.2059530144173232*10^(-8), 1.2, 7.161218699078797*10^(-6), 0.016, 3.427574767082689*10^(-5), 3.1, 5.772054026273275*10^(-8), 0.0020408163265306124, 2.565, 14.03, 4.256, 0.7208035714285713, 0.5};
+Length /@ {kfRef, kbRef}\>",
+"Input",CellLabel -> "In[2]:= ",ExpressionUUID -> "23b81517-7091-48df-939b-2306b84986eb"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"22",",","22"}],"}"}],StandardForm],"Output",CellLabel -> "Out[4]= ",
+ExpressionUUID -> "df785751-6486-4e1a-8f1c-dee46b219f8f"]},Open],ExpressionUUID -> "dc025486-7ad2-4f4a-816a-1e2b5760f57a"],Cell[
+
+"\<Gas constant, temperature (37 degC) and RT in kJ/mol (Methods 4.2: RT = 2.579 kJ/mol).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "39f22c61-77ee-4ba2-8e25-db9e0fac360f"],Cell[
+CellGroupData[
+{Cell[
+"\<R = 8.314462618*10^-3; Tk = 310.15; RT = R Tk\>","Input",CellLabel -> "In[5]:= ",
+ExpressionUUID -> "027ed129-dd9d-43bf-9045-c83d41016faf"],Cell[
+BoxData["2.5787305809727`",
+StandardForm],"Output",CellLabel -> "Out[5]= ",ExpressionUUID -> "847f5b86-2de6-415a-b59c-a77b8ee09467"]},
+Open],ExpressionUUID -> "13ede0d9-7ec4-4fae-984d-43a0ed1bafbc"],Cell[
+"\<1. One reversible reaction (Supplementary Note 2, Step 3; Methods 4.2, Step 1)\>",
+"Section",ExpressionUUID -> "e780e945-3da9-41ee-bd3d-f38286b64da2"],Cell[
+"\<A reversible elementary reaction A + B <-> AB with forward constant kf and backward constant kb. By mass action, the one-way rates are vplus = kf [A][B] and vminus = kb [AB]; the net rate is r = vplus - vminus.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "d4467926-b843-4b3e-9ed3-454086c521d1"],Cell[
+CellGroupData[
+{Cell[
+"\<vplus = kf a b; vminus = kb ab; r = vplus - vminus\>","Input",CellLabel -> "In[6]:= ",
+ExpressionUUID -> "d075ec3a-f73d-45a0-930e-b285076e3110"],Cell[
+BoxData[RowBox[{RowBox[
+{RowBox[{"-","ab"}]," ","kb"}],"+",RowBox[{"a"," ","b"," ","kf"}]}],StandardForm],
+"Output",CellLabel -> "Out[6]= ",ExpressionUUID -> "339d6c50-216a-4e19-8fa1-31391e2a0fe2"]},
+Open],ExpressionUUID -> "54ea4f24-9e8e-439f-a560-d40a455d7a29"],Cell[
+"\<At equilibrium r = 0. Solving for [AB] shows that [AB]/([A][B]) = kf/kb: the equilibrium constant is K = kf/kb for the reaction as written (for binding, K = 1/KD).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "fe7c9cbe-601f-4916-bc10-1de9313faf12"],Cell[
+CellGroupData[
+{Cell[
+"\<Solve[r == 0, ab]
+Keq = ab/(a b) /. First[Solve[r == 0, ab]]\>","Input",
+CellLabel -> "In[7]:= ",ExpressionUUID -> "76274698-ef11-48fb-b28f-d20198d93027"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"{",RowBox[{"ab","\[Rule]",FractionBox[RowBox[{"a"," ","b"," ","kf"}],
+"kb"]}],"}"}],"}"}],StandardForm],"Output",CellLabel -> "Out[7]= ",ExpressionUUID -> "96f4ffd9-353b-4550-91b0-5293b702dcfc"],Cell[
+BoxData[
+FractionBox["kf","kb"],StandardForm],"Output",CellLabel -> "Out[8]= ",ExpressionUUID -> "d23ac9a6-0d9e-46a1-aeec-867311628726"]},
+Open],ExpressionUUID -> "53b146d0-58a4-4e2d-b137-c884a8fc0322"],Cell[
+"\<Free energy. With chemical potentials mu = mu0 + RT Log[c], DeltaG = DeltaG0 + RT Log[Q], DeltaG0 = -RT Log[K], Q = [AB]/([A][B]). The cell checks that DeltaG equals -RT Log[vplus/vminus] (the difference simplifies to 0; the second line checks it numerically with random positive values): a reaction runs forward exactly when its DeltaG is negative.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "dc979fc6-efa6-425b-8a02-e1a787647767"],Cell[
+CellGroupData[
+{Cell[
+"\<Q = ab/(a b); dG0 = -rt Log[kf/kb]; dG = dG0 + rt Log[Q];
+Simplify[PowerExpand[dG - (-rt Log[vplus/vminus])]]
+Chop[dG - (-rt Log[vplus/vminus]) /. Thread[{kf, kb, a, b, ab, rt} -> RandomReal[{0.1, 10}, 6]]]\>",
+"Input",CellLabel -> "In[9]:= ",ExpressionUUID -> "dd313e24-c8b4-4324-bec8-4dbe77c302db"],Cell[
+BoxData[
+"0",StandardForm],"Output",CellLabel -> "Out[10]= ",ExpressionUUID -> "e0826aa3-3dc5-484c-b3b7-ff87b63cb3c7"],Cell[
+BoxData[
+"0",StandardForm],"Output",CellLabel -> "Out[11]= ",ExpressionUUID -> "375a0234-8229-472f-9388-a5716a8b4bdc"]},
+Open],ExpressionUUID -> "dd774108-20aa-4943-a338-6e7484852522"],Cell[
+"\<2. Cycle 1: the four reactions and their one-way rates (Supplementary Note 2, Steps 1-2)\>",
+"Section",ExpressionUUID -> "d36149c1-40af-4f3a-9cb9-f7c250fa9364"],Cell[
+"\<Cycle 1 is the first phosphorylation site. R1: BPe4E + kin <-> C1 (kinase binding). R2: C1 <-> BPe4Ep + kin (catalysis). R7: BPe4Ep + P <-> C4 (phosphatase binding). R8: C4 <-> BPe4E + P (dephosphorylation). Symbols: s0 = [BPe4E], s1 = [BPe4Ep], k = [kin], p = [P], c1 = [C1], c4 = [C4]. In Eq (1), a = R1, b = R2, c = R7, d = R8.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "dec3aa7e-d48b-48ef-bee5-56ccebfeb3ca"],Cell[
+CellGroupData[
+{Cell[
+"\<v1p = kf1 s0 k; v1m = kb1 c1;
+v2p = kf2 c1;   v2m = kb2 s1 k;
+v7p = kf7 s1 p; v7m = kb7 c4;
+v8p = kf8 c4;   v8m = kb8 s0 p;
+TableForm[{{\"R1\", v1p, v1m}, {\"R2\", v2p, v2m}, {\"R7\", v7p, v7m}, {\"R8\", v8p, v8m}}, TableHeadings -> {None, {\"reaction\", \"forward\", \"backward\"}}]\>",
+"Input",CellLabel -> "In[12]:= ",ExpressionUUID -> "09c35ffa-b5a2-4529-9e91-6da624258654"],Cell[
+BoxData[
+TagBox[TagBox[GridBox[{{TagBox["\"reaction\"",HoldForm],TagBox["\"forward\"",HoldForm],TagBox[
+"\"backward\"",HoldForm]},{"\"R1\"",RowBox[{"k"," ","kf1"," ","s0"}],RowBox[{"c1"," ","kb1"}]},{"\"R2\"",RowBox[
+{"c1"," ","kf2"}],RowBox[{"k"," ","kb2"," ","s1"}]},{"\"R7\"",RowBox[{"kf7"," ","p"," ","s1"}],RowBox[
+{"c4"," ","kb7"}]},{"\"R8\"",RowBox[{"c4"," ","kf8"}],RowBox[{"kb8"," ","p"," ","s0"}]}},
+RowSpacings -> 1,ColumnSpacings -> 3,RowAlignments -> Baseline,ColumnAlignments -> Left,
+GridBoxDividers -> {"Columns" -> {{False}},"Rows" -> {False,True,{False},False}},
+ColumnAlignments -> Left],{None,OutputFormsDump`HeadedColumns}],Function[BoxForm`e$,
+TableForm[BoxForm`e$,TableHeadings -> {None,{"reaction","forward","backward"}}]]],
+StandardForm],"Output",CellLabel -> "Out[16]//TableForm= ",ExpressionUUID -> "b4f205a2-e08f-4a52-9ea7-d6d5581ab9f0"]},
+Open],ExpressionUUID -> "df170427-6419-4cc4-882f-6221ad37eff7"],Cell[
+"\<Reaction quotients of the four reactions (products over reactants).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "39b8e5c3-1cdb-498b-b0aa-65d8d0c93dcf"],Cell[
+
+"\<q1 = c1/(s0 k); q2 = s1 k/c1; q7 = c4/(s1 p); q8 = s0 p/c4;\>","Input",CellLabel -> "In[17]:= ",
+ExpressionUUID -> "f6dccb39-4514-40d4-91ca-e0e36205a017"],Cell[
+"\<3. Sum of the free energies around the cycle (Supplementary Note 2, Step 4; Eq S1)\>",
+"Section",ExpressionUUID -> "84d30235-43bd-4803-825a-643e4eacd8f1"],Cell[
+"\<Adding the four free energies is the same as multiplying the four ratios vplus/vminus. Every concentration appears once above and once below the line and cancels, leaving only rate constants: this is Gamma1.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "d5102031-55c5-45f8-b848-47597dde8808"],Cell[
+CellGroupData[
+{Cell[
+"\<Gamma1 = Simplify[(v1p/v1m) (v2p/v2m) (v7p/v7m) (v8p/v8m)]\>","Input",CellLabel -> "In[18]:= ",
+ExpressionUUID -> "aa356bcc-a0ee-44ed-acb2-2ebbca5d8ca1"],Cell[
+BoxData[FractionBox[
+RowBox[{"kf1"," ","kf2"," ","kf7"," ","kf8"}],RowBox[{"kb1"," ","kb2"," ","kb7"," ","kb8"}]],
+StandardForm],"Output",CellLabel -> "Out[18]= ",ExpressionUUID -> "4c8ec58c-aada-4f56-8d62-37157c102681"]},
+Open],ExpressionUUID -> "8f652866-9794-4aaa-ae07-7d7a3f5a9252"],Cell[
+"\<Check that no concentration is left: the result does not depend on s0, s1, k, p, c1 or c4. The cancellation holds at every instant; no reaction has to be at equilibrium.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "2375818f-54f4-490c-a74c-c121cd06f0ba"],Cell[
+CellGroupData[
+{Cell[
+"\<FreeQ[Gamma1, s0 | s1 | k | p | c1 | c4]\>","Input",CellLabel -> "In[19]:= ",
+ExpressionUUID -> "8520b133-05b1-4bdf-984e-7f825bcfffc6"],Cell[
+BoxData["True",StandardForm],
+"Output",CellLabel -> "Out[19]= ",ExpressionUUID -> "1dcc9972-7713-471b-9d69-9df3e4c97a46"]},
+Open],ExpressionUUID -> "eea0dc0f-aae5-4d43-bbae-7b6d5242483e"],Cell[
+"\<The sum of the four free-energy changes equals -RT Log[Gamma1] (Eq S1): the difference simplifies to 0, and is 0 numerically for random positive values.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "11dad8ee-5b38-4627-9a92-17d6b774793c"],Cell[
+CellGroupData[
+{Cell[
+"\<sumdG = -rt (Log[v1p/v1m] + Log[v2p/v2m] + Log[v7p/v7m] + Log[v8p/v8m]);
+Simplify[PowerExpand[sumdG - (-rt Log[Gamma1])]]
+Chop[sumdG - (-rt Log[Gamma1]) /. Thread[{kf1, kb1, kf2, kb2, kf7, kb7, kf8, kb8, s0, s1, k, p, c1, c4, rt} -> RandomReal[{0.1, 10}, 15]]]\>",
+"Input",CellLabel -> "In[20]:= ",ExpressionUUID -> "7dab1ef4-c917-4f3e-8364-a6848e903543"],Cell[
+BoxData[
+"0",StandardForm],"Output",CellLabel -> "Out[21]= ",ExpressionUUID -> "413c1ea1-f043-44ea-bdbe-be9aad62fb06"],Cell[
+BoxData[
+"0",StandardForm],"Output",CellLabel -> "Out[22]= ",ExpressionUUID -> "05923b29-1c65-413d-ad07-a88c5493b143"]},
+Open],ExpressionUUID -> "9f81b503-3df1-415a-9695-19dd89791d42"],Cell[
+"\<4. Half-cycles and ATP (Supplementary Note 2, Steps 5-6; Methods 4.2, Steps 3-4; Eq 1)\>",
+"Section",ExpressionUUID -> "2599aa1b-7359-477f-b521-13cb517a1e4c"],Cell[
+"\<Haldane relations: the kinase half-cycle (R1 then R2) converts BPe4E to BPe4Ep with overall constant Kkin = kf1 kf2/(kb1 kb2); the phosphatase half-cycle (R7 then R8) converts it back with Kp = kf7 kf8/(kb7 kb8). Their product is Gamma1.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "033a0786-9706-415f-ab28-61bd91f8050b"],Cell[
+CellGroupData[
+{Cell[
+"\<Kkin1 = (kf1 kf2)/(kb1 kb2); Kp1 = (kf7 kf8)/(kb7 kb8);
+Simplify[Kkin1 Kp1 == Gamma1]\>",
+"Input",CellLabel -> "In[23]:= ",ExpressionUUID -> "45869bfe-0ab4-4b5e-98b4-a7b3c0f3ea68"],Cell[
+BoxData[
+"True",StandardForm],"Output",CellLabel -> "Out[24]= ",ExpressionUUID -> "32fc34b2-5a7d-4aa4-a902-a740d24cf50a"]},
+Open],ExpressionUUID -> "f42c7ea2-5322-453c-8f54-848df80a36f2"],Cell[
+"\<Where ATP enters. With the nucleotides explicit (primed constants), the kinase binds as kin-ATP and releases ADP at catalysis, and the phosphatase releases Pi. The model constants absorb the constant cellular levels: kf1 = kf1x [ATP], kb2 = kb2x [ADP], kb8 = kb8x [Pi]. With the nucleotides explicit the loop is closed and obeys detailed balance: its constant equals Khyd, the equilibrium constant of ATP hydrolysis.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "bea189a6-7738-49d1-b4d4-3ad50bf7af4a"],Cell[
+CellGroupData[
+{Cell[
+"\<explicit = {kf1 -> kf1x atp, kb2 -> kb2x adp, kb8 -> kb8x pi};
+GammaExplicit = Gamma1 /. explicit\>",
+"Input",CellLabel -> "In[25]:= ",ExpressionUUID -> "4fea184a-08bd-4896-a223-a9fff201970d"],Cell[
+BoxData[
+FractionBox[RowBox[{"atp"," ","kf1x"," ","kf2"," ","kf7"," ","kf8"}],RowBox[{"adp"," ","kb1"," ","kb2x"," ","kb7"," ","kb8x"," ","pi"}]],
+StandardForm],"Output",CellLabel -> "Out[26]= ",ExpressionUUID -> "db9b5fdc-2afe-4400-b952-b95ccc117444"]},
+Open],ExpressionUUID -> "03eee296-ce43-4134-bd14-ebf6e1c75182"],Cell[
+"\<Impose detailed balance on the explicit loop (kf1x kf2 kf7 kf8/(kb1 kb2x kb7 kb8x) = Khyd) and express Gamma1 through ATP, ADP and Pi: Gamma1 = Khyd [ATP]/([ADP][Pi]) = Exp[DeltaGc/RT] (Eq 1).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "c15ce2b5-7ef4-4511-90b1-aa66f73cbb5d"],Cell[
+CellGroupData[
+{Cell[
+"\<Simplify[GammaExplicit /. kf1x -> khyd kb1 kb2x kb7 kb8x/(kf2 kf7 kf8)]\>",
+"Input",CellLabel -> "In[27]:= ",ExpressionUUID -> "da60a0cd-5fd0-4863-a1bb-fc456893f893"],Cell[
+BoxData[
+FractionBox[RowBox[{"atp"," ","khyd"}],RowBox[{"adp"," ","pi"}]],StandardForm],"Output",
+CellLabel -> "Out[27]= ",ExpressionUUID -> "1c9250f6-5d12-46dd-803f-cd7693783f0a"]},
+Open],ExpressionUUID -> "625b763f-7d63-4610-b11a-404c9b97d76d"],Cell[
+"\<Size of DeltaGc. Illustration (Supplementary Note 2, Step 6): DeltaG0' of ATP hydrolysis = -30.5 kJ/mol, [ATP] = 3 mM, free [ADP] = 0.1 mM, [Pi] = 10 mM (concentrations in M for the standard state). DeltaGc = -DeltaG0' + RT Log[[ATP]/([ADP][Pi])].\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "a4fcbd1e-4e95-40b8-8d46-b39d87eb5187"],Cell[
+CellGroupData[
+{Cell[
+"\<dG0hyd = -30.5; atpM = 3*10^-3; adpM = 1*10^-4; piM = 10^-2;
+ratio = atpM/(adpM piM)
+dGc = -dG0hyd + RT Log[ratio]
+lnGammaExample = dGc/RT\>",
+"Input",CellLabel -> "In[28]:= ",ExpressionUUID -> "cfda5e91-7a6a-4db7-9d46-24b61b62422c"],Cell[
+BoxData[
+"3000",StandardForm],"Output",CellLabel -> "Out[29]= ",ExpressionUUID -> "aefbfa1d-c43f-4eaa-a532-ff787c829c19"],Cell[
+BoxData[
+"51.1462648892077`",StandardForm],"Output",CellLabel -> "Out[30]= ",ExpressionUUID -> "00bf1465-dd1a-404b-8a41-5947c17b2c5e"],Cell[
+BoxData[
+"19.833892406827268`",StandardForm],"Output",CellLabel -> "Out[31]= ",ExpressionUUID -> "d7f86d2e-995b-4c41-a942-6cdd4183b213"]},
+Open],ExpressionUUID -> "881e505c-5a32-4858-8916-8ed2969c1364"],Cell[
+"\<The manuscript uses lnGamma = 19.8 for all four cycles: DeltaGc = RT x 19.8 (Methods 4.2, Step 4). The range DeltaGc = 50-55 kJ/mol corresponds to lnGamma = 19.4-21.3.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "aaf12a91-d3a4-4981-9941-fd5b8f6328b5"],Cell[
+CellGroupData[
+{Cell[
+"\<{RT 19.8, 50/RT, 55/RT}\>","Input",CellLabel -> "In[32]:= ",ExpressionUUID -> "752580d6-a097-4205-8d98-fc89072518f1"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"51.05886550325946`",",","19.38938498225741`",",","21.328323480483153`"}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[32]= ",ExpressionUUID -> "b800e146-95b6-4be5-98f2-95f403ce5b64"]},
+Open],ExpressionUUID -> "5baaf7aa-78b4-403c-8a96-bd721e727c5f"],Cell[
+"\<5. Cycle 1 with numbers: check and rebinding constants (Supplementary Note 2, Steps 7-8; Methods 4.2, Step 5)\>",
+"Section",ExpressionUUID -> "71824f30-7918-45fc-a464-a634f1f2704f"],Cell[
+"\<Reference constants of cycle 1 (Table 3).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "5447c395-8649-43c0-8f88-331d281b9613"],Cell[
+CellGroupData[
+{Cell[
+"\<num1 = {kf1 -> kfRef[[1]], kb1 -> kbRef[[1]], kf2 -> kfRef[[2]], kb2 -> kbRef[[2]], kf7 -> kfRef[[7]], kb7 -> kbRef[[7]], kf8 -> kfRef[[8]], kb8 -> kbRef[[8]]}\>",
+"Input",CellLabel -> "In[33]:= ",ExpressionUUID -> "b0f9fc06-dda5-4af5-a75f-11ae27dda647"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{RowBox[{"kf1","\[Rule]","0.031`"}],",",RowBox[{"kb1","\[Rule]","0.11`"}],",",RowBox[
+{"kf2","\[Rule]","0.0029`"}],",",RowBox[{"kb2","\[Rule]","1.8118049126429878`*^-8"}],",",RowBox[
+{"kf7","\[Rule]","0.03`"}],",",RowBox[{"kb7","\[Rule]","5.5`"}],",",RowBox[{"kf8","\[Rule]","0.14`"}],",",RowBox[
+{"kb8","\[Rule]","8.671843526089229`*^-8"}]}],"}"}],StandardForm],"Output",CellLabel -> "Out[33]= ",
+ExpressionUUID -> "ea2ee3c5-9b59-432a-8895-02ad562ee4aa"]},Open],ExpressionUUID -> "ff00b21f-5ac1-4d86-9a59-d716bff6e29c"],Cell[
+
+"\<Half-cycle constants, Gamma1, lnGamma1 = 19.80 and DeltaGc = RT lnGamma1 = 51.06 kJ/mol (Supplementary Note 2, Step 7; Methods 4.2, Step 5).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "761e29c1-6136-4297-8b46-3575d55bb226"],Cell[
+CellGroupData[
+{Cell[
+"\<{Kkin1, Kp1, Gamma1} /. num1
+{Log[Kkin1], Log[Kp1], Log[Gamma1], RT Log[Gamma1]} /. num1\>",
+"Input",CellLabel -> "In[34]:= ",ExpressionUUID -> "b0ca9c2a-5cc6-4504-ac92-cf579bc856e5"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"45108.20792954595`",",","8805.928766345527`",",","3.972196658050841`*^8"}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[34]= ",ExpressionUUID -> "d2de4cce-9548-43bb-8425-5893a016d57b"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"10.716819502935106`",",","9.083180497064895`",",","19.8`",",","51.05886550325946`"}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[35]= ",ExpressionUUID -> "0c720635-5392-4315-8431-1e0091d2ddcd"]},
+Open],ExpressionUUID -> "044ae699-c793-4ba9-ae88-e1b22efa1071"],Cell[
+"\<Computing the rebinding constants. kb2 and kb8 have not been measured. Setting Gamma1 = Exp[19.8] and solving for their product rho1 = kb2 kb8 gives rho1 = kf1 kf2 kf7 kf8/(kb1 kb7 Gamma) (Methods 4.2, Step 5, Eq for rho).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "617db30f-5f33-4dc8-a401-6941654bacc2"],Cell[
+CellGroupData[
+{Cell[
+"\<rhoSol = Solve[Gamma1 == gam /. kb8 -> rho/kb2, rho]
+rho1 = rho /. First[rhoSol] /. gam -> Exp[19.8] /. num1\>",
+"Input",CellLabel -> "In[36]:= ",ExpressionUUID -> "d5b564c9-6802-471e-ad75-838b765c9aa7"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"{",RowBox[{"rho","\[Rule]",FractionBox[RowBox[{"kf1"," ","kf2"," ","kf7"," ","kf8"}],
+RowBox[{"gam"," ","kb1"," ","kb7"}]]}],"}"}],"}"}],StandardForm],"Output",CellLabel -> "Out[36]= ",
+ExpressionUUID -> "00756542-6fc2-4ecf-a40a-41e164095849"],Cell[
+BoxData["1.5711688702239752`*^-15",
+StandardForm],"Output",CellLabel -> "Out[37]= ",ExpressionUUID -> "13257960-3f28-4f37-a005-ff02e5441df5"]},
+Open],ExpressionUUID -> "d9c77799-597f-48bd-ac48-866a22d7e528"],Cell[
+"\<The split u shares rho between kinase and phosphatase: kb2 = Sqrt[rho] 10^u, kb8 = Sqrt[rho] 10^-u, so kb2 kb8 = rho for any u. With u = -0.34 this gives the reference values 1.8118*10^-8 and 8.6718*10^-8 1/(nM s).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "61525847-bb37-41cb-b92c-b32dbe62b283"],Cell[
+CellGroupData[
+{Cell[
+"\<u = -0.34;
+{kb2calc, kb8calc} = {Sqrt[rho1] 10^u, Sqrt[rho1] 10^-u}
+{kb2calc kb8calc == rho1, kb2calc/kbRef[[2]], kb8calc/kbRef[[8]]}\>",
+"Input",CellLabel -> "In[38]:= ",ExpressionUUID -> "644b1da1-d7aa-47c8-9daa-42a6eaf7dacc"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"1.8118049126429878`*^-8",",","8.671843526089229`*^-8"}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[39]= ",ExpressionUUID -> "b7e7c6b9-59c6-47ff-8e77-6af17e6d3494"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"True",",","1.`",",","1.`"}],"}"}],StandardForm],"Output",CellLabel -> "Out[40]= ",
+ExpressionUUID -> "24d095a0-5237-4078-9aec-9c2c063f0712"]},Open],ExpressionUUID -> "7b8903f8-182a-4680-8536-88ca9cbe6f83"],Cell[
+
+"\<6. All four PdP cycles (Supplementary Table 5)\>","Section",ExpressionUUID -> "d687f3fb-76e9-4dd2-962a-a867e474de54"],Cell[
+
+"\<The four cycles, each listed as {a, b, c, d} = {kinase binding, kinase catalysis, phosphatase binding, phosphatase catalysis}.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "c64c991b-faee-4d2a-9381-f77379263ecf"],Cell[
+
+"\<cycles = {{1, 2, 7, 8}, {3, 4, 5, 6}, {9, 10, 15, 16}, {11, 12, 13, 14}};\>","Input",
+CellLabel -> "In[41]:= ",ExpressionUUID -> "554e3a0c-ce79-462b-8433-161d7c465df5"],Cell[
+
+"\<For each cycle: the six given constants, rho from lnGamma = 19.8, the two rebinding constants with u = -0.34, and the checks lnKkin, lnKp, lnGamma and DeltaGc recomputed from all eight constants. Every cycle gives lnGamma = 19.800 and DeltaGc = 51.06 kJ/mol.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "180fad63-b215-4308-a42d-78bbb1081154"],Cell[
+
+"\<row[{a_, b_, c_, d_}] := Module[{rh, kbb, kbd},
+  rh = kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbRef[[c]] Exp[19.8]);
+  kbb = Sqrt[rh] 10^-0.34; kbd = Sqrt[rh] 10^0.34;
+  {StringJoin[\"R\", ToString[a], \",R\", ToString[b], \"|R\", ToString[c], \",R\", ToString[d]],
+   kfRef[[a]], kbRef[[a]], kfRef[[b]], kfRef[[c]], kbRef[[c]], kfRef[[d]], ScientificForm[rh, 4], ScientificForm[kbb, 4], ScientificForm[kbd, 4],
+   NumberForm[Log[kfRef[[a]] kfRef[[b]]/(kbRef[[a]] kbb)], {6, 3}], NumberForm[Log[kfRef[[c]] kfRef[[d]]/(kbRef[[c]] kbd)], {6, 3}],
+   NumberForm[Log[kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbb kbRef[[c]] kbd)], {6, 3}],
+   NumberForm[RT Log[kfRef[[a]] kfRef[[b]] kfRef[[c]] kfRef[[d]]/(kbRef[[a]] kbb kbRef[[c]] kbd)], {5, 2}]}]\>",
+"Input",CellLabel -> "In[42]:= ",ExpressionUUID -> "28f296df-8060-4682-98e4-d09df5e60e64"],Cell[
+CellGroupData[
+{Cell[
+"\<TableForm[row /@ cycles, TableHeadings -> {None, {\"cycle\", \"kfa\", \"kba\", \"kfb\", \"kfc\", \"kbc\", \"kfd\", \"rho\", \"kbb\", \"kbd\", \"lnKkin\", \"lnKp\", \"lnGamma\", \"DeltaGc\"}}]\>",
+"Input",CellLabel -> "In[43]:= ",ExpressionUUID -> "bea7c2be-e121-4666-8594-40f806868550"],Cell[
+BoxData[
+TagBox[TagBox[GridBox[{{TagBox["\"cycle\"",HoldForm],TagBox["\"kfa\"",HoldForm],TagBox[
+"\"kba\"",HoldForm],TagBox["\"kfb\"",HoldForm],TagBox["\"kfc\"",HoldForm],TagBox[
+"\"kbc\"",HoldForm],TagBox["\"kfd\"",HoldForm],TagBox["\"rho\"",HoldForm],TagBox[
+"\"kbb\"",HoldForm],TagBox["\"kbd\"",HoldForm],TagBox["\"lnKkin\"",HoldForm],TagBox[
+"\"lnKp\"",HoldForm],TagBox["\"lnGamma\"",HoldForm],TagBox["\"DeltaGc\"",HoldForm]},{"\"R1,R2|R7,R8\"","0.031`","0.11`","0.0029`","0.03`","5.5`","0.14`",TagBox[
+InterpretationBox[StyleBox[RowBox[{"\"1.571\"","\[Times]",SuperscriptBox["10","\"-15\""]}],
+ShowStringCharacters -> False],1.571168870223975`*^-15,AutoDelete -> True],Function[
+ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[RowBox[{"\"1.812\"","\[Times]",SuperscriptBox[
+"10","\"-8\""]}],ShowStringCharacters -> False],1.8118049126429874`*^-8,AutoDelete -> True],
+Function[ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[RowBox[{"\"8.672\"","\[Times]",SuperscriptBox[
+"10","\"-8\""]}],ShowStringCharacters -> False],8.671843526089227`*^-8,AutoDelete -> True],
+Function[ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox["\"10.717\"",
+ShowStringCharacters -> False],10.716819502935106`,AutoDelete -> True],Function[NumberForm[
+Slot[1],{6,3}]]],TagBox[InterpretationBox[StyleBox["\"9.083\"",ShowStringCharacters -> False],
+9.083180497064895`,AutoDelete -> True],Function[NumberForm[Slot[1],{6,3}]]],TagBox[
+InterpretationBox[StyleBox["\"19.800\"",ShowStringCharacters -> False],19.8`,AutoDelete -> True],
+Function[NumberForm[Slot[1],{6,3}]]],TagBox[InterpretationBox[StyleBox["\"51.06\"",
+ShowStringCharacters -> False],51.05886550325946`,AutoDelete -> True],Function[NumberForm[
+Slot[1],{5,2}]]]},{"\"R3,R4|R5,R6\"","0.1`","0.032`","17.`","0.023`","0.63`","0.027`",TagBox[
+InterpretationBox[StyleBox[RowBox[{"\"1.318\"","\[Times]",SuperscriptBox["10","\"-10\""]}],
+ShowStringCharacters -> False],1.3183151776344194`*^-10,AutoDelete -> True],Function[
+ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[RowBox[{"\"5.248\"","\[Times]",SuperscriptBox[
+"10","\"-6\""]}],ShowStringCharacters -> False],5.248190926288551`*^-6,AutoDelete -> True],
+Function[ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[RowBox[{"\"2.512\"","\[Times]",SuperscriptBox[
+"10","\"-5\""]}],ShowStringCharacters -> False],2.511942107576322`*^-5,AutoDelete -> True],
+Function[ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox["\"16.130\"",
+ShowStringCharacters -> False],16.130274753457385`,AutoDelete -> True],Function[NumberForm[
+Slot[1],{6,3}]]],TagBox[InterpretationBox[StyleBox["\"3.670\"",ShowStringCharacters -> False],
+3.6697252465426162`,AutoDelete -> True],Function[NumberForm[Slot[1],{6,3}]]],TagBox[
+InterpretationBox[StyleBox["\"19.800\"",ShowStringCharacters -> False],19.8`,AutoDelete -> True],
+Function[NumberForm[Slot[1],{6,3}]]],TagBox[InterpretationBox[StyleBox["\"51.06\"",
+ShowStringCharacters -> False],51.05886550325946`,AutoDelete -> True],Function[NumberForm[
+Slot[1],{5,2}]]]},{"\"R9,R10|R15,R16\"","0.1`","0.42`","0.002`","0.012`","3.1`","0.15`",TagBox[
+InterpretationBox[StyleBox[RowBox[{"\"6.961\"","\[Times]",SuperscriptBox["10","\"-16\""]}],
+ShowStringCharacters -> False],6.960825952363902`*^-16,AutoDelete -> True],Function[
+ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[RowBox[{"\"1.206\"","\[Times]",SuperscriptBox[
+"10","\"-8\""]}],ShowStringCharacters -> False],1.205953014417323`*^-8,AutoDelete -> True],
+Function[ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[RowBox[{"\"5.772\"","\[Times]",SuperscriptBox[
+"10","\"-8\""]}],ShowStringCharacters -> False],5.7720540262732736`*^-8,AutoDelete -> True],
+Function[ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox["\"10.584\"",
+ShowStringCharacters -> False],10.583717982547778`,AutoDelete -> True],Function[NumberForm[
+Slot[1],{6,3}]]],TagBox[InterpretationBox[StyleBox["\"9.216\"",ShowStringCharacters -> False],
+9.216282017452222`,AutoDelete -> True],Function[NumberForm[Slot[1],{6,3}]]],TagBox[
+InterpretationBox[StyleBox["\"19.800\"",ShowStringCharacters -> False],19.8`,AutoDelete -> True],
+Function[NumberForm[Slot[1],{6,3}]]],TagBox[InterpretationBox[StyleBox["\"51.06\"",
+ShowStringCharacters -> False],51.05886550325946`,AutoDelete -> True],Function[NumberForm[
+Slot[1],{5,2}]]]},{"\"R11,R12|R13,R14\"","0.013`","1.2`","30.`","0.02`","0.016`","0.24`",TagBox[
+InterpretationBox[StyleBox[RowBox[{"\"2.455\"","\[Times]",SuperscriptBox["10","\"-10\""]}],
+ShowStringCharacters -> False],2.454561251452321`*^-10,AutoDelete -> True],Function[
+ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[RowBox[{"\"7.161\"","\[Times]",SuperscriptBox[
+"10","\"-6\""]}],ShowStringCharacters -> False],7.161218699078797`*^-6,AutoDelete -> True],
+Function[ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[RowBox[{"\"3.428\"","\[Times]",SuperscriptBox[
+"10","\"-5\""]}],ShowStringCharacters -> False],3.427574767082689`*^-5,AutoDelete -> True],
+Function[ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox["\"10.723\"",
+ShowStringCharacters -> False],10.722900285454743`,AutoDelete -> True],Function[NumberForm[
+Slot[1],{6,3}]]],TagBox[InterpretationBox[StyleBox["\"9.077\"",ShowStringCharacters -> False],
+9.077099714545257`,AutoDelete -> True],Function[NumberForm[Slot[1],{6,3}]]],TagBox[
+InterpretationBox[StyleBox["\"19.800\"",ShowStringCharacters -> False],19.8`,AutoDelete -> True],
+Function[NumberForm[Slot[1],{6,3}]]],TagBox[InterpretationBox[StyleBox["\"51.06\"",
+ShowStringCharacters -> False],51.05886550325946`,AutoDelete -> True],Function[NumberForm[
+Slot[1],{5,2}]]]}},RowSpacings -> 1,ColumnSpacings -> 3,RowAlignments -> Baseline,
+ColumnAlignments -> Left,GridBoxDividers -> {"Columns" -> {{False}},"Rows" -> {False,True,{False},False}},
+ColumnAlignments -> Left],{None,OutputFormsDump`HeadedColumns}],Function[BoxForm`e$,
+TableForm[BoxForm`e$,TableHeadings -> {None,{"cycle","kfa","kba","kfb","kfc","kbc","kfd","rho","kbb","kbd","lnKkin","lnKp","lnGamma","DeltaGc"}}]]],
+StandardForm],"Output",CellLabel -> "Out[43]//TableForm= ",ExpressionUUID -> "3afcfda7-37db-4674-b4e9-37496aa5d440"]},
+Open],ExpressionUUID -> "29d4266f-ea89-4720-82b1-2dee11f28704"],Cell[
+"\<Check against the constants used in the simulations (Table 3): the ratio computed/used is 1 for all eight rebinding constants.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "92b8318d-538f-46e6-8b81-6e222a708db7"],Cell[
+CellGroupData[
+{Cell[
+"\<Table[With[{rh = kfRef[[c[[1]]]] kfRef[[c[[2]]]] kfRef[[c[[3]]]] kfRef[[c[[4]]]]/(kbRef[[c[[1]]]] kbRef[[c[[3]]]] Exp[19.8])},
+  {Sqrt[rh] 10^-0.34/kbRef[[c[[2]]]], Sqrt[rh] 10^0.34/kbRef[[c[[4]]]]}], {c, cycles}]\>",
+"Input",CellLabel -> "In[44]:= ",ExpressionUUID -> "b274ddf1-958d-4026-987c-811a9abf2310"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{RowBox[{"{",RowBox[{"0.9999999999999997`",",","0.9999999999999998`"}],"}"}],",",RowBox[
+{"{",RowBox[{"0.9999999999999999`",",","0.9999999999999998`"}],"}"}],",",RowBox[{"{",RowBox[
+{"0.9999999999999999`",",","0.9999999999999997`"}],"}"}],",",RowBox[{"{",RowBox[{"1.`",",","1.`"}],"}"}]}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[44]= ",ExpressionUUID -> "45d3aacb-a4e5-4a30-a2ca-5ecb37a25725"]},
+Open],ExpressionUUID -> "f80a921a-568b-4cfc-8e10-8ee328e7f95c"],Cell[
+"\<7. The scaffold loop (Methods 4.2, Step 6; Eq 2; Supplementary Table 7)\>",
+"Section",ExpressionUUID -> "b0106cd5-ed32-4188-bb2c-7052e55a0a91"],Cell[
+"\<eIF4F forms by two routes: R18 then R19 (e4E + e4G -> e4GE, e4GE + e4A -> e4F) or R20 then R21 (e4G + e4A -> e4GA, e4GA + e4E -> e4F). No ATP is used, so both routes must have the same overall equilibrium constant (Wegscheider condition, Gamma = 1): 1/(KD18 KD19) = 1/(KD20 KD21). Solving for KD21 gives Eq (2).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "2c2222c0-e46c-4cf7-8397-a64365eca853"],Cell[
+CellGroupData[
+{Cell[
+"\<Solve[1/(KD18 KD19) == 1/(KD20 KD21), KD21]\>","Input",CellLabel -> "In[45]:= ",
+ExpressionUUID -> "5cea6fbe-7f5d-40fb-a3b5-cbd385cd83f3"],Cell[
+BoxData[RowBox[{"{",RowBox[
+{"{",RowBox[{"KD21","\[Rule]",FractionBox[RowBox[{"KD18"," ","KD19"}],"KD20"]}],"}"}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[45]= ",ExpressionUUID -> "4a3d529f-7c20-414a-8fec-df459a9aeeb3"]},
+Open],ExpressionUUID -> "9f8c1f0a-12e9-483e-977d-59f4dbdd3620"],Cell[
+"\<Numbers: KD = kb/kf for these binding reactions; KD18 = 27, KD19 = 230, KD20 = 56 nM give KD21 = 110.9 nM and kb21 = KD21 kf21.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "43cc9b02-ac02-436d-85fc-a4dafacc7cf9"],Cell[
+CellGroupData[
+{Cell[
+"\<{KD18n, KD19n, KD20n} = Table[kbRef[[i]]/kfRef[[i]], {i, 18, 20}]
+KD21n = KD18n KD19n/KD20n
+kb21n = KD21n kfRef[[21]]
+{kb21n/kbRef[[21]], KD20n KD21n/(KD18n KD19n)}\>",
+"Input",CellLabel -> "In[46]:= ",ExpressionUUID -> "1665ed21-0488-47c2-b91d-c6295082aab1"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"27.`",",","229.99999999999997`",",","56.00000000000001`"}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[46]= ",ExpressionUUID -> "939d0586-3c1a-47f4-8c42-96720ba41fdd"],Cell[
+BoxData[
+"110.89285714285712`",StandardForm],"Output",CellLabel -> "Out[47]= ",ExpressionUUID -> "c8f4d8de-ca5f-48d3-855b-0e9d46d67841"],Cell[
+BoxData[
+"0.7208035714285713`",StandardForm],"Output",CellLabel -> "Out[48]= ",ExpressionUUID -> "d1d5f26a-f233-4a33-b210-2d8819a1e29f"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"1.`",",","1.0000000000000002`"}],"}"}],StandardForm],"Output",
+CellLabel -> "Out[49]= ",ExpressionUUID -> "9ac61d02-7f08-48fd-8b9b-f9e74598c8c0"]},
+Open],ExpressionUUID -> "5956810f-d39e-44c3-b21f-0bc7dc3a01b2"],Cell[
+"\<8. Driving strength in kJ/mol (Results 2.6)\>",
+"Section",ExpressionUUID -> "2585e7f9-c33a-4467-a772-774a7663bcfe"],Cell[
+"\<The network becomes bistable at lnGamma = 4.9 and tristable at lnGamma = 10.8 (Results 2.6, computed by MATLAB M06). Converted to free energy: 12.6 and 27.8 kJ/mol. The reference lnGamma = 19.8 is about 9 RT above the minimum for tristability, and 19.8/10.8 = 1.8 times it.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "e36a09e8-7b0b-4c1a-bec2-1fe3cb9c242b"],Cell[
+CellGroupData[
+{Cell[
+"\<{4.9 RT, 10.8 RT, 19.8 - 10.8, 19.8/10.8}\>","Input",CellLabel -> "In[50]:= ",
+ExpressionUUID -> "55a25b22-6333-4a10-81eb-e1066ec0dc3a"],Cell[
+BoxData[RowBox[{"{",RowBox[
+{"12.63577984676623`",",","27.85029027450516`",",","9.`",",","1.8333333333333333`"}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[50]= ",ExpressionUUID -> "0f1f3fc8-ad29-4f0c-aaee-177b8ec8257f"]},
+Open],ExpressionUUID -> "f053068d-7c1f-401c-8367-d2b6fcbf8844"],Cell[
+"\<9. Stoichiometric matrix of R1-R22 (Supplementary Note 3)\>",
+"Section",ExpressionUUID -> "d060166e-e894-440b-8c1a-b0c6dae738c4"],Cell[
+"\<Species, in the order of the MATLAB code (p4e_ssa_tables): kin, P, e4E, BP, e4G, e4A, S0 (BPe4E), S1, S2, S3, S4, BPp4, C1-C8, e4GE, e4GA, e4F. Each reaction is {reactants, products} as species numbers.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "e5f4d44e-207a-41da-a922-731235e680ed"],Cell[
+CellGroupData[
+{Cell[
+"\<species = {\"kin\", \"P\", \"e4E\", \"BP\", \"e4G\", \"e4A\", \"S0\", \"S1\", \"S2\", \"S3\", \"S4\", \"BPp4\", \"C1\", \"C2\", \"C3\", \"C4\", \"C5\", \"C6\", \"C7\", \"C8\", \"e4GE\", \"e4GA\", \"e4F\"};
+rx = {{{7, 1}, {13}}, {{13}, {8, 1}}, {{8, 1}, {14}}, {{14}, {9, 1}}, {{9, 2}, {15}}, {{15}, {8, 2}}, {{8, 2}, {16}}, {{16}, {7, 2}},
+  {{9, 1}, {17}}, {{17}, {10, 1}}, {{10, 1}, {18}}, {{18}, {11, 1}}, {{11, 2}, {19}}, {{19}, {10, 2}}, {{10, 2}, {20}}, {{20}, {9, 2}},
+  {{11}, {3, 12}}, {{3, 5}, {21}}, {{21, 6}, {23}}, {{5, 6}, {22}}, {{22, 3}, {23}}, {{4, 3}, {7}}};
+Length[rx]\>",
+"Input",CellLabel -> "In[51]:= ",ExpressionUUID -> "4476118f-beb1-4495-9c17-28674d502cc4"],Cell[
+BoxData[
+"22",StandardForm],"Output",CellLabel -> "Out[53]= ",ExpressionUUID -> "0fcba766-26e2-4330-bf85-0371f46c3364"]},
+Open],ExpressionUUID -> "4f2c4fda-76fe-4dda-b1bb-cc9ff99bc6c5"],Cell[
+"\<Stoichiometric matrix S: one row per reaction, one column per species; -1 for a reactant, +1 for a product.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "464aa27c-2dfe-463b-b0ba-1cdae6acd068"],Cell[
+CellGroupData[
+{Cell[
+"\<S = Table[Table[Count[rx[[j, 2]], s] - Count[rx[[j, 1]], s], {s, 23}], {j, 22}];
+{Dimensions[S], MatrixRank[S]}\>",
+"Input",CellLabel -> "In[54]:= ",ExpressionUUID -> "1f07658b-fa02-400f-a396-ade78bc79895"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{RowBox[{"{",RowBox[{"22",",","23"}],"}"}],",","17"}],"}"}],StandardForm],
+"Output",CellLabel -> "Out[55]= ",ExpressionUUID -> "e05f0b02-59cd-4df9-94d6-85446aeb1eb6"]},
+Open],ExpressionUUID -> "5c999650-886d-48bf-baea-bb82f8cae4f7"],Cell[
+"\<Rank 17: 23 - 17 = 6 conservation relations (total kinase, phosphatase, eIF4E, 4E-BP, eIF4G, eIF4A) and 22 - 17 = 5 independent loops.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "bde05b53-00a8-4b98-a65a-a4418aac7b05"],Cell[
+CellGroupData[
+{Cell[
+"\<{23 - MatrixRank[S], 22 - MatrixRank[S]}\>","Input",CellLabel -> "In[56]:= ",
+ExpressionUUID -> "4fc7ea1f-6d45-42a4-b25b-7f58ad9949c6"],Cell[
+BoxData[RowBox[{"{",RowBox[
+{"6",",","5"}],"}"}],StandardForm],"Output",CellLabel -> "Out[56]= ",ExpressionUUID -> "86dcc697-de1b-455e-a36d-0db6e3a72d90"]},
+Open],ExpressionUUID -> "b3aae8a8-a08a-4c7e-af46-52461cca05e5"],Cell[
+"\<10. Loops by row reduction of [S | I] (Stanbury and Hoffman; Supplementary Note 3, Supplementary Fig 9A)\>",
+"Section",ExpressionUUID -> "ec8c4ee2-4df4-48f3-915f-6bff8ebfbd6d"],Cell[
+"\<Append the 22 x 22 identity matrix to S and row-reduce. Rows whose S-part (first 23 columns) is zero give, in the identity part, a loop: a combination of reactions with no net change of any species.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "2f8e1838-be9e-41fd-8006-c96a5c2e3b19"],Cell[
+CellGroupData[
+{Cell[
+"\<rr = RowReduce[Join[S, IdentityMatrix[22], 2]];
+loops = Select[rr, AllTrue[#[[1 ;; 23]], # == 0 &] &][[All, 24 ;;]];
+Dimensions[loops]\>",
+"Input",CellLabel -> "In[57]:= ",ExpressionUUID -> "a2ff0127-42df-427c-8c23-455cefc46aa8"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"5",",","22"}],"}"}],StandardForm],"Output",CellLabel -> "Out[59]= ",
+ExpressionUUID -> "5a0aec8f-e05b-40fc-9d71-1787cecf951c"]},Open],ExpressionUUID -> "69fc5f21-fd2e-4195-89dd-626b175a8dd5"],Cell[
+
+"\<Write each loop as a list of signed reactions. The five loops are the four PdP cycles L1-L4 and the scaffold loop L5.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "2b024ac4-748e-4751-87c0-6cc6b8b45ed7"],Cell[
+CellGroupData[
+{Cell[
+"\<loopText[v_] := StringRiffle[Table[If[v[[j]] > 0, \"+R\", \"-R\"] <> ToString[j], {j, Flatten[Position[v, x_ /; x != 0]]}], \" \"];
+loopsN = Map[If[First[Select[#, # != 0 &]] < 0, -#, #] &, loops];
+loopText /@ loopsN\>",
+"Input",CellLabel -> "In[60]:= ",ExpressionUUID -> "500b4c6d-d5bb-44ce-bd08-627c4ecfa75c"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"\"+R1 +R2 +R7 +R8\"",",","\"+R3 +R4 +R5 +R6\"",",","\"+R9 +R10 +R15 +R16\"",",","\"+R11 +R12 +R13 +R14\"",",","\"+R18 +R19 -R20 -R21\""}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[62]= ",ExpressionUUID -> "5be4d3b6-49d6-46b3-bc99-8e840587a2d5"]},
+Open],ExpressionUUID -> "3e22f6f5-8547-4bc8-bfa7-ecad369dc752"],Cell[
+"\<Check: S^T applied to each loop is zero (no species changes).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "67f664eb-ff1d-4b16-a78d-a1ad6c4bca17"],Cell[
+CellGroupData[
+{Cell[
+"\<Max[Abs[loopsN . S]]\>","Input",CellLabel -> "In[63]:= ",ExpressionUUID -> "605681d4-6da3-4e4d-bd74-64559a0ef779"],Cell[
+BoxData[
+"0",StandardForm],"Output",CellLabel -> "Out[63]= ",ExpressionUUID -> "0ae1884c-c674-4c4c-a89a-782a9f19d9db"]},
+Open],ExpressionUUID -> "a209f190-0173-406e-a26c-59f994c10207"],Cell[
+"\<Every reaction of the model is reversible, including the catalytic steps: all 22 backward constants are positive and finite, so every loop has a finite cycle ratio Gamma (Supplementary Note 3).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "6c57c32a-fd35-4f9c-ba5a-8198e03e4e02"],Cell[
+CellGroupData[
+{Cell[
+"\<{AllTrue[kbRef, # > 0 &], Min[kbRef]}\>","Input",CellLabel -> "In[64]:= ",
+ExpressionUUID -> "b99efa39-e01e-4d8d-b118-a05f7acc4a07"],Cell[
+BoxData[RowBox[{"{",RowBox[
+{"True",",","1.2059530144173232`*^-8"}],"}"}],StandardForm],"Output",CellLabel -> "Out[64]= ",
+ExpressionUUID -> "68cbcea9-7db3-4fba-a46c-15443d14e45e"]},Open],ExpressionUUID -> "e7e3f090-73ff-4230-bcff-1e8bf1f30558"],Cell[
+
+"\<11. ATP, ADP and Pi explicit; Gamma of every loop; deficiency (Supplementary Note 3; Supplementary Figs 9B, 11; Supplementary Table 8)\>",
+"Section",ExpressionUUID -> "ea81eb4d-d14d-4379-b0b0-e6a4f285b54c"],Cell[
+"\<Add three species, ATP (24), ADP (25) and Pi (26): ATP consumed and ADP released in the kinase catalytic steps R2, R4, R10, R12; Pi released in the phosphatase catalytic steps R6, R8, R14, R16. The rank rises to 18 and four loops remain; none hydrolyses net ATP.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "87db4c3b-a3bb-442e-986d-2301f40afb24"],Cell[
+CellGroupData[
+{Cell[
+"\<S2 = Map[Join[#, {0, 0, 0}] &, S];
+Do[S2[[j, 24]] = -1; S2[[j, 25]] = 1, {j, {2, 4, 10, 12}}];
+Do[S2[[j, 26]] = 1, {j, {6, 8, 14, 16}}];
+rrF = RowReduce[Join[S2, IdentityMatrix[22], 2]];
+loopsF = Select[rrF, AllTrue[#[[1 ;; 26]], # == 0 &] &][[All, 27 ;;]];
+loopsF = Map[If[First[Select[#, # != 0 &]] < 0, -#, #] &, loopsF];
+{MatrixRank[S2], loopText /@ loopsF}\>",
+"Input",CellLabel -> "In[65]:= ",ExpressionUUID -> "1bf4ff11-165a-41dc-bcd5-a992fad356e9"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"18",",",RowBox[{"{",RowBox[{"\"+R1 +R2 +R7 +R8 -R11 -R12 -R13 -R14\"",",","\"+R3 +R4 +R5 +R6 -R11 -R12 -R13 -R14\"",",","\"+R9 +R10 -R11 -R12 -R13 -R14 +R15 +R16\"",",","\"+R18 +R19 -R20 -R21\""}],"}"}]}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[71]= ",ExpressionUUID -> "a1e9390c-f670-4143-b842-4763d9f6dce2"]},
+Open],ExpressionUUID -> "f3d3ec46-21e8-4d26-a5ad-4e7d082ec8d1"],Cell[
+"\<Gamma of a loop with coefficients nu: lnGamma = Sum nu_j Log[kf_j/kb_j]. With the reference constants, the four PdP cycles carry lnGamma = 19.8 (one ATP per turn) and every ATP-free loop has lnGamma = 0, as thermodynamics requires (Wegscheider condition). That the ATP-free loops F1-F3 combine one PdP cycle forward with cycle 4 backward is why all four cycles must share one value of Gamma.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "8dce2031-0ece-4e90-ac57-0b471fae6678"],Cell[
+CellGroupData[
+{Cell[
+"\<lnK = Log[kfRef/kbRef];
+{Chop[loopsN . lnK, 10^-9], Chop[loopsF . lnK, 10^-9]}\>",
+"Input",CellLabel -> "In[72]:= ",ExpressionUUID -> "089a18a8-0919-4835-8aec-8e20077b1e8f"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{RowBox[{"{",RowBox[{"19.8`",",","19.8`",",","19.8`",",","19.800000000000004`",",","0"}],"}"}],",",RowBox[
+{"{",RowBox[{"0",",","0",",","0",",","0"}],"}"}]}],"}"}],StandardForm],"Output",CellLabel -> "Out[73]= ",
+ExpressionUUID -> "d68acbc0-3f55-4c90-ab0b-0aa91c18c189"]},Open],ExpressionUUID -> "40dbdfa9-93b8-467f-85d6-d230e3f1c4ab"],Cell[
+
+"\<Chemical reaction network theory: complexes (the distinct left- and right-hand sides), linkage classes (connected components of the reaction graph) and deficiency = complexes - linkage classes - rank = 5, equal to the number of loops; the number of circuit conditions is p - (n - l) = 0.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "3c565b43-9045-461e-9cea-27e10b502eca"],Cell[
+CellGroupData[
+{Cell[
+"\<cx = DeleteDuplicates[Flatten[Map[{Sort[#[[1]]], Sort[#[[2]]]} &, rx], 1]];
+g = Graph[Range[Length[cx]], Map[UndirectedEdge[Position[cx, Sort[#[[1]]]][[1, 1]], Position[cx, Sort[#[[2]]]][[1, 1]]] &, rx]];
+{nC, nL} = {Length[cx], Length[ConnectedComponents[g]]};
+{nC, nL, MatrixRank[S], nC - nL - MatrixRank[S], 22 - (nC - nL)}\>",
+"Input",CellLabel -> "In[74]:= ",ExpressionUUID -> "1d6e714e-1fa2-40b8-a581-cc6bcca63d9e"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"29",",","7",",","17",",","5",",","0"}],"}"}],StandardForm],"Output",
+CellLabel -> "Out[77]= ",ExpressionUUID -> "d816f41e-8265-427c-b744-b0456195c34d"]},
+Open],ExpressionUUID -> "d8889088-0034-46b2-b29c-72d2df3a6fd3"],Cell[
+"\<12. The split parameter u (Supplementary Note 2, Steps 9-14; Supplementary Table 6; Methods 4.2)\>",
+"Section",ExpressionUUID -> "f21c42a3-0fad-4952-b51f-e9426a3ce136"],Cell[
+"\<Step 9. With the ATP drive Gamma and the six given constants fixed, Eq (1) (= Eq S2) contains the two rebinding constants kbb and kbd only through their product rho = kbb kbd (Eq S3). Here it is solved symbolically for kbb: the solution depends on kbd, so thermodynamics fixes only the product.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "f1538d1d-5690-4470-a1c3-13dc604b710f"],Cell[
+CellGroupData[
+{Cell[
+"\<eqS2 = gam == kfa kfb kfc kfd/(kba kbb kbc kbd);
+Solve[eqS2, kbb]
+rhoS3 = kfa kfb kfc kfd/(kba kbc gam)\>",
+"Input",CellLabel -> "In[78]:= ",ExpressionUUID -> "6243b840-c023-427f-9714-617f86c30a26"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"{",RowBox[{"kbb","\[Rule]",FractionBox[RowBox[{"kfa"," ","kfb"," ","kfc"," ","kfd"}],
+RowBox[{"gam"," ","kba"," ","kbc"," ","kbd"}]]}],"}"}],"}"}],StandardForm],"Output",
+CellLabel -> "Out[79]= ",ExpressionUUID -> "9d5eade4-0bf3-4c43-a118-65ccc48e06cd"],Cell[
+BoxData[
+FractionBox[RowBox[{"kfa"," ","kfb"," ","kfc"," ","kfd"}],RowBox[{"gam"," ","kba"," ","kbc"}]],
+StandardForm],"Output",CellLabel -> "Out[80]= ",ExpressionUUID -> "1e762227-8652-4f07-9329-2cabed821240"]},
+Open],ExpressionUUID -> "100a1e85-b9d0-47c0-8817-eaeedf1fc40b"],Cell[
+"\<Step 10. Definition of u (Eq S4): kbb = Sqrt[rho] 10^u, kbd = Sqrt[rho] 10^-u. The inverse (Eq S5) recovers rho and u from any positive pair, and the ratio kbb/kbd = 10^(2u) depends on u alone (Eq S6). The last line checks the inverse numerically for random rho and u.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "34288c85-2bbc-41b6-86ae-9caa14013cdc"],Cell[
+CellGroupData[
+{Cell[
+"\<kbbU = Sqrt[rh] 10^uu; kbdU = Sqrt[rh] 10^-uu;
+Simplify[{kbbU kbdU, kbbU/kbdU}, rh > 0]
+With[{r0 = RandomReal[{10^-16, 10^-8}], u0 = RandomReal[{-3, 3}]}, {kbbU kbdU/r0, Log10[kbbU/kbdU]/2 - u0} /. {rh -> r0, uu -> u0}]\>",
+"Input",CellLabel -> "In[81]:= ",ExpressionUUID -> "7ad4a4c3-6b0a-4afb-881d-4ca0a5f595ef"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"rh",",",SuperscriptBox["100","uu"]}],"}"}],StandardForm],"Output",
+CellLabel -> "Out[82]= ",ExpressionUUID -> "4b423f0e-834a-4d1d-8825-2c49522cc5a7"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"1.`",",","2.220446049250313`*^-16"}],"}"}],StandardForm],"Output",
+CellLabel -> "Out[83]= ",ExpressionUUID -> "7d237de9-8bcd-4ef4-ac4d-8ca5c3d5f489"]},
+Open],ExpressionUUID -> "a0b54851-12ce-41b3-a0a7-67296aed3408"],Cell[
+"\<Step 11. Eq (1) holds exactly for every u (Eqs S7, S8): inserting Eq S4 and rho from Eq S3 gives back gam, with no u left.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "f355cf3b-cff9-48a8-97bc-c6c56697adc9"],Cell[
+CellGroupData[
+{Cell[
+"\<Simplify[kfa kfb kfc kfd/(kba kbc kbbU kbdU) /. rh -> rhoS3, {kfa > 0, kfb > 0, kfc > 0, kfd > 0, kba > 0, kbc > 0, gam > 0}]\>",
+"Input",CellLabel -> "In[84]:= ",ExpressionUUID -> "da260baa-396b-4e96-bf6a-61b951d8d026"],Cell[
+BoxData[
+"gam",StandardForm],"Output",CellLabel -> "Out[84]= ",ExpressionUUID -> "6ee01c81-5d4b-4ff8-a793-7c494d172545"]},
+Open],ExpressionUUID -> "a0f44726-d250-4c88-9736-7c6d4d68c1a0"],Cell[
+"\<Step 12. How u shares the drive between the two half-cycles (Eqs S9-S11). lnKkin = lnKkin0 - u Log[10] and lnKP = lnKP0 + u Log[10]; their sum is lnGamma for every u. Each unit of u moves RT Log[10] = 5.94 kJ/mol between the half-cycles; the +-0.3 of the local ensembles moves 1.78 kJ/mol.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "a322b0f8-eab0-4de8-a465-76b75ae3d4af"],Cell[
+CellGroupData[
+{Cell[
+"\<lnKkinU = Log[kfa kfb/(kba kbbU)]; lnKPU = Log[kfc kfd/(kbc kbdU)];
+Simplify[PowerExpand[{lnKkinU - (Log[kfa kfb/(kba Sqrt[rh])] - uu Log[10]), lnKPU - (Log[kfc kfd/(kbc Sqrt[rh])] + uu Log[10])}]]
+Simplify[PowerExpand[lnKkinU + lnKPU /. rh -> rhoS3]]
+Chop[{lnKkinU - (Log[kfa kfb/(kba Sqrt[rh])] - uu Log[10]), lnKPU - (Log[kfc kfd/(kbc Sqrt[rh])] + uu Log[10]), (lnKkinU + lnKPU /. rh -> rhoS3) - Log[gam]} /. Thread[{kfa, kfb, kfc, kfd, kba, kbc, gam, rh, uu} -> Join[RandomReal[{0.1, 10}, 8], {RandomReal[{-2, 2}]}]], 10^-9]
+{RT Log[10], 0.3 RT Log[10]}\>",
+"Input",CellLabel -> "In[85]:= ",ExpressionUUID -> "b3f3ca2e-ce04-4b9e-b4b0-9398ddfa0148"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"0",",","0"}],"}"}],StandardForm],"Output",CellLabel -> "Out[86]= ",
+ExpressionUUID -> "b1439e1a-fc92-4ed0-922b-5ceba9322544"],Cell[
+BoxData[RowBox[{"Log","[","gam","]"}],
+StandardForm],"Output",CellLabel -> "Out[87]= ",ExpressionUUID -> "0d49f377-0c00-46d0-a97d-5d62e3fbf2e5"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"0",",","0",",","0"}],"}"}],StandardForm],"Output",CellLabel -> "Out[88]= ",
+ExpressionUUID -> "ac626cef-4a98-4614-a79c-0443bdd15bdc"],Cell[
+BoxData[RowBox[{"{",RowBox[
+{"5.937746594595614`",",","1.7813239783786843`"}],"}"}],StandardForm],"Output",CellLabel -> "Out[89]= ",
+ExpressionUUID -> "3cc56881-431e-4d93-82ab-816163b75c01"]},Open],ExpressionUUID -> "f61c5e1f-cac0-4773-a835-b610ab01c0bb"],Cell[
+
+"\<Supplementary Table 6, all four cycles at the reference set (lnGamma = 19.8, u = -0.34): Sqrt[rho]; kbb/kbd = 10^(2u); lnKkin0 and lnKP0 (u = 0); lnKkin and lnKP (u = -0.34); the half-cycle shares RT lnK in kJ/mol (they add up to 51.06); the largest admissible |u| = Log10[0.1/Sqrt[rho]] (Eq S13, diffusion limit 0.1 1/(nM s)); the coefficients a, c, d, b of Eq S14; and the window of K/P inside which rebinding changes S(j+1)/S(j) by less than 1% (Eq S15), with its width in orders of magnitude (4.60 for every cycle). For cycle 1 the shares are 27.64 and 23.42 kJ/mol.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "20f61f05-c2b3-4359-9281-4fb32d69cd6d"],Cell[
+
+"\<uRow[{ia_, ib_, ic_, id_}] := Module[{rh0, kbb0, kbd0, l0k, l0p, aj, cj, dj, bj},
+  rh0 = kfRef[[ia]] kfRef[[ib]] kfRef[[ic]] kfRef[[id]]/(kbRef[[ia]] kbRef[[ic]] Exp[19.8]);
+  kbb0 = Sqrt[rh0] 10^-0.34; kbd0 = Sqrt[rh0] 10^0.34;
+  l0k = Log[kfRef[[ia]] kfRef[[ib]]/(kbRef[[ia]] Sqrt[rh0])]; l0p = Log[kfRef[[ic]] kfRef[[id]]/(kbRef[[ic]] Sqrt[rh0])];
+  aj = kfRef[[ia]] kfRef[[ib]]/(kbRef[[ia]] + kfRef[[ib]]); cj = kbRef[[ia]] kbb0/(kbRef[[ia]] + kfRef[[ib]]);
+  dj = kfRef[[ic]] kfRef[[id]]/(kbRef[[ic]] + kfRef[[id]]); bj = kbRef[[ic]] kbd0/(kbRef[[ic]] + kfRef[[id]]);
+  {ScientificForm[Sqrt[rh0], 4], NumberForm[kbb0/kbd0, 4], NumberForm[{l0k, l0p}, {5, 3}], NumberForm[{l0k + 0.34 Log[10], l0p - 0.34 Log[10]}, {5, 3}],
+   NumberForm[RT {l0k + 0.34 Log[10], l0p - 0.34 Log[10]}, {4, 2}], NumberForm[Log10[0.1/Sqrt[rh0]], {3, 2}],
+   ScientificForm[{aj, cj, dj, bj}, 3], ScientificForm[{100 bj/aj, dj/(100 cj)}, 2], NumberForm[Log10[(dj/(100 cj))/(100 bj/aj)], {3, 2}]}]\>",
+"Input",CellLabel -> "In[90]:= ",ExpressionUUID -> "d18e5103-b464-4700-b2c5-c31882e7575f"],Cell[
+CellGroupData[
+{Cell[
+"\<TableForm[Transpose[uRow /@ cycles], TableHeadings -> {{\"Sqrt[rho]\", \"kbb/kbd\", \"lnKkin0, lnKP0\", \"lnKkin, lnKP\", \"RT lnK (kJ/mol)\", \"max |u|\", \"a, c, d, b\", \"K/P window\", \"window width (decades)\"}, {\"cycle 1\", \"cycle 2\", \"cycle 3\", \"cycle 4\"}}]\>",
+"Input",CellLabel -> "In[91]:= ",ExpressionUUID -> "4c637af7-0929-40cb-8528-807bb7976274"],Cell[
+BoxData[
+TagBox[TagBox[GridBox[{{StyleBox["\[Null]",ShowStringCharacters -> False],TagBox[
+"\"cycle 1\"",HoldForm],TagBox["\"cycle 2\"",HoldForm],TagBox["\"cycle 3\"",HoldForm],TagBox[
+"\"cycle 4\"",HoldForm]},{TagBox["\"Sqrt[rho]\"",HoldForm],TagBox[InterpretationBox[
+StyleBox[RowBox[{"\"3.964\"","\[Times]",SuperscriptBox["10","\"-8\""]}],ShowStringCharacters -> False],
+3.963797257963599`*^-8,AutoDelete -> True],Function[ScientificForm[Slot[1],4]]],TagBox[
+InterpretationBox[StyleBox[RowBox[{"\"1.148\"","\[Times]",SuperscriptBox["10","\"-5\""]}],
+ShowStringCharacters -> False],1.1481790703694347`*^-5,AutoDelete -> True],Function[
+ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[RowBox[{"\"2.638\"","\[Times]",SuperscriptBox[
+"10","\"-8\""]}],ShowStringCharacters -> False],2.638337725228501`*^-8,AutoDelete -> True],
+Function[ScientificForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[RowBox[{"\"1.567\"","\[Times]",SuperscriptBox[
+"10","\"-5\""]}],ShowStringCharacters -> False],1.5667039450554532`*^-5,AutoDelete -> True],
+Function[ScientificForm[Slot[1],4]]]},{TagBox["\"kbb/kbd\"",HoldForm],TagBox[InterpretationBox[
+StyleBox["\"0.2089\"",ShowStringCharacters -> False],0.20892961308540395`,AutoDelete -> True],
+Function[NumberForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox["\"0.2089\"",ShowStringCharacters -> False],
+0.20892961308540398`,AutoDelete -> True],Function[NumberForm[Slot[1],4]]],TagBox[
+InterpretationBox[StyleBox["\"0.2089\"",ShowStringCharacters -> False],0.20892961308540392`,
+AutoDelete -> True],Function[NumberForm[Slot[1],4]]],TagBox[InterpretationBox[StyleBox[
+"\"0.2089\"",ShowStringCharacters -> False],0.20892961308540395`,AutoDelete -> True],
+Function[NumberForm[Slot[1],4]]]},{TagBox["\"lnKkin0, lnKP0\"",HoldForm],TagBox[RowBox[
+{"{",RowBox[{InterpretationBox[StyleBox["\"9.934\"",ShowStringCharacters -> False],
+9.93394057131713`,AutoDelete -> True],",",InterpretationBox[StyleBox["\"9.866\"",
+ShowStringCharacters -> False],9.86605942868287`,AutoDelete -> True]}],"}"}],Function[
+NumberForm[Slot[1],{5,3}]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[StyleBox[
+"\"15.347\"",ShowStringCharacters -> False],15.34739582183941`,AutoDelete -> True],",",InterpretationBox[
+StyleBox["\"4.453\"",ShowStringCharacters -> False],4.452604178160592`,AutoDelete -> True]}],"}"}],
+Function[NumberForm[Slot[1],{5,3}]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[
+StyleBox["\"9.801\"",ShowStringCharacters -> False],9.800839050929802`,AutoDelete -> True],",",InterpretationBox[
+StyleBox["\"9.999\"",ShowStringCharacters -> False],9.999160949070198`,AutoDelete -> True]}],"}"}],
+Function[NumberForm[Slot[1],{5,3}]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[
+StyleBox["\"9.940\"",ShowStringCharacters -> False],9.940021353836768`,AutoDelete -> True],",",InterpretationBox[
+StyleBox["\"9.860\"",ShowStringCharacters -> False],9.859978646163233`,AutoDelete -> True]}],"}"}],
+Function[NumberForm[Slot[1],{5,3}]]]},{TagBox["\"lnKkin, lnKP\"",HoldForm],TagBox[
+RowBox[{"{",RowBox[{InterpretationBox[StyleBox["\"10.717\"",ShowStringCharacters -> False],
+10.716819502935106`,AutoDelete -> True],",",InterpretationBox[StyleBox["\"9.083\"",
+ShowStringCharacters -> False],9.083180497064895`,AutoDelete -> True]}],"}"}],Function[
+NumberForm[Slot[1],{5,3}]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[StyleBox[
+"\"16.130\"",ShowStringCharacters -> False],16.130274753457385`,AutoDelete -> True],",",InterpretationBox[
+StyleBox["\"3.670\"",ShowStringCharacters -> False],3.6697252465426162`,AutoDelete -> True]}],"}"}],
+Function[NumberForm[Slot[1],{5,3}]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[
+StyleBox["\"10.584\"",ShowStringCharacters -> False],10.583717982547778`,AutoDelete -> True],",",InterpretationBox[
+StyleBox["\"9.216\"",ShowStringCharacters -> False],9.216282017452222`,AutoDelete -> True]}],"}"}],
+Function[NumberForm[Slot[1],{5,3}]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[
+StyleBox["\"10.723\"",ShowStringCharacters -> False],10.722900285454743`,AutoDelete -> True],",",InterpretationBox[
+StyleBox["\"9.077\"",ShowStringCharacters -> False],9.077099714545257`,AutoDelete -> True]}],"}"}],
+Function[NumberForm[Slot[1],{5,3}]]]},{TagBox["\"RT lnK (kJ/mol)\"",HoldForm],TagBox[
+RowBox[{"{",RowBox[{InterpretationBox[StyleBox["\"27.64\"",ShowStringCharacters -> False],
+27.635790182983406`,AutoDelete -> True],",",InterpretationBox[StyleBox["\"23.42\"",
+ShowStringCharacters -> False],23.42307532027605`,AutoDelete -> True]}],"}"}],Function[
+NumberForm[Slot[1],{4,2}]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[StyleBox[
+"\"41.60\"",ShowStringCharacters -> False],41.595632786232436`,AutoDelete -> True],",",InterpretationBox[
+StyleBox["\"9.46\"",ShowStringCharacters -> False],9.463232717027026`,AutoDelete -> True]}],"}"}],
+Function[NumberForm[Slot[1],{4,2}]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[
+StyleBox["\"27.29\"",ShowStringCharacters -> False],27.292557221986645`,AutoDelete -> True],",",InterpretationBox[
+StyleBox["\"23.77\"",ShowStringCharacters -> False],23.766308281272817`,AutoDelete -> True]}],"}"}],
+Function[NumberForm[Slot[1],{4,2}]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[
+StyleBox["\"27.65\"",ShowStringCharacters -> False],27.65147088282304`,AutoDelete -> True],",",InterpretationBox[
+StyleBox["\"23.41\"",ShowStringCharacters -> False],23.40739462043642`,AutoDelete -> True]}],"}"}],
+Function[NumberForm[Slot[1],{4,2}]]]},{TagBox["\"max |u|\"",HoldForm],TagBox[InterpretationBox[
+StyleBox["\"6.40\"",ShowStringCharacters -> False],6.401888567102863`,AutoDelete -> True],
+Function[NumberForm[Slot[1],{3,2}]]],TagBox[InterpretationBox[StyleBox["\"3.94\"",
+ShowStringCharacters -> False],3.93999037395151`,AutoDelete -> True],Function[NumberForm[
+Slot[1],{3,2}]]],TagBox[InterpretationBox[StyleBox["\"6.58\"",ShowStringCharacters -> False],
+6.578669612574636`,AutoDelete -> True],Function[NumberForm[Slot[1],{3,2}]]],TagBox[
+InterpretationBox[StyleBox["\"3.81\"",ShowStringCharacters -> False],3.805013062992925`,
+AutoDelete -> True],Function[NumberForm[Slot[1],{3,2}]]]},{TagBox["\"a, c, d, b\"",
+HoldForm],TagBox[RowBox[{"{",RowBox[{InterpretationBox[StyleBox[RowBox[{"\"7.96\"","\[Times]",SuperscriptBox[
+"10","\"-4\""]}],ShowStringCharacters -> False],7.962798937112489`*^-4,AutoDelete -> True],",",InterpretationBox[
+StyleBox[RowBox[{"\"1.77\"","\[Times]",SuperscriptBox["10","\"-8\""]}],ShowStringCharacters -> False],
+1.7652660796344428`*^-8,AutoDelete -> True],",",InterpretationBox[StyleBox[RowBox[
+{"\"7.45\"","\[Times]",SuperscriptBox["10","\"-4\""]}],ShowStringCharacters -> False],
+7.446808510638299`*^-4,AutoDelete -> True],",",InterpretationBox[StyleBox[RowBox[
+{"\"8.46\"","\[Times]",SuperscriptBox["10","\"-8\""]}],ShowStringCharacters -> False],
+8.45658499884588`*^-8,AutoDelete -> True]}],"}"}],Function[ScientificForm[Slot[1],
+3]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[StyleBox[RowBox[{"\"9.98\"","\[Times]",SuperscriptBox[
+"10","\"-2\""]}],ShowStringCharacters -> False],0.09981211836542979`,AutoDelete -> True],",",InterpretationBox[
+StyleBox[RowBox[{"\"9.86\"","\[Times]",SuperscriptBox["10","\"-9\""]}],ShowStringCharacters -> False],
+9.86038689767694`*^-9,AutoDelete -> True],",",InterpretationBox[StyleBox[RowBox[{"\"9.45\"","\[Times]",SuperscriptBox[
+"10","\"-4\""]}],ShowStringCharacters -> False],9.452054794520547`*^-4,AutoDelete -> True],",",InterpretationBox[
+StyleBox[RowBox[{"\"2.41\"","\[Times]",SuperscriptBox["10","\"-5\""]}],ShowStringCharacters -> False],
+2.408711610004692`*^-5,AutoDelete -> True]}],"}"}],Function[ScientificForm[Slot[1],
+3]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[StyleBox[RowBox[{"\"4.74\"","\[Times]",SuperscriptBox[
+"10","\"-4\""]}],ShowStringCharacters -> False],4.739336492890996`*^-4,AutoDelete -> True],",",InterpretationBox[
+StyleBox[RowBox[{"\"1.2\"","\[Times]",SuperscriptBox["10","\"-8\""]}],ShowStringCharacters -> False],
+1.200237597287383`*^-8,AutoDelete -> True],",",InterpretationBox[StyleBox[RowBox[
+{"\"5.54\"","\[Times]",SuperscriptBox["10","\"-4\""]}],ShowStringCharacters -> False],
+5.538461538461539`*^-4,AutoDelete -> True],",",InterpretationBox[StyleBox[RowBox[
+{"\"5.51\"","\[Times]",SuperscriptBox["10","\"-8\""]}],ShowStringCharacters -> False],
+5.505651532752969`*^-8,AutoDelete -> True]}],"}"}],Function[ScientificForm[Slot[1],
+3]]],TagBox[RowBox[{"{",RowBox[{InterpretationBox[StyleBox[RowBox[{"\"1.25\"","\[Times]",SuperscriptBox[
+"10","\"-2\""]}],ShowStringCharacters -> False],0.0125`,AutoDelete -> True],",",InterpretationBox[
+StyleBox[RowBox[{"\"2.75\"","\[Times]",SuperscriptBox["10","\"-7\""]}],ShowStringCharacters -> False],
+2.754314884261076`*^-7,AutoDelete -> True],",",InterpretationBox[StyleBox[RowBox[
+{"\"1.88\"","\[Times]",SuperscriptBox["10","\"-2\""]}],ShowStringCharacters -> False],
+0.01875`,AutoDelete -> True],",",InterpretationBox[StyleBox[RowBox[{"\"2.14\"","\[Times]",SuperscriptBox[
+"10","\"-6\""]}],ShowStringCharacters -> False],2.1422342294266805`*^-6,AutoDelete -> True]}],"}"}],
+Function[ScientificForm[Slot[1],3]]]},{TagBox["\"K/P window\"",HoldForm],TagBox[RowBox[
+{"{",RowBox[{InterpretationBox[StyleBox[RowBox[{"\"1.1\"","\[Times]",SuperscriptBox[
+"10","\"-2\""]}],ShowStringCharacters -> False],0.010620116199885427`,AutoDelete -> True],",",InterpretationBox[
+StyleBox[RowBox[{"\"4.2\"","\[Times]",SuperscriptBox["10","\"2\""]}],ShowStringCharacters -> False],
+421.851900772965`,AutoDelete -> True]}],"}"}],Function[ScientificForm[Slot[1],2]]],TagBox[
+RowBox[{"{",RowBox[{InterpretationBox[StyleBox[RowBox[{"\"2.4\"","\[Times]",SuperscriptBox[
+"10","\"-2\""]}],ShowStringCharacters -> False],0.0241324565538823`,AutoDelete -> True],",",InterpretationBox[
+StyleBox[RowBox[{"\"9.6\"","\[Times]",SuperscriptBox["10","\"2\""]}],ShowStringCharacters -> False],
+958.5886327388843`,AutoDelete -> True]}],"}"}],Function[ScientificForm[Slot[1],2]]],TagBox[
+RowBox[{"{",RowBox[{InterpretationBox[StyleBox[RowBox[{"\"1.2\"","\[Times]",SuperscriptBox[
+"10","\"-2\""]}],ShowStringCharacters -> False],0.011616924734108762`,AutoDelete -> True],",",InterpretationBox[
+StyleBox[RowBox[{"\"4.6\"","\[Times]",SuperscriptBox["10","\"2\""]}],ShowStringCharacters -> False],
+461.4470960565501`,AutoDelete -> True]}],"}"}],Function[ScientificForm[Slot[1],2]]],TagBox[
+RowBox[{"{",RowBox[{InterpretationBox[StyleBox[RowBox[{"\"1.7\"","\[Times]",SuperscriptBox[
+"10","\"-2\""]}],ShowStringCharacters -> False],0.017137873835413445`,AutoDelete -> True],",",InterpretationBox[
+StyleBox[RowBox[{"\"6.8\"","\[Times]",SuperscriptBox["10","\"2\""]}],ShowStringCharacters -> False],
+680.7500517512623`,AutoDelete -> True]}],"}"}],Function[ScientificForm[Slot[1],2]]]},{TagBox[
+"\"window width (decades)\"",HoldForm],TagBox[InterpretationBox[StyleBox["\"4.60\"",
+ShowStringCharacters -> False],4.599030741684387`,AutoDelete -> True],Function[NumberForm[
+Slot[1],{3,2}]]],TagBox[InterpretationBox[StyleBox["\"4.60\"",ShowStringCharacters -> False],
+4.599030741684387`,AutoDelete -> True],Function[NumberForm[Slot[1],{3,2}]]],TagBox[
+InterpretationBox[StyleBox["\"4.60\"",ShowStringCharacters -> False],4.599030741684387`,
+AutoDelete -> True],Function[NumberForm[Slot[1],{3,2}]]],TagBox[InterpretationBox[
+StyleBox["\"4.60\"",ShowStringCharacters -> False],4.599030741684387`,AutoDelete -> True],
+Function[NumberForm[Slot[1],{3,2}]]]}},RowSpacings -> 1,ColumnSpacings -> 3,RowAlignments -> Baseline,
+ColumnAlignments -> Left,GridBoxDividers -> {"Columns" -> {False,True,{False},False},"Rows" -> {False,True,{False},False}},
+ColumnAlignments -> Left],{OutputFormsDump`HeadedRows,OutputFormsDump`HeadedColumns}],
+Function[BoxForm`e$,TableForm[BoxForm`e$,TableHeadings -> {{"Sqrt[rho]","kbb/kbd","lnKkin0, lnKP0","lnKkin, lnKP","RT lnK (kJ/mol)","max |u|","a, c, d, b","K/P window","window width (decades)"},{"cycle 1","cycle 2","cycle 3","cycle 4"}}]]],
+StandardForm],"Output",CellLabel -> "Out[91]//TableForm= ",ExpressionUUID -> "74502d0f-52ed-4434-a603-e6a63a098a86"]},
+Open],ExpressionUUID -> "764da67a-1989-4f3b-ba22-e7377be8ce31"],Cell[
+"\<Step 13. What u means chemically (Eq S12): with the nucleotides explicit, kbb = k'bb [ADP] and kbd = k'bd [Pi], so u = (1/2) Log10[k'bb/k'bd] + (1/2) Log10[ADP/Pi]. With free ADP = 0.1 mM and Pi = 10 mM the second term is -1, and u = -0.34 corresponds to k'bb/k'bd = 10^1.32 = 21.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "4ce79cfb-5d6b-4d8c-be11-7007792f37ca"],Cell[
+CellGroupData[
+{Cell[
+"\<Simplify[PowerExpand[Log10[(kpbb adp)/(kpbd pi)]/2 - (Log10[kpbb/kpbd]/2 + Log10[adp/pi]/2)]]
+Chop[Log10[(kpbb adp)/(kpbd pi)]/2 - (Log10[kpbb/kpbd]/2 + Log10[adp/pi]/2) /. Thread[{kpbb, kpbd, adp, pi} -> RandomReal[{0.1, 10}, 4]], 10^-12]
+{Log10[0.1/10]/2, 10^(2 (-0.34 + 1))}\>",
+"Input",CellLabel -> "In[92]:= ",ExpressionUUID -> "f5ce1b10-4b66-4db7-a872-430f02f0e2e5"],Cell[
+BoxData[
+"0",StandardForm],"Output",CellLabel -> "Out[92]= ",ExpressionUUID -> "8093a640-4619-4414-8b05-070b79bb7a94"],Cell[
+BoxData[
+"0",StandardForm],"Output",CellLabel -> "Out[93]= ",ExpressionUUID -> "460f6e3c-3927-485b-a255-b79fd7457c2e"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{RowBox[{"-","1.`"}],",","20.892961308540386`"}],"}"}],StandardForm],
+"Output",CellLabel -> "Out[94]= ",ExpressionUUID -> "b5eda0de-17b3-4c0c-9762-9bd4d3ec7d61"]},
+Open],ExpressionUUID -> "f25fcc80-dfb9-4cbb-873a-6f68502f7b06"],Cell[
+"\<Step 14, when u matters. The width of the K/P window is proportional to 1/rho and therefore to Gamma. Lowering lnGamma from 19.8 narrows it by (19.8 - lnGamma)/Log[10] decades: about 0.7 decades at lnGamma = 10.8 (where tristability appears) and closed (negative width) at lnGamma = 4.9 (where bistability appears).\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "8bffc070-b3cf-419f-a1ed-e3c1c1056ae3"],Cell[
+CellGroupData[
+{Cell[
+"\<{4.60 - (19.8 - 10.8)/Log[10], 4.60 - (19.8 - 4.9)/Log[10], Exp[19.8 - 10.8], Exp[19.8 - 4.9]}\>",
+"Input",CellLabel -> "In[95]:= ",ExpressionUUID -> "2e98bc2d-44b1-47d8-a157-a6c043326466"],Cell[
+BoxData[
+RowBox[{"{",RowBox[{"0.6913496628707336`",",",RowBox[{"-","1.870987780358452`"}],",","8103.083927575384`",",","2.9579292388223624`*^6"}],"}"}],
+StandardForm],"Output",CellLabel -> "Out[95]= ",ExpressionUUID -> "024e823b-ce2a-40b7-b13b-74201c3f7ff9"]},
+Open],ExpressionUUID -> "69e445fc-c77d-4eb2-a7a7-d9e7dbf2c339"],Cell[
+"\<End of the notebook. Every number printed above is quoted in the manuscript or its Supplementary Information at the place named in the section title.\>",
+"Text",FontColor -> RGBColor[0,0,1],ExpressionUUID -> "095e7095-b1e5-47a4-80a3-ef3d8e9fcbee"]},
+StyleDefinitions -> "Default.nb",WindowSize -> {1100,800},FrontEndVersion -> "15. for Wolfram Cloud 1.77.1 (August 27, 2026)"]

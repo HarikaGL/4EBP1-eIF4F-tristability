@@ -58,6 +58,13 @@ text(ax, 115.204, 2.55, {'SN_3', '115'}, 'Units', 'data', 'FontSize', 9.0, 'Font
 annotation(fig, 'arrow', [0.5283 0.5283], [0.1516 0.2258], 'Color', [0.106 0.498 0.231], 'LineWidth', 3.0, 'HeadWidth', 8, 'HeadLength', 8);
 annotation(fig, 'arrow', [0.6991 0.6991], [0.2287 0.3030], 'Color', [0.753 0.224 0.169], 'LineWidth', 3.0, 'HeadWidth', 8, 'HeadLength', 8);
 annotation(fig, 'arrow', [0.3104 0.3104], [0.3000 0.1486], 'Color', [0.122 0.306 0.612], 'LineWidth', 3.0, 'HeadWidth', 8, 'HeadLength', 8);
+% transition labels (as in the published Fig 3B)
+text(ax, 83.0, 0.62, 'Partial activation', 'Units', 'data', 'FontSize', 10.0, 'FontWeight', 'bold', 'Color', [0.106 0.498 0.231], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'bottom', 'Interpreter', 'none');
+text(ax, 83.0, 0.60, '(hypophosphorylation)', 'Units', 'data', 'FontSize', 8.0, 'FontWeight', 'bold', 'Color', [0.106 0.498 0.231], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'top', 'Interpreter', 'none');
+text(ax, 113.0, 1.52, 'Full activation', 'Units', 'data', 'FontSize', 10.0, 'FontWeight', 'bold', 'Color', [0.753 0.224 0.169], 'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom', 'Interpreter', 'none');
+text(ax, 113.0, 1.50, '(hyperphosphorylation)', 'Units', 'data', 'FontSize', 8.0, 'FontWeight', 'bold', 'Color', [0.753 0.224 0.169], 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', 'Interpreter', 'none');
+text(ax, 39.0, 0.62, 'Return to repression', 'Units', 'data', 'FontSize', 10.0, 'FontWeight', 'bold', 'Color', [0.122 0.306 0.612], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'bottom', 'Interpreter', 'none');
+text(ax, 39.0, 0.60, '(dephosphorylation)', 'Units', 'data', 'FontSize', 8.0, 'FontWeight', 'bold', 'Color', [0.122 0.306 0.612], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'top', 'Interpreter', 'none');
 text(ax, -0.12, 1.03, '(B)', 'Units', 'normalized', 'FontSize', 17.0, 'FontWeight', 'bold', 'Color', [0.000 0.000 0.000], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'bottom', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
 xlabel(ax, 'kin_T (nM)', 'FontSize', 12.0); ylabel(ax, 'stable state', 'FontSize', 12.0);
 xlim(ax, [0 155.526]); ylim(ax, [-0.5 3]);

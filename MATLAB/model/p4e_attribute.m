@@ -7,8 +7,8 @@ function [A, C] = p4e_attribute(P)
 %       0 saddle-node points  monostable (1);  2  bistable (3);  4  tristable (5);  6  seven steady states.
 %   Step 2, tristable curves: the loops occupy the kinase ranges SN2..SN1 and SN4..SN3.
 %       ranges overlap      -> tristable, coexisting (three stable states at one kin_T)
-%       ranges do not       -> tristable, separate: 'staircase' if e4F rises at the first switch,
-%                              'mushroom' (mushroom-like) if it falls.
+%       ranges do not       -> tristable, separate: 'SS' (S-S: two S-shaped loops) if e4F rises at the first switch,
+%                              'ZS' (Z-S: a reversed, Z-shaped loop, then an S-shaped one) if it falls.
 %   Step 3, bistable curves: with s = e4F at the switch-on point / maximal e4F (start) and
 %       e = e4F reached on switching on / maximal e4F (end), and the two levels of the reference tristable curve
 %       L1 = 0.0469 (e4F at SN2 / max) and L2 = 0.7266 (e4F at SN3 / max):
@@ -18,7 +18,7 @@ function [A, C] = p4e_attribute(P)
 %
 %   Output. A.name: the class in words. For the other scripts the internal codes are kept:
 %     A.cls = 'mono' | 'bi' | 'tri' | 'other' | 'fail', where 'tri' = tristable, coexisting;
-%     A.cls = 'bi' with A.sub = 'separate' = tristable, separate (A.shape = 'staircase' | 'mushroom');
+%     A.cls = 'bi' with A.sub = 'separate' = tristable, separate (A.shape = 'SS' | 'ZS');
 %     A.cls = 'bi' with A.sub = 'M1' | 'M2' | 'general' = bistable with an M1, an M2 or an other switch.
 %   A.SN_K, A.SN_F: kin_T and e4F at the saddle-node points, numbered along the curve. A.Fmax: maximal e4F.
 %   A.up(j): e4F reached on switching on at loop j. A.start, A.stop: s and e of the first loop. A.loops: one row per
@@ -48,8 +48,8 @@ elseif n == 4
     if r1(1) < r2(2) && r2(1) < r1(2), A.cls = 'tri'; A.sub = 'coexisting'; A.name = 'tristable, coexisting';
     else
         A.cls = 'bi'; A.sub = 'separate';
-        if A.up(1) >= A.SN_F(1), A.shape = 'staircase'; A.name = 'tristable, separate: staircase';
-        else, A.shape = 'mushroom'; A.name = 'tristable, separate: mushroom-like'; end
+        if A.up(1) >= A.SN_F(1), A.shape = 'SS'; A.name = ['tristable, separate: S' char(8211) 'S'];
+        else, A.shape = 'ZS'; A.name = ['tristable, separate: Z' char(8211) 'S']; end
     end
     A.loops(1, :) = {'first', r1(1), r1(2), A.SN_F(1), A.SN_F(2)}; A.loops(2, :) = {'second', r2(1), r2(2), A.SN_F(3), A.SN_F(4)};
 else

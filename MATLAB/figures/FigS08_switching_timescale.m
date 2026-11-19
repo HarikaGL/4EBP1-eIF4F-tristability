@@ -11,17 +11,17 @@ fig = figure('Color', 'w', 'Units', 'inches', 'Position', [0.5 0.5 11 4.4], 'Pap
              'PaperSize', [11 4.4], 'PaperPosition', [0 0 11 4.4]);
 % ---------------- A: reference set, cycles 1 and 3 faster
 ax = axes(fig, 'Position', [0.07 0.15 0.38 0.75]); hold(ax, 'on'); box(ax, 'on');
-h1 = plot(ax, OUT.A.lam, OUT.A.on, '-o', 'Color', [0.000 0.447 0.741], 'LineWidth', 1.5, 'MarkerSize', 6);
-h2 = plot(ax, OUT.A.lam, OUT.A.off, '-s', 'Color', [0.850 0.325 0.098], 'LineWidth', 1.5, 'MarkerSize', 6);
+h1 = plot(ax, OUT.A.lam, OUT.A.on, '-o', 'Color', [0.122 0.306 0.612], 'LineWidth', 2.5, 'MarkerSize', 6, 'MarkerFaceColor', 'w');
+h2 = plot(ax, OUT.A.lam, OUT.A.off, '-s', 'Color', [0.753 0.224 0.169], 'LineWidth', 2.5, 'MarkerSize', 6, 'MarkerFaceColor', 'w');
 h3 = plot(ax, [0.8 150], [30 30], 'k:');
-set(ax, 'XScale', 'log', 'YScale', 'log', 'FontSize', 10); xlim(ax, [0.8 150]); ylim(ax, [2 500]);
-xlabel(ax, '\lambda (turnover of cycles 1 and 3, capped at 38.6 and 21.7)'); ylabel(ax, 'time (min)');
+set(ax, 'XScale', 'log', 'YScale', 'log', 'FontSize', 11, 'FontWeight', 'bold', 'LineWidth', 3, 'TickDir', 'in', 'Layer', 'top'); xlim(ax, [0.8 150]); ylim(ax, [2 500]);
+xlabel(ax, '\lambda (turnover of cycles 1 and 3)', 'FontWeight', 'bold'); ylabel(ax, 'time (min)', 'FontWeight', 'bold');
 legend(ax, [h1 h2 h3], {'switch on (to 2 SN_{hi})', 'switch off (to SN_{lo}/2)', '30 min'}, 'Location', 'northeast');
-title(ax, 'A  reference set, K_m and \Gamma kept');
+text(ax, -0.15, 1.04, '(A)', 'Units', 'normalized', 'FontSize', 17, 'FontWeight', 'bold', 'VerticalAlignment', 'bottom');
 % ---------------- B: every tristable set of the ensembles, and the search
 ax = axes(fig, 'Position', [0.56 0.15 0.40 0.75]); hold(ax, 'on'); box(ax, 'on');
 nm = {'fold2', 'fold3', 'fold10', 'exp'}; lab = {'\leq2-fold', '\leq3-fold', '\leq10-fold', 'experimental'};
-col = [0.000 0.447 0.741; 0.850 0.325 0.098; 0.929 0.694 0.125; 0.494 0.184 0.556]; h = []; lg = {};
+col = [0.122 0.306 0.612; 0.910 0.639 0.239; 0.180 0.620 0.357; 0.482 0.176 0.557]; h = []; lg = {};
 for e = 1:numel(nm)
     if ~isfield(OUT.B, nm{e}), continue, end
     b = OUT.B.(nm{e}); ms = 4; if strcmp(nm{e}, 'exp'), ms = 14; end
@@ -29,12 +29,12 @@ for e = 1:numel(nm)
     lg{end+1} = sprintf('%s (%d)', lab{e}, sum(~isnan(b.on) & ~isnan(b.off))); %#ok<AGROW>
 end
 if isfield(OUT, 'C')
-    h(end+1) = plot(ax, OUT.C.on, OUT.C.off, 'kp', 'MarkerFaceColor', 'y', 'MarkerSize', 9); lg{end+1} = 'search';
+    h(end+1) = plot(ax, OUT.C.on, OUT.C.off, 'kp', 'MarkerFaceColor', [0.957 0.816 0.247], 'MarkerSize', 11); lg{end+1} = 'search';
 end
-set(ax, 'XScale', 'log', 'YScale', 'log', 'FontSize', 10); xlim(ax, [0.1 1e4]); ylim(ax, [0.01 1e4]);
+set(ax, 'XScale', 'log', 'YScale', 'log', 'FontSize', 11, 'FontWeight', 'bold', 'LineWidth', 3, 'TickDir', 'in', 'Layer', 'top'); xlim(ax, [0.1 1e4]); ylim(ax, [0.01 1e4]);
 plot(ax, [30 30], [0.01 1e4], 'k:'); plot(ax, [0.1 1e4], [30 30], 'k:');
-xlabel(ax, 'switch on (min)'); ylabel(ax, 'switch off (min)'); legend(ax, h, lg, 'Location', 'northwest');
-title(ax, 'B  tristable sets of the ensembles');
+xlabel(ax, 'switch on (min)', 'FontWeight', 'bold'); ylabel(ax, 'switch off (min)', 'FontWeight', 'bold'); legend(ax, h, lg, 'Location', 'northwest');
+text(ax, -0.15, 1.04, '(B)', 'Units', 'normalized', 'FontSize', 17, 'FontWeight', 'bold', 'VerticalAlignment', 'bottom');
 print(fig, fullfile(outdir, 'FigS08_switching_timescale.png'), '-dpng', '-r300');
 print(fig, fullfile(outdir, 'FigS08_switching_timescale.pdf'), '-dpdf', '-r300');
 end

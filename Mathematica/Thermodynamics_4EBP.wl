@@ -8,10 +8,10 @@
 (*Companion to: Harika GL, Sriram K. Staged 4E-BP1 phosphorylation creates two switches in series that give eIF4F memory (npj Systems Biology and Applications version). Each section names the equation, section, note or table of the manuscript that it derives or computes. Run the cells one by one, from the top (Shift+Enter), or all at once (Evaluation > Evaluate Notebook). Text in blue explains the cell below it. Units: concentrations in nM, first-order constants in 1/s, second-order constants in 1/(nM s).*)
 
 (* ::Text:: *)
-(*Map to the manuscript. Sections 1-4: Supplementary Note 2, Steps 1-6; Methods 4.2, Steps 1-4; Results 2.2, Eq (1). Section 5: Supplementary Note 2, Steps 7-8; Methods 4.2, Step 5. Section 6: Supplementary Table 6. Section 7: Methods 4.2, Step 6; Eq (2); Supplementary Table 7. Section 8: Results 2.6 (driving strength). Sections 9-11: Supplementary Note 3; Supplementary Figs 9-11; Supplementary Table 8.*)
+(*Map to the manuscript. Sections 1-4: Supplementary Note 2, Steps 1-6; Methods 4.2, Steps 1-4; Results 2.2, Eq (1). Section 5: Supplementary Note 2, Steps 7-8; Methods 4.2, Step 5. Section 6: Supplementary Table 5. Section 7: Methods 4.2, Step 6; Eq (2); Supplementary Table 7. Section 8: Results 2.6 (driving strength). Sections 9-11: Supplementary Note 3; Supplementary Figs 9-11; Supplementary Table 8. Section 12: the split parameter u, Supplementary Note 2, Steps 9-14; Supplementary Table 6; Methods 4.2.*)
 
 (* ::Section:: *)
-(*0. Reference parameter set (Supplementary Table 1; MATLAB model/p4e_ref.m)*)
+(*0. Reference parameter set (Table 3, Methods 4.1; MATLAB model/p4e_ref.m)*)
 
 (* ::Text:: *)
 (*Clear any earlier definitions so that the notebook can be rerun from the top.*)
@@ -141,7 +141,7 @@ lnGammaExample = dGc/RT
 (*5. Cycle 1 with numbers: check and rebinding constants (Supplementary Note 2, Steps 7-8; Methods 4.2, Step 5)*)
 
 (* ::Text:: *)
-(*Reference constants of cycle 1 (Supplementary Table 1).*)
+(*Reference constants of cycle 1 (Table 3).*)
 
 num1 = {kf1 -> kfRef[[1]], kb1 -> kbRef[[1]], kf2 -> kfRef[[2]], kb2 -> kbRef[[2]], kf7 -> kfRef[[7]], kb7 -> kbRef[[7]], kf8 -> kfRef[[8]], kb8 -> kbRef[[8]]}
 
@@ -169,7 +169,7 @@ u = -0.34;
 
 
 (* ::Section:: *)
-(*6. All four PdP cycles (Supplementary Table 6)*)
+(*6. All four PdP cycles (Supplementary Table 5)*)
 
 (* ::Text:: *)
 (*The four cycles, each listed as {a, b, c, d} = {kinase binding, kinase catalysis, phosphatase binding, phosphatase catalysis}.*)
@@ -194,7 +194,7 @@ TableForm[row /@ cycles, TableHeadings -> {None, {"cycle", "kfa", "kba", "kfb", 
 
 
 (* ::Text:: *)
-(*Check against the constants used in the simulations (Supplementary Table 1): the ratio computed/used is 1 for all eight rebinding constants.*)
+(*Check against the constants used in the simulations (Table 3): the ratio computed/used is 1 for all eight rebinding constants.*)
 
 Table[With[{rh = kfRef[[c[[1]]]] kfRef[[c[[2]]]] kfRef[[c[[3]]]] kfRef[[c[[4]]]]/(kbRef[[c[[1]]]] kbRef[[c[[3]]]] Exp[19.8])},
   {Sqrt[rh] 10^-0.34/kbRef[[c[[2]]]], Sqrt[rh] 10^0.34/kbRef[[c[[4]]]]}], {c, cycles}]
@@ -313,6 +313,72 @@ cx = DeleteDuplicates[Flatten[Map[{Sort[#[[1]]], Sort[#[[2]]]} &, rx], 1]];
 g = Graph[Range[Length[cx]], Map[UndirectedEdge[Position[cx, Sort[#[[1]]]][[1, 1]], Position[cx, Sort[#[[2]]]][[1, 1]]] &, rx]];
 {nC, nL} = {Length[cx], Length[ConnectedComponents[g]]};
 {nC, nL, MatrixRank[S], nC - nL - MatrixRank[S], 22 - (nC - nL)}
+
+
+(* ::Section:: *)
+(*12. The split parameter u (Supplementary Note 2, Steps 9-14; Supplementary Table 6; Methods 4.2)*)
+
+(* ::Text:: *)
+(*Step 9. With the ATP drive Gamma and the six given constants fixed, Eq (1) (= Eq S2) contains the two rebinding constants kbb and kbd only through their product rho = kbb kbd (Eq S3). Here it is solved symbolically for kbb: the solution depends on kbd, so thermodynamics fixes only the product.*)
+
+eqS2 = gam == kfa kfb kfc kfd/(kba kbb kbc kbd);
+Solve[eqS2, kbb]
+rhoS3 = kfa kfb kfc kfd/(kba kbc gam)
+
+
+(* ::Text:: *)
+(*Step 10. Definition of u (Eq S4): kbb = Sqrt[rho] 10^u, kbd = Sqrt[rho] 10^-u. The inverse (Eq S5) recovers rho and u from any positive pair, and the ratio kbb/kbd = 10^(2u) depends on u alone (Eq S6). The last line checks the inverse numerically for random rho and u.*)
+
+kbbU = Sqrt[rh] 10^uu; kbdU = Sqrt[rh] 10^-uu;
+Simplify[{kbbU kbdU, kbbU/kbdU}, rh > 0]
+With[{r0 = RandomReal[{10^-16, 10^-8}], u0 = RandomReal[{-3, 3}]}, {kbbU kbdU/r0, Log10[kbbU/kbdU]/2 - u0} /. {rh -> r0, uu -> u0}]
+
+
+(* ::Text:: *)
+(*Step 11. Eq (1) holds exactly for every u (Eqs S7, S8): inserting Eq S4 and rho from Eq S3 gives back gam, with no u left.*)
+
+Simplify[kfa kfb kfc kfd/(kba kbc kbbU kbdU) /. rh -> rhoS3, {kfa > 0, kfb > 0, kfc > 0, kfd > 0, kba > 0, kbc > 0, gam > 0}]
+
+
+(* ::Text:: *)
+(*Step 12. How u shares the drive between the two half-cycles (Eqs S9-S11). lnKkin = lnKkin0 - u Log[10] and lnKP = lnKP0 + u Log[10]; their sum is lnGamma for every u. Each unit of u moves RT Log[10] = 5.94 kJ/mol between the half-cycles; the +-0.3 of the local ensembles moves 1.78 kJ/mol.*)
+
+lnKkinU = Log[kfa kfb/(kba kbbU)]; lnKPU = Log[kfc kfd/(kbc kbdU)];
+Simplify[PowerExpand[{lnKkinU - (Log[kfa kfb/(kba Sqrt[rh])] - uu Log[10]), lnKPU - (Log[kfc kfd/(kbc Sqrt[rh])] + uu Log[10])}]]
+Simplify[PowerExpand[lnKkinU + lnKPU /. rh -> rhoS3]]
+Chop[{lnKkinU - (Log[kfa kfb/(kba Sqrt[rh])] - uu Log[10]), lnKPU - (Log[kfc kfd/(kbc Sqrt[rh])] + uu Log[10]), (lnKkinU + lnKPU /. rh -> rhoS3) - Log[gam]} /. Thread[{kfa, kfb, kfc, kfd, kba, kbc, gam, rh, uu} -> Join[RandomReal[{0.1, 10}, 8], {RandomReal[{-2, 2}]}]], 10^-9]
+{RT Log[10], 0.3 RT Log[10]}
+
+
+(* ::Text:: *)
+(*Supplementary Table 6, all four cycles at the reference set (lnGamma = 19.8, u = -0.34): Sqrt[rho]; kbb/kbd = 10^(2u); lnKkin0 and lnKP0 (u = 0); lnKkin and lnKP (u = -0.34); the half-cycle shares RT lnK in kJ/mol (they add up to 51.06); the largest admissible |u| = Log10[0.1/Sqrt[rho]] (Eq S13, diffusion limit 0.1 1/(nM s)); the coefficients a, c, d, b of Eq S14; and the window of K/P inside which rebinding changes S(j+1)/S(j) by less than 1% (Eq S15), with its width in orders of magnitude (4.60 for every cycle). For cycle 1 the shares are 27.64 and 23.42 kJ/mol.*)
+
+uRow[{ia_, ib_, ic_, id_}] := Module[{rh0, kbb0, kbd0, l0k, l0p, aj, cj, dj, bj},
+  rh0 = kfRef[[ia]] kfRef[[ib]] kfRef[[ic]] kfRef[[id]]/(kbRef[[ia]] kbRef[[ic]] Exp[19.8]);
+  kbb0 = Sqrt[rh0] 10^-0.34; kbd0 = Sqrt[rh0] 10^0.34;
+  l0k = Log[kfRef[[ia]] kfRef[[ib]]/(kbRef[[ia]] Sqrt[rh0])]; l0p = Log[kfRef[[ic]] kfRef[[id]]/(kbRef[[ic]] Sqrt[rh0])];
+  aj = kfRef[[ia]] kfRef[[ib]]/(kbRef[[ia]] + kfRef[[ib]]); cj = kbRef[[ia]] kbb0/(kbRef[[ia]] + kfRef[[ib]]);
+  dj = kfRef[[ic]] kfRef[[id]]/(kbRef[[ic]] + kfRef[[id]]); bj = kbRef[[ic]] kbd0/(kbRef[[ic]] + kfRef[[id]]);
+  {ScientificForm[Sqrt[rh0], 4], NumberForm[kbb0/kbd0, 4], NumberForm[{l0k, l0p}, {5, 3}], NumberForm[{l0k + 0.34 Log[10], l0p - 0.34 Log[10]}, {5, 3}],
+   NumberForm[RT {l0k + 0.34 Log[10], l0p - 0.34 Log[10]}, {4, 2}], NumberForm[Log10[0.1/Sqrt[rh0]], {3, 2}],
+   ScientificForm[{aj, cj, dj, bj}, 3], ScientificForm[{100 bj/aj, dj/(100 cj)}, 2], NumberForm[Log10[(dj/(100 cj))/(100 bj/aj)], {3, 2}]}]
+
+
+TableForm[Transpose[uRow /@ cycles], TableHeadings -> {{"Sqrt[rho]", "kbb/kbd", "lnKkin0, lnKP0", "lnKkin, lnKP", "RT lnK (kJ/mol)", "max |u|", "a, c, d, b", "K/P window", "window width (decades)"}, {"cycle 1", "cycle 2", "cycle 3", "cycle 4"}}]
+
+
+(* ::Text:: *)
+(*Step 13. What u means chemically (Eq S12): with the nucleotides explicit, kbb = k'bb [ADP] and kbd = k'bd [Pi], so u = (1/2) Log10[k'bb/k'bd] + (1/2) Log10[ADP/Pi]. With free ADP = 0.1 mM and Pi = 10 mM the second term is -1, and u = -0.34 corresponds to k'bb/k'bd = 10^1.32 = 21.*)
+
+Simplify[PowerExpand[Log10[(kpbb adp)/(kpbd pi)]/2 - (Log10[kpbb/kpbd]/2 + Log10[adp/pi]/2)]]
+Chop[Log10[(kpbb adp)/(kpbd pi)]/2 - (Log10[kpbb/kpbd]/2 + Log10[adp/pi]/2) /. Thread[{kpbb, kpbd, adp, pi} -> RandomReal[{0.1, 10}, 4]], 10^-12]
+{Log10[0.1/10]/2, 10^(2 (-0.34 + 1))}
+
+
+(* ::Text:: *)
+(*Step 14, when u matters. The width of the K/P window is proportional to 1/rho and therefore to Gamma. Lowering lnGamma from 19.8 narrows it by (19.8 - lnGamma)/Log[10] decades: about 0.7 decades at lnGamma = 10.8 (where tristability appears) and closed (negative width) at lnGamma = 4.9 (where bistability appears).*)
+
+{4.60 - (19.8 - 10.8)/Log[10], 4.60 - (19.8 - 4.9)/Log[10], Exp[19.8 - 10.8], Exp[19.8 - 4.9]}
 
 
 (* ::Text:: *)

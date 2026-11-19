@@ -88,7 +88,7 @@ plot(ax, D.v59, D.v60, 'Color', [1.000 0.498 0.055], 'LineStyle', 'none', 'LineW
 plot(ax, D.v61, D.v62, 'Color', [0.173 0.627 0.173], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 'o', 'MarkerSize', 8.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 1.80);
 plot(ax, D.v63, D.v64, 'Color', [0.839 0.153 0.157], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 'o', 'MarkerSize', 8.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 1.80);
 xlabel(ax, 'kin_T (nM)', 'FontSize', 12.0); ylabel(ax, 'e4F (nM)', 'FontSize', 12.0);
-title(ax, {'tristable, separate:', 'staircase'}, 'FontSize', 13.0);
+title(ax, {'tristable, separate:', ['S' char(8211) 'S']}, 'FontSize', 13.0);
 xlim(ax, [0 104.494]); ylim(ax, [-3.56283 128.262]);
 set(ax, 'XTick', [0 20 40 60 80 100], 'XTickLabel', {'0', '20', '40', '60', '80', '100'});
 set(ax, 'YTick', [0 20 40 60 80 100 120], 'YTickLabel', {'0', '20', '40', '60', '80', '100', '120'});
@@ -114,7 +114,7 @@ plot(ax, D.v81, D.v82, 'Color', [1.000 0.498 0.055], 'LineStyle', 'none', 'LineW
 plot(ax, D.v83, D.v84, 'Color', [0.173 0.627 0.173], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 'o', 'MarkerSize', 8.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 1.80);
 plot(ax, D.v85, D.v86, 'Color', [0.839 0.153 0.157], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 'o', 'MarkerSize', 8.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 1.80);
 xlabel(ax, 'kin_T (nM)', 'FontSize', 12.0); ylabel(ax, '', 'FontSize', 12.0);
-title(ax, {'tristable, separate:', 'mushroom-like'}, 'FontSize', 13.0);
+title(ax, {'tristable, separate:', ['Z' char(8211) 'S']}, 'FontSize', 13.0);
 xlim(ax, [0 356.236]); ylim(ax, [-6.36392 229.101]);
 set(ax, 'XTick', [0 100 200 300], 'XTickLabel', {'0', '100', '200', '300'});
 set(ax, 'YTick', [0 50 100 150 200], 'YTickLabel', {'0', '50', '100', '150', '200'});

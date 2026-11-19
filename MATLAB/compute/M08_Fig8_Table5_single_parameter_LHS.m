@@ -6,7 +6,7 @@
 %                     parameters at the reference set (Fig 8, Table 5);
 %    MODE = 'module'  all independent rate constants of one module sampled together (MODULE = 'M1', 'M2', 'M1M3',
 %                     'M2M3'; 12 000 sets; the module runs of Section 4.2).
-%  Classes: tristable, coexisting | tristable, separate (staircase, mushroom-like) | bistable: M1 switch, M2 switch,
+%  Classes: tristable, coexisting | tristable, separate (S-S, Z-S) | bistable: M1 switch, M2 switch,
 %  other | monostable (see p4e_attribute.m and c08_name.m).
 %  Samples: by default the exact samples of the manuscript are read from C08_lhs_samples.mat (the samples
 %  used for the manuscript, Latin hypercube, seed 7), so the results reproduce the manuscript. With FRESH = true, new
@@ -48,20 +48,20 @@ if strcmp(MODE, 'single')
     fprintf(fid, 'parameter,class,n,log10 change from,to,SN1 min,SN1 max,SN2 min,SN2 max,SN3 min,SN3 max,SN4 min,SN4 max\n');
     for k = 1:numel(OUT)
         A = OUT(k).A; dx = OUT(k).dx;
-        for oc = {'tri', 'staircase', 'mushroom', 'M1', 'M2', 'general', 'mono', 'inadmissible'}
+        for oc = {'tri', 'SS', 'ZS', 'M1', 'M2', 'general', 'mono', 'inadmissible'}
             sel = false(1, numel(A)); V = nan(0, 4);
             for q = 1:numel(A)
                 a = A{q}; c = c08_class(a); if strcmp(c, 'separate'), c = a.shape; end
                 if ~strcmp(c, oc{1}), continue, end
                 sel(q) = true; v = nan(1, 4);
-                if any(strcmp(c, {'tri', 'staircase', 'mushroom'})), v = a.SN_K(:)';
+                if any(strcmp(c, {'tri', 'SS', 'ZS'})), v = a.SN_K(:)';
                 elseif any(strcmp(c, {'M1', 'general'})), v(1:2) = sort([a.loops{1, 2} a.loops{1, 3}], 'descend');   % on, off (other: SN1*, SN2*)
                 elseif strcmp(c, 'M2'), v(3:4) = sort([a.loops{1, 2} a.loops{1, 3}], 'descend'); end
                 V(end+1, :) = v; %#ok<AGROW>
             end
             if ~any(sel), continue, end
             switch oc{1}
-                case 'staircase', nm = 'tristable, separate: staircase'; case 'mushroom', nm = 'tristable, separate: mushroom-like';
+                case 'SS', nm = 'tristable, separate: S-S'; case 'ZS', nm = 'tristable, separate: Z-S';
                 case 'general', nm = 'bistable: other (SN1*, SN2* in the SN1, SN2 columns)'; otherwise, nm = c08_name(oc{1});
             end
             fprintf(fid, '"%s","%s",%d,%.2f,%.2f', OUT(k).name, nm, sum(sel), min(dx(sel)), max(dx(sel)));
@@ -85,7 +85,7 @@ if strcmp(MODE, 'single')
             a = OUT(k).A{q}; c = c08_class(a); col = COL(c);
             rectangle(ax, 'Position', [e(q), y-0.4, max(e(q+1)-e(q), 1e-6), 0.8], 'FaceColor', col, 'EdgeColor', col);
             if strcmp(c, 'inadmissible'), rectangle(ax, 'Position', [e(q), y-0.4, max(e(q+1)-e(q), 1e-6), 0.8], 'EdgeColor', [0.6 0.6 0.6]); end
-            if strcmp(c, 'separate') && strcmp(a.shape, 'mushroom'), col = [0.549 0.318 0.039]; rectangle(ax, 'Position', [e(q), y-0.4, max(e(q+1)-e(q), 1e-6), 0.8], 'FaceColor', col, 'EdgeColor', col); end
+            if strcmp(c, 'separate') && strcmp(a.shape, 'ZS'), col = [0.549 0.318 0.039]; rectangle(ax, 'Position', [e(q), y-0.4, max(e(q+1)-e(q), 1e-6), 0.8], 'FaceColor', col, 'EdgeColor', col); end
             plot(ax, xs(q), y - 0.47, 'k|', 'MarkerSize', 3);
             if isKey(cnt, c), cnt(c) = cnt(c) + 1; else, cnt(c) = 1; end
         end
@@ -95,7 +95,7 @@ if strcmp(MODE, 'single')
     end
     plot(ax, [0 0], [0.5 ny+0.5], 'k:'); set(ax, 'YTick', 1:ny, 'YTickLabel', lab, 'FontSize', 8, 'Box', 'on'); xlim(ax, [-6 7]); ylim(ax, [0.5 ny+0.5]);
     xlabel(ax, 'log_{10}(value / reference)');
-    title(ax, {'red tristable, coexisting | orange tristable, separate: staircase | brown tristable, separate: mushroom-like', ...
+    title(ax, {'red tristable, coexisting | orange tristable, separate: S-S | brown tristable, separate: Z-S', ...
                'blue bistable: M1 switch | green bistable: M2 switch | purple bistable: other | grey monostable | white outside admissible range'}, 'FontSize', 9);
     try, print(fig, fullfile(RES, 'C08_lhs_single.png'), '-dpng', '-r150'); catch err, fprintf('check plot not written: %s\n', err.message); end
 else
