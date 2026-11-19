@@ -1,6 +1,6 @@
 function [names, bounds] = p4e_prim()
 %P4E_PRIM  Names and admissible bounds (log10 units; lnG in natural-log units) of the primitive parameters
-%   used for the ensembles and the one-at-a-time scans. (Section 8.5).
+%   used for the ensembles and the one-at-a-time scans (Methods 4.5; Supplementary Note 4).
 %   For each enzyme step (kinase K1-K4 = R1/R2, R3/R4, R9/R10, R11/R12; phosphatase P1-P4 = R5/R6, R7/R8,
 %   R13/R14, R15/R16): kon (association, nM^-1 s^-1), kb (dissociation, s^-1), kcat (s^-1).
 %   Then kf17, KD17 (= kf17/kb17, nM), kon22, KD22, kon18-kon21, KD18, KD19, alpha (= log10(KD19/KD20)),

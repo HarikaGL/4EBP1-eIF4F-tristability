@@ -19,19 +19,19 @@ No toolbox is needed. The Parallel Computing Toolbox is used when present (the l
 |---|---|
 | `MATLAB/model/` | The model and the numerical methods: reference parameter set (`p4e_ref`), full ODEs (`p4e_rhs`), exact steady-state reduction (`p4e_species`, `p4e_ladder`), pseudo-arclength continuation in total kinase (`p4e_trace`), classification of a bifurcation diagram (`p4e_attribute`), thermodynamically consistent parameter builders (`p4e_to_params`, `c08_build`), Gillespie direct method (`p4e_ssa`) and helpers. |
 | `MATLAB/compute/` | One script per result (M01-M13, M15-M17, below). Each script prints the numbers quoted in the manuscript and saves them in `MATLAB/Results/`. |
-| `MATLAB/figures/` | One script per figure (Fig02-Fig14, FigS08). Each redraws the published figure from `figures/data/<name>.mat` and writes PDF and PNG to `figures/Figures/`. |
+| `MATLAB/figures/` | One script per figure, named by its figure number in the manuscript (Fig2-Fig8 for main figures, SuppFig1-SuppFig6 and SuppFig8 for Supplementary Figures). Each redraws the published figure from `figures/data/<name>.mat` and writes PDF and PNG to `figures/Figures/`. |
 | `MATLAB/data/` | `C08_lhs_samples.mat`: the single-parameter Latin hypercube samples (Fig 5, Suppl. Table 2, Fig 6). `ensemble_samples.mat`: the parameter sets of the ensembles (Suppl. Table 3, Suppl. Fig 3, Fig 7, Suppl. Fig 4). With these the scripts reproduce the manuscript numbers exactly. |
 | `SBML/` | The model in SBML Level 3 Version 2 with the reference parameters (written by M16): complete network (`p4e_full.xml`) and network without the scaffold (`p4e_noscaffold.xml`). Concentrations in nM, time in s; initial state = repressed state at kin_T = 66 nM. Checked with libSBML (no errors) and libRoadRunner (e4F = 3.3 nM at 66 nM, 210 nM at 230.4 nM, as the MATLAB code). Open in COPASI, libRoadRunner/Tellurium or MATLAB SimBiology (`sbmlimport`). |
 | `Mathematica/` | `Thermodynamics_4EBP.nb`: every thermodynamic derivation and calculation, cell by cell, with explanations in blue: Eq (1) and Eq (2), Methods 4.2 Steps 1-7, Supplementary Note 2 (worked example for cycle 1, with ATP, ADP and Pi explicit; Steps 9-14, the split parameter u, in Section 12), Supplementary Tables 5-7 (all cycles, the split parameter u, scaffold loop), Supplementary Note 3 (every reaction loop by Stanbury-Hoffman row reduction, ATP-explicit loops, cycle ratios, deficiency), Supplementary Table 8. Each section names the equation, section or table it reproduces. `Thermodynamics_4EBP.wl` is the same as a plain-text script. Open the notebook in Mathematica and evaluate the cells in order (Shift+Enter) or all at once (Evaluation > Evaluate Notebook). |
 | `XPPAUT/` | The model as XPPAUT files with the reference parameters: complete network (`NetworkODE_full.ode`, Figs 3, 4B), without the scaffold (`NetworkODE_noscaffold.ode`, Figs 2C, 4A), and each phosphorylation module alone (`NetworkODE_PdP1.ode`, Fig 2A; `NetworkODE_PdP2.ode`, Fig 2B). |
 
-Fig 1 (network diagram) is a drawing and has no code. All figure, table and section numbers in this README are those of the submitted (npj) manuscript: main Figs 1-8, Tables 1-3; Supplementary Figs 1-11, Supplementary Tables 1-8. The script names keep the numbers of an earlier draft: Fig04 = Suppl. Fig 1, Fig05 = Fig 4, Fig06 = Suppl. Fig 2, Fig07 = Suppl. Fig 3, Fig08 = Fig 5, Fig09 = Fig 6, Fig10 = Fig 7, Fig11A/B = Suppl. Fig 4, Fig12 = Fig 8, Fig13 = Suppl. Fig 5, Fig14 = Suppl. Fig 6; old Table 1 = Table 3 (Methods 4.1), old 2 = Table 1, old 3 = Suppl. Table 1, old 4 = Table 2, old 5 = Suppl. Table 2, old 6 = Suppl. Table 3, old 7 = Suppl. Table 4.
+Fig 1 (network diagram) is a drawing and has no code. All figure, table and section numbers in this README are those of the submitted (npj) manuscript: main Figs 1-8, Tables 1-3; Supplementary Figs 1-11, Supplementary Tables 1-8. Figure scripts are named by the figure they draw (`Fig5_single_parameter_LHS` draws Fig 5, `SuppFig3_classes` draws Supplementary Fig 3); compute scripts M01-M17 are named by what they compute. Supplementary Note 4 walks through the sampling, exact reduction, continuation and classification code block by block.
 
 The compute scripts regenerate every number from the model and save their results (with simple check plots) in `MATLAB/Results/`, which holds the results of our own run. The figure scripts redraw the published figures exactly, from the data of the published figures stored in `figures/data/` (Supplementary Fig 8 is redrawn from `Results/M13_timescale.mat`).
 
 ## How to run
 
-Open MATLAB in the folder `MATLAB/` and run `run_all` (all compute scripts in order), or run any script in `MATLAB/compute/` on its own; each script adds the model folder to the path itself. To redraw a figure, run for example `Fig03_three_states` in `MATLAB/figures/`.
+Open MATLAB in the folder `MATLAB/` and run `run_all` (all compute scripts in order), or run any script in `MATLAB/compute/` on its own; each script adds the model folder to the path itself. To redraw a figure, run for example `Fig3_three_states` in `MATLAB/figures/`.
 
 Every long script has a quick mode for testing: set `QUICK = true;` before running it.
 
@@ -39,19 +39,19 @@ Every long script has a quick mode for testing: set `QUICK = true;` before runni
 
 | Script | Manuscript (npj numbering) | Run time |
 |---|---|---|
-| `M01_Table1_Table7_parameters` | Table 3 (reference set, Methods 4.1); thermodynamic checks of Section 2.2 and Methods 4.2 (ln Gamma = 19.8 for all four cycles, rebinding constants, K_D21 = 111 nM; Suppl. Tables 5-7 are reproduced step by step in the Mathematica notebook); Suppl. Table 4 (Gillespie channels) | < 1 s |
-| `M02_Fig2_modules_and_ingredients` | Fig 2; Section 2.3 (saddle-node points of each module, the two jumps in free eIF4E, single-site and clamped-enzyme tests) | seconds |
-| `M03_Fig3_Table2_Table3_reference` | Fig 3; the three states at 66 nM; jumps at SN1 and SN4; Table 1 (elasticities); Suppl. Table 1 | ~1 min |
-| `M04_Fig4_scaffold_prozone` | Suppl. Fig 1D; prozone numbers (233, 668, 123 nM); uniqueness of the scaffold steady state over 10^4 random sets | ~1 min |
-| `M05_Fig5_with_without_scaffold` | Fig 4; Section 2.5 (SN4 32.7 -> 37.2 nM; eIF4G doubled and halved; excess eIF4G; prozone inside the switch) | ~1 min |
+| `M01_parameters_thermodynamics` | Table 3 (reference set, Methods 4.1); thermodynamic checks of Section 2.2 and Methods 4.2 (ln Gamma = 19.8 for all four cycles, rebinding constants, K_D21 = 111 nM; Suppl. Tables 5-7 are reproduced step by step in the Mathematica notebook); Suppl. Table 4 (Gillespie channels) | < 1 s |
+| `M02_modules_and_ingredients` | Fig 2; Section 2.3 (saddle-node points of each module, the two jumps in free eIF4E, single-site and clamped-enzyme tests) | seconds |
+| `M03_reference_set` | Fig 3; the three states at 66 nM; jumps at SN1 and SN4; Table 1 (elasticities); Suppl. Table 1 | ~1 min |
+| `M04_scaffold_prozone` | Suppl. Fig 1D; prozone numbers (233, 668, 123 nM); uniqueness of the scaffold steady state over 10^4 random sets | ~1 min |
+| `M05_with_without_scaffold` | Fig 4; Section 2.5 (SN4 32.7 -> 37.2 nM; eIF4G doubled and halved; excess eIF4G; prozone inside the switch) | ~1 min |
 | `M06_driving_strength_ATP` | Section 2.6 (bistable from ln Gamma = 4.9, tristable from 10.8) | a few min |
-| `M07_Fig6_eIF4E_knockdown` | Suppl. Fig 2; Table 2 row 6 | seconds |
-| `M08_Fig8_Table5_single_parameter_LHS` | Fig 5; Suppl. Table 2; module runs of Section 2.10 (`MODE = 'module'`, `MODULE = 'M1'` or `'M2'`) | ~30 min (single); hours (module) |
-| `M09_Fig9_accessible_kinase_range` | Fig 6; Section 2.11 (needs the output of M08) | ~10 min |
-| `M10_Fig7_Fig10_Fig11_Table6_ensembles` | Suppl. Table 3; Suppl. Fig 3, Fig 7, Suppl. Fig 4; reference-type percentages; widths of the three-state range; scaffold check of Section 2.12 | ~93 000 continuations: about a day on one core; choose `ENS` or `NMAX` to run part |
-| `M11_Fig12_Gillespie_reference` | Fig 8; Section 2.14 | 200 Gillespie replicates of 20 h: about 1-2 days on one core |
-| `M12_Fig13_Fig14_Gillespie_edge_sets` | Suppl. Figs 5, 6; Section 2.15 (dwell time in State II). The default is 10 replicates per condition, as in the figures; the 50-replicate repeat of Section 2.15 is `NREP = 50; M12_Fig13_Fig14_Gillespie_edge_sets` (the files in `Results/` are from this repeat) | 80 replicates of 20 h: about half a day on one core (5 times longer with NREP = 50) |
-| `M13_switching_timescale` | Section 2.8, Methods 4.7, Suppl. Fig 8 (redrawn by `figures/FigS08_switching_timescale.m`): switching times at the reference set with faster cycles (Michaelis constants kept), over every tristable ensemble set, and an adaptive search for fast tristable sets | with 64 workers: A ~4 min; B ~2.5 h (20 495 sets); C ~1 h (20 chains of 200 steps). Needs the M10 results for B |
+| `M07_eIF4E_knockdown` | Suppl. Fig 2; Table 2 row 6 | seconds |
+| `M08_single_parameter_LHS` | Fig 5; Suppl. Table 2; module runs of Section 2.10 (`MODE = 'module'`, `MODULE = 'M1'` or `'M2'`) | ~30 min (single); hours (module) |
+| `M09_accessible_kinase_range` | Fig 6; Section 2.11 (needs the output of M08) | ~10 min |
+| `M10_ensembles` | Suppl. Table 3; Suppl. Fig 3, Fig 7, Suppl. Fig 4; reference-type percentages; widths of the three-state range; scaffold check of Section 2.12 | ~93 000 continuations: about a day on one core; choose `ENS` or `NMAX` to run part |
+| `M11_Gillespie_reference` | Fig 8; Section 2.14 | 200 Gillespie replicates of 20 h: about 1-2 days on one core |
+| `M12_Gillespie_edge_sets` | Suppl. Figs 5, 6; Section 2.15 (dwell time in State II). The default is 10 replicates per condition, as in the figures; the 50-replicate repeat of Section 2.15 is `NREP = 50; M12_Gillespie_edge_sets` (the files in `Results/` are from this repeat) | 80 replicates of 20 h: about half a day on one core (5 times longer with NREP = 50) |
+| `M13_switching_timescale` | Section 2.8, Methods 4.7, Suppl. Fig 8 (redrawn by `figures/SuppFig8_switching_timescale.m`): switching times at the reference set with faster cycles (Michaelis constants kept), over every tristable ensemble set, and an adaptive search for fast tristable sets | with 64 workers: A ~4 min; B ~2.5 h (20 495 sets); C ~1 h (20 chains of 200 steps). Needs the M10 results for B |
 | `M15_global_sensitivity_PRCC` | Section 2.12 (global sensitivity), Methods 4.8, Suppl. Fig 7: partial rank correlation coefficients over the ensembles | seconds (needs the M10 results) |
 | `M16_export_SBML` | Methods 4.9: writes `SBML/p4e_full.xml`, `SBML/p4e_noscaffold.xml` | seconds |
 | `M17_reaction_loops` | Suppl. Note 3, Suppl. Figs 9 and 11, Suppl. Table 8: every reaction loop (row reduction of [S, I]), loops with ATP, ADP and Pi explicit, ln Gamma of every loop, deficiency | seconds |

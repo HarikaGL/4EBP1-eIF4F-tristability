@@ -1,6 +1,6 @@
 function [A, C] = p4e_attribute(P)
 %P4E_ATTRIBUTE  Trace the steady-state curve (e4F against kin_T) and classify it from its two axes only
-%   (manuscript Section 4.1, "Classification of a bifurcation diagram").
+%   (manuscript Section 2.9, "Classification of a bifurcation diagram").
 %   No species other than e4F and no statistical model is used.
 %
 %   Step 1, number of steady states = number of saddle-node points + 1:

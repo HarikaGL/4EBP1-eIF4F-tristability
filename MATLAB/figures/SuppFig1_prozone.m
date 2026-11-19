@@ -1,10 +1,10 @@
-% Fig04_prozone: redraws Fig 4. Prozone effect in eIF4F assembly (panel D computed; A-C schematic).
+% SuppFig1_prozone: redraws Supplementary Fig 1. Prozone effect in eIF4F assembly (panel D computed; A-C schematic).
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig04_prozone.mat (exported from the analysis that produced the published figure).
-function Fig04_prozone(outdir)
+% Data: data/SuppFig1_prozone.mat (exported from the analysis that produced the published figure).
+function SuppFig1_prozone(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig04_prozone.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'SuppFig1_prozone.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 11.000 10.500], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [11.000 10.500], 'PaperPosition', [0 0 11.000 10.500]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -49,6 +49,6 @@ hl(2) = plot(ax, NaN, NaN, 'Color', [0.259 0.573 0.776], 'LineStyle', '-', 'Line
 hl(3) = plot(ax, NaN, NaN, 'Color', [0.031 0.188 0.420], 'LineStyle', '-', 'LineWidth', 2.50, 'Marker', 'none', 'MarkerSize', 6.0, 'MarkerFaceColor', [0.031 0.188 0.420]);
 lg = legend(ax, hl(1:3), {'e4A_T = 500 nM', 'e4A_T = 1000 nM', 'e4A_T = 2000 nM'}, 'Location', 'northeast', 'FontSize', 9.0, 'Interpreter', 'tex'); clear hl
 try, set(lg, 'Units', 'normalized', 'Position', [0.8107 0.3755 0.1436 0.0586]); catch, end
-print(fig, fullfile(outdir, 'Fig04_prozone.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig04_prozone.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'SuppFig1_prozone.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'SuppFig1_prozone.png'), '-dpng', '-r150');
 end

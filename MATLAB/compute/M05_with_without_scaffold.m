@@ -1,10 +1,10 @@
-%% M05  Fig 5 and Section 3.3 (second part): in the complete network the scaffold moves only the switch-off threshold.
-%  1. Saddle-node points without the scaffold (R1-R17, R22; free eIF4E) and with it (R1-R22; eIF4F) (Fig 5A-C).
+%% M05  Fig 4 and Section 2.5 (second part): in the complete network the scaffold moves only the switch-off threshold.
+%  1. Saddle-node points without the scaffold (R1-R17, R22; free eIF4E) and with it (R1-R22; eIF4F) (Fig 4A-C).
 %  2. SN4 with eIF4G doubled and halved.
 %  3. Excess eIF4G: SN1-SN4 for e4G_T up to 20 e4E_T; the range in which the three states coexist disappears when
 %     SN4 rises above SN1, and at the largest excess one switch remains.
 %  4. The prozone inside the switch: at kin_T = 66 nM, eIF4F of each of the three stable states against e4G_T.
-%  Run time: about 60 continuations. Output: printed, Results/M05_scaffold.mat, Results/M05_Fig5.png.
+%  Run time: about 60 continuations. Output: printed, Results/M05_scaffold.mat, Results/M05_Fig4.png.
 clearvars -except QUICK; here = fileparts(mfilename('fullpath')); if isempty(here), here = pwd; end
 addpath(fullfile(here, '..')); RES = setup_p4e();
 P = p4e_ref(); L = P.links;
@@ -17,7 +17,7 @@ ax = subplot(1, 3, 1); p4e_draw(ax, C0.kin, C0.E, C0.folds); xlim(ax, [0 200]); 
 ax = subplot(1, 3, 2); p4e_draw(ax, C1.kin, C1.F, C1.folds); xlim(ax, [0 200]); xlabel(ax, 'kin_T (nM)'); ylabel(ax, 'e4F (nM)'); title(ax, '(B) with scaffold');
 ax = subplot(1, 3, 3); hold(ax, 'on'); plot(ax, C0.SN, 1:4, 'ks', C1.SN, 1:4, 'ro'); set(ax, 'YTick', 1:4, 'YTickLabel', {'SN1', 'SN2', 'SN3', 'SN4'});
 xlabel(ax, 'kin_T (nM)'); legend(ax, 'without', 'with scaffold'); title(ax, '(C) saddle-node points');
-print(fig, fullfile(RES, 'M05_Fig5.png'), '-dpng', '-r150');
+print(fig, fullfile(RES, 'M05_Fig4.png'), '-dpng', '-r150');
 
 %% eIF4G doubled and halved
 for l = [2 0.5]

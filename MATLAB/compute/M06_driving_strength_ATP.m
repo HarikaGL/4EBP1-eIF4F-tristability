@@ -1,4 +1,4 @@
-%% M06  Section 3.4: how much ATP drive the switch needs.
+%% M06  Section 2.6: how much ATP drive the switch needs.
 %  The common ln Gamma of the four PdP cycles is lowered from 19.8 to 0 in steps of 0.1. Binding constants, turnover
 %  numbers, the split u of each cycle and the totals stay at the reference values; only the eight product-rebinding
 %  constants change (Methods, Step 5: kb_b = sqrt(rho) 10^u, kb_d = sqrt(rho) 10^-u, rho = kf_a kf_b kf_c kf_d /

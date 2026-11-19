@@ -1,5 +1,5 @@
 function P = p4e_ref()
-%P4E_REF  Reference (tristable) parameter set of the manuscript (Table 1).
+%P4E_REF  Reference (tristable) parameter set of the manuscript (Table 3).
 %   P.kf(i), P.kb(i), i = 1..22 (units nM, s^-1, nM^-1 s^-1); P.tot = [e4E_T BP_T P_T e4G_T e4A_T] (nM).
 %   R1-R16: PdP ladder (binding / catalysis), R17: release of BPp4 from eIF4E (K_D17 = kf17/kb17),
 %   R18-R21: scaffold (eIF4E:eIF4G, eIF4GE:eIF4A, eIF4G:eIF4A, eIF4GA:eIF4E), R22: 4E-BP:eIF4E binding.

@@ -1,10 +1,10 @@
-% Fig10_ensembles: redraws Fig 10. All parameters sampled together.
+% Fig7_ensembles: redraws Fig 7. All parameters sampled together.
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig10_ensembles.mat (exported from the analysis that produced the published figure).
-function Fig10_ensembles(outdir)
+% Data: data/Fig7_ensembles.mat (exported from the analysis that produced the published figure).
+function Fig7_ensembles(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig10_ensembles.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig7_ensembles.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 16.000 10.000], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [16.000 10.000], 'PaperPosition', [0 0 16.000 10.000]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -240,6 +240,6 @@ hl(2) = patch(ax, NaN, NaN, [0.753 0.224 0.169], 'FaceColor', [0.753 0.224 0.169
 hl(3) = patch(ax, NaN, NaN, [0.490 0.235 0.596], 'FaceColor', [0.490 0.235 0.596], 'FaceAlpha', 1.00, 'EdgeColor', [0.000 0.000 0.000]);
 lg = legend(ax, hl(1:3), {'tristable (coexisting or separate)', 'three stable states coexisting', 'reference type (as Fig 3: SN_4 < SN_2 < SN_1 < SN_3)'}, 'Location', 'northeast', 'FontSize', 9.5, 'Interpreter', 'tex'); clear hl
 try, set(lg, 'Units', 'normalized', 'Position', [0.6381 0.3626 0.2578 0.0643]); catch, end
-print(fig, fullfile(outdir, 'Fig10_ensembles.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig10_ensembles.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'Fig7_ensembles.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'Fig7_ensembles.png'), '-dpng', '-r150');
 end

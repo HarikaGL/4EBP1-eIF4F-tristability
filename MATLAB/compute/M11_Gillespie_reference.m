@@ -1,8 +1,8 @@
-%% M11  Fig 12 and Section 5.1: Gillespie simulations at the reference set, kinase steps from the repressed state.
-%  50 replicates (about 1 fL; Section 8.6, Table 7) at kin_T = 60, 95, 117 and 300 nM, each followed for 20 h, e4F
+%% M11  Fig 8 and Section 2.14: Gillespie simulations at the reference set, kinase steps from the repressed state.
+%  50 replicates (about 1 fL; Methods 4.6, Supplementary Table 4) at kin_T = 60, 95, 117 and 300 nM, each followed for 20 h, e4F
 %  recorded every 10 s; deterministic trajectory from the same start. A replicate has left State I when its e4F,
 %  averaged over 30 min, first exceeds 25.8 nM; it has reached State III when the average exceeds 160 nM.
-%  Fig 12F: deterministic time to leave State I against kin_T, with the Gillespie medians.
+%  Fig 8F: deterministic time to leave State I against kin_T, with the Gillespie medians.
 %  Run time: each replicate has 1.5e8-6e8 reaction events (20 h); in MATLAB this is roughly 5-30 min per replicate,
 %  i.e. one to two days for all 200 replicates on one core (the replicate loop is a parfor). NREP and TEND can be set
 %  before running; QUICK = true runs 2 replicates of 10 min per level.
@@ -22,7 +22,7 @@ for i = 1:numel(KINS)
     last = mean(O.F(:, max(1, end-359):end), 2); fprintf('    mean e4F over the last hour: %.0f-%.0f nM\n', min(last), max(last));
     O.tleave = tl; O.treach3 = t3; O.tdet_leave = td; OUT{i} = O;
 end
-%% Fig 12F: deterministic time to leave State I against kin_T
+%% Fig 8F: deterministic time to leave State I against kin_T
 KD = [1.03*SN(1) 85 90 95 100 110 117 130 150 200 250 300 400 461]; THOR = 30*3600;
 if exist('QUICK', 'var') && QUICK, KD = [300 461]; THOR = 5*3600; end
 TL = nan(size(KD));

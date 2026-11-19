@@ -1,6 +1,6 @@
 function C = p4e_trace(P, links, scaff, kmin, kmax, maxpts)
 %P4E_TRACE  Pseudo-arclength continuation of the complete steady-state curve against kin_T
-%   (no MATCONT needed; manuscript Section 8.3).
+%   (Methods 4.3; Supplementary Note 4, Blocks IV-VII).
 %   C.kin, C.F (eIF4F), C.E (free eIF4E), C.X (reduced variables, rows), C.folds (indices),
 %   C.SN (kin_T at the saddle-node points, in curve order), C.nSS (largest number of coexisting
 %   steady states), C.order (e.g. '4213'), C.stable (logical, stability alternates at folds).

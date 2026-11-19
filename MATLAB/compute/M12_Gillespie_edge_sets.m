@@ -1,6 +1,6 @@
-%% M12  Figs 13 and 14 and Section 5.2: Gillespie simulations at the two edge sets of Fig 9, where the range in which
+%% M12  Supplementary Figs 5 and 6 and Section 2.15: Gillespie simulations at the two edge sets of Fig 6, where the range in which
 %       the three states coexist is narrowest: k_f8 x 8.94 (M1 switch) and k_f14 x 0.114 (M2 switch).
-%  The two sets are the farthest tristable samples of Fig 9 (single-parameter samples of Fig 8, rebuilt with the
+%  The two sets are the farthest tristable samples of Fig 6 (single-parameter samples of Fig 5, rebuilt with the
 %  thermodynamic builder c08_build; log10 values of the sampled constant below).
 %  For each set: 10 replicates (about 1 fL) for 20 h after a kinase step from the repressed state to a level inside
 %  the range of State II, just above SN1 and far above SN1; and 10 replicates started in State II inside its range.

@@ -1,15 +1,15 @@
-%% M09  Fig 9: are the switches within the accessible kinase range (10-500 nM)?
+%% M09  Fig 6: are the switches within the accessible kinase range (10-500 nM)?
 %  Classes from p4e_attribute (two axes of the bifurcation diagram only).
 %  1. Elasticity of SN1-SN4 to every rate constant of M1 (R1-R8) and M2 (R9-R16) at the reference set,
 %     e = d ln SN / d ln p (central difference, +-2%), with the thermodynamic builder c08_build (as C08).
 %  2. For each switch the three parameters with the largest |e| summed over its own pair (M1: SN1+SN2; M2: SN3+SN4).
-%  3. For each of them, its 41 Latin hypercube samples (C08_lhs_samples.mat, the samples of Fig 8) are classified;
-%     kept are the tristable sample with coexisting loops whose pair moves farthest from the reference (Fig 9) and
+%  3. For each of them, its 41 Latin hypercube samples (C08_lhs_samples.mat, the samples of Fig 5) are classified;
+%     kept are the tristable sample with coexisting loops whose pair moves farthest from the reference (Fig 6) and
 %     the tristable sample with separate loops whose pair moves farthest (not shown in the manuscript).
 %  4. The bifurcation diagrams (e4F against kin_T, linear axes) of these samples are drawn over the reference, with
 %     the accessible kinase range KIN shaded; saddle-node points outside it are marked (mathematically present,
 %     biologically inaccessible).
-%  5. If the full single-parameter run of M08 is available (Results/C08_lhs_single.mat): the counts of Section 4.3
+%  5. If the full single-parameter run of M08 is available (Results/C08_lhs_single.mat): the counts of Section 2.11
 %     (for each switch and class, how many samples have a threshold outside the accessible range), and
 %     for each switch, the three parameters that most often leave it as the only switch (bistable: M1 switch,
 %     bistable: M2 switch), each at the sample whose thresholds moved farthest (loops narrower than 10% skipped).
@@ -62,10 +62,10 @@ for k = 1:numel(SEL)
 end
 fclose(fid);
 
-%% figures (Fig 9; and the same for tristable samples with separate loops)
+%% figures (Fig 6; and the same for tristable samples with separate loops)
 c09_plot(SEL, SW, C0, KIN, ''); c09_plot(SELANY, SW, C0, KIN, '_any');
 
-%% Counts over all single-parameter samples (Section 4.3: 1317 of 1329) (needs the full C08 run, MODE = 'single', QUICK = false)
+%% Counts over all single-parameter samples (Section 2.11: 1317 of 1329) (needs the full C08 run, MODE = 'single', QUICK = false)
 f8 = fullfile(RES, 'C08_lhs_single.mat');
 if exist(f8, 'file')
     L = load(f8); fid = fopen(fullfile(RES, 'C09_all_samples.csv'), 'w');
@@ -87,7 +87,7 @@ if exist(f8, 'file')
     end
     fclose(fid);
 
-    %% Each switch on its own (Section 4.2, 'The two switches differ in kind')
+    %% Each switch on its own (Section 2.10, 'The two switches differ in kind')
     SELLONE = SEL([]);
     for w = 1:2
         sw = SW{w, 1}; pr = SW{w, 3}; d = []; who = []; nmL = {}; cnt = [];

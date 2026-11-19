@@ -1,34 +1,34 @@
-%% M10  Table 6, Fig 10, Fig 11 and the examples of Fig 7: all parameters sampled together (Sections 4.1, 4.4, 4.5).
-%  Ensembles (Section 8.5), read from data/ensemble_samples.mat (the parameter sets used for the manuscript):
+%% M10  Supplementary Table 3, Fig 7, Supplementary Fig 4 and the examples of Supplementary Fig 3: all parameters sampled together (Sections 2.9, 2.12, 2.13).
+%  Ensembles (Methods 4.5; Supplementary Note 4), read from data/ensemble_samples.mat (the parameter sets used for the manuscript):
 %    theta_fold2, theta_fold3, theta_fold10 : every primitive quantity within 2-, 3- or 10-fold of the reference set
 %                                             (Latin hypercube sampling in 42 dimensions; p4e_prim, p4e_to_params);
 %    exp_kf, exp_kb, exp_tot                : every quantity independently over its whole experimental range;
 %    theta_scaffold                         : only the scaffold affinities K_D18, K_D19, K_D20 and the ratios
 %                                             e4G_T/e4E_T, e4A_T/e4E_T over their measured ranges (10 000 sets).
 %  Every set is thermodynamically consistent by construction (p4e_to_params). For every set the curve e4F against
-%  kin_T is traced from 1 to 5000 nM and classified from its two axes (p4e_attribute, Section 4.1) by the number of
+%  kin_T is traced from 1 to 5000 nM and classified from its two axes (p4e_attribute, Section 2.9) by the number of
 %  saddle-node points and the largest number of coexisting steady states (p4e_class4); a pair of saddle-node points
 %  too close to give three steady states at any resolved kin_T counts as monostable, as in the manuscript.
-%  Fig 11 uses three classes: monostable, bistable and tristable (coexisting and separate loops together).
+%  Supplementary Fig 4 uses three classes: monostable, bistable and tristable (coexisting and separate loops together).
 %  Output per ensemble: percent monostable, bistable, tristable with coexisting and with separate loops, and of the
-%  reference type (tristable, coexisting, SN4 < SN2 < SN1 < SN3), with Wilson 95% intervals (Table 6, Fig 10A, D);
-%  widths of the range with at least three steady states and with three stable states coexisting (Fig 10C);
-%  representative curves of each class (Fig 10B, Fig 7); for every rate constant and total, Michaelis constant and
-%  dissociation constant, the 5, 25, 50, 75 and 95th percentiles in each class (Fig 11); the scaffold check of
-%  Section 4.4 (200 random tristable sets of the <=3-fold ensemble, with and without the scaffold).
+%  reference type (tristable, coexisting, SN4 < SN2 < SN1 < SN3), with Wilson 95% intervals (Supplementary Table 3, Fig 7A, D);
+%  widths of the range with at least three steady states and with three stable states coexisting (Fig 7C);
+%  representative curves of each class (Fig 7B, Supplementary Fig 3); for every rate constant and total, Michaelis constant and
+%  dissociation constant, the 5, 25, 50, 75 and 95th percentiles in each class (Supplementary Fig 4); the scaffold check of
+%  Section 2.12 (200 random tristable sets of the <=3-fold ensemble, with and without the scaffold).
 %  With FRESH = true new sets are drawn (p4e_sample_ensemble; not available for the experimental-range ensemble)
-%  instead of reading the stored ones; the percentages then agree with Table 6 within the sampling error.
+%  instead of reading the stored ones; the percentages then agree with Supplementary Table 3 within the sampling error.
 %  Run time: about 93 000 continuations in total (roughly 0.5-1 s each in MATLAB). The loops use parfor, which runs
 %  in parallel when the Parallel Computing Toolbox is available and as an ordinary loop otherwise. Choose ENS (e.g.
 %  ENS = {'fold3'}) to run one ensemble, NMAX to run the first NMAX sets of each, or QUICK = true (200 sets each).
-%  Output: printed, Results/M10_<ensemble>.mat, Results/M10_Table6.csv.
+%  Output: printed, Results/M10_<ensemble>.mat, Results/M10_SuppTable3.csv.
 clearvars -except QUICK ENS NMAX FRESH; here = fileparts(mfilename('fullpath')); if isempty(here), here = pwd; end
 addpath(fullfile(here, '..')); RES = setup_p4e(); DATA = fullfile(here, '..', 'data');
 if ~exist('ENS', 'var'), ENS = {'fold2', 'fold3', 'fold10', 'exp', 'scaffold'}; end
 if exist('QUICK', 'var') && QUICK, NMAX = 200; end
 if ~exist('NMAX', 'var'), NMAX = Inf; end
 D = load(fullfile(DATA, 'ensemble_samples.mat')); P0 = p4e_ref();
-fid = fopen(fullfile(RES, 'M10_Table6.csv'), 'w');   % rewritten on every run
+fid = fopen(fullfile(RES, 'M10_SuppTable3.csv'), 'w');   % rewritten on every run
 fprintf(fid, 'ensemble,sets,monostable %%,bistable %%,tristable coexisting %%,tristable separate %%,reference type %%\n');
 for e = 1:numel(ENS)
     nm = ENS{e};
@@ -68,7 +68,7 @@ for e = 1:numel(ENS)
     q3 = p4e_prctile(w3(w3 > 0), [25 50 75]); q5 = p4e_prctile(w5(w5 > 0), [25 50 75]);
     fprintf('  width with >= 3 steady states: median %.1f nM (IQR %.1f-%.1f); three stable states coexisting: median %.1f nM (IQR %.1f-%.1f)\n', ...
             q3(2), q3(1), q3(3), q5(2), q5(1), q5(3));
-    % Fig 11: parameter distributions in each class
+    % Supplementary Fig 4: parameter distributions in each class
     vn = [arrayfun(@(i) sprintf('kf%d', i), 1:22, 'UniformOutput', false), arrayfun(@(i) sprintf('kb%d', i), 1:22, 'UniformOutput', false), ...
           {'e4E_T', 'BP_T', 'P_T', 'e4G_T', 'e4A_T'}, {'Km_K1', 'Km_K2', 'Km_K3', 'Km_K4', 'Km_P1', 'Km_P2', 'Km_P3', 'Km_P4'}, ...
           {'KD17', 'KD18', 'KD19', 'KD20', 'KD21', 'KD22'}, {'-', '-'}];
@@ -83,7 +83,7 @@ for e = 1:numel(ENS)
             j = find(strcmp(vn, v{1})); fprintf('  median %-6s monostable %.3g, tristable %.3g\n', v{1}, Q.mono(3, j), Q.tristable(3, j));
         end
     end
-    % representative curves (Fig 7, Fig 10B): the first five sets of each class
+    % representative curves (Supplementary Fig 3, Fig 7B): the first five sets of each class
     EX = struct();
     for cc = {'mono', 'bi', 'sep', 'tri'}
         k = find(isc(cc{1}), 5); EX.(cc{1}) = cell(1, numel(k));
@@ -94,7 +94,7 @@ for e = 1:numel(ENS)
         end
     end
     save(fullfile(RES, ['M10_' nm '.mat']), 'cls', 'ord', 'SN', 'w3', 'w5', 'V', 'vn', 'Q', 'EX', '-v7');
-    % scaffold check (Section 4.4): 200 random tristable sets of the <=3-fold ensemble
+    % scaffold check (Section 2.12): 200 random tristable sets of the <=3-fold ensemble
     if strcmp(nm, 'fold3')
         it = find(isc('tri')); rng(3); it = it(randperm(numel(it), min(200, numel(it)))); up = nan(numel(it), 4);
         for t = 1:numel(it)

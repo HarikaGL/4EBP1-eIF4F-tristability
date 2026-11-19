@@ -1,10 +1,10 @@
-% Fig07_classes: redraws Fig 7. The classes of the bifurcation diagram.
+% SuppFig3_classes: redraws Supplementary Fig 3. The classes of the bifurcation diagram.
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig07_classes.mat (exported from the analysis that produced the published figure).
-function Fig07_classes(outdir)
+% Data: data/SuppFig3_classes.mat (exported from the analysis that produced the published figure).
+function SuppFig3_classes(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig07_classes.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'SuppFig3_classes.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 14.500 8.600], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [14.500 8.600], 'PaperPosition', [0 0 14.500 8.600]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -145,6 +145,6 @@ xlim(ax, [0 167.065]); ylim(ax, [-6.31363 227.291]);
 set(ax, 'XTick', [0 50 100 150], 'XTickLabel', {'0', '50', '100', '150'});
 set(ax, 'YTick', [0 50 100 150 200], 'YTickLabel', {'0', '50', '100', '150', '200'});
 set(ax, 'XMinorTick', 'off', 'YMinorTick', 'off');
-print(fig, fullfile(outdir, 'Fig07_classes.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig07_classes.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'SuppFig3_classes.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'SuppFig3_classes.png'), '-dpng', '-r150');
 end

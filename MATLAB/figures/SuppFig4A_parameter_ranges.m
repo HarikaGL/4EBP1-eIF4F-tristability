@@ -1,10 +1,10 @@
-% Fig11A_parameter_ranges: redraws Fig 11A. Admissible ranges and class distributions, within ten-fold.
+% SuppFig4A_parameter_ranges: redraws Supplementary Fig 4A. Admissible ranges and class distributions, within ten-fold.
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig11A_parameter_ranges.mat (exported from the analysis that produced the published figure).
-function Fig11A_parameter_ranges(outdir)
+% Data: data/SuppFig4A_parameter_ranges.mat (exported from the analysis that produced the published figure).
+function SuppFig4A_parameter_ranges(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig11A_parameter_ranges.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'SuppFig4A_parameter_ranges.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 12.500 16.620], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [12.500 16.620], 'PaperPosition', [0 0 12.500 16.620]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -1177,6 +1177,6 @@ lg = legend(ax, hl(1:7), {'admissible (experimental/physical) range', 'range sam
 try, set(lg, 'Units', 'normalized', 'Position', [0.1818 0.9123 0.7363 0.0553]); catch, end
 legend(ax, 'boxoff');
 annotation(fig, 'textbox', [0.0200 0.9970 0 0], 'String', '(A) \leq{}10-fold ensemble around the reference set', 'FontSize', 14.0, 'FontWeight', 'bold', 'HorizontalAlignment', 'left', 'VerticalAlignment', 'top', 'LineStyle', 'none', 'Interpreter', 'tex', 'FitBoxToText', 'on', 'Color', [0.000 0.000 0.000]);
-print(fig, fullfile(outdir, 'Fig11A_parameter_ranges.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig11A_parameter_ranges.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'SuppFig4A_parameter_ranges.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'SuppFig4A_parameter_ranges.png'), '-dpng', '-r150');
 end

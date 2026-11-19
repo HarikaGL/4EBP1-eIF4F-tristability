@@ -1,7 +1,7 @@
 function [Rec, x] = p4e_ssa(P, kinT, vol, x0, tfinal, dtrec, seed)
 %P4E_SSA  Gillespie direct method (Gillespie 1977) for all 44 elementary reactions of R1-R22 (no reduction).
 %   vol in fL; fac = N_A V 1e-24 molecules per nM; first-order constants are used unchanged and second-order
-%   constants are divided by fac (Table 7). x0: 23 initial molecule numbers (p4e_initial_counts).
+%   constants are divided by fac (Supplementary Table 4). x0: 23 initial molecule numbers (p4e_initial_counts).
 %   Rec: the 23 molecule numbers every dtrec seconds from t = 0 to tfinal (int32, rows = time points).
 %   Species: 1 kin, 2 P, 3 e4E, 4 BP, 5 e4G, 6 e4A, 7 BPe4E(S0), 8 S1, 9 S2, 10 S3, 11 S4, 12 BPp4,
 %   13..20 C1..C8, 21 e4GE, 22 e4GA, 23 e4F.

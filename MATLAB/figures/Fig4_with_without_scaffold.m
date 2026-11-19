@@ -1,10 +1,10 @@
-% Fig05_with_without_scaffold: redraws Fig 5. Tristability with and without the scaffold.
+% Fig4_with_without_scaffold: redraws Fig 4. Tristability with and without the scaffold.
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig05_with_without_scaffold.mat (exported from the analysis that produced the published figure).
-function Fig05_with_without_scaffold(outdir)
+% Data: data/Fig4_with_without_scaffold.mat (exported from the analysis that produced the published figure).
+function Fig4_with_without_scaffold(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig05_with_without_scaffold.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig4_with_without_scaffold.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 14.000 8.600], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [14.000 8.600], 'PaperPosition', [0 0 14.000 8.600]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -86,6 +86,6 @@ xlim(ax, [0 150]); ylim(ax, [-0.6 1.6]);
 set(ax, 'XTick', [0 20 40 60 80 100 120 140], 'XTickLabel', {'0', '20', '40', '60', '80', '100', '120', '140'});
 set(ax, 'YTick', [0 1], 'YTickLabel', {'with scaffold', 'without scaffold'});
 set(ax, 'XMinorTick', 'off', 'YMinorTick', 'off');
-print(fig, fullfile(outdir, 'Fig05_with_without_scaffold.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig05_with_without_scaffold.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'Fig4_with_without_scaffold.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'Fig4_with_without_scaffold.png'), '-dpng', '-r150');
 end

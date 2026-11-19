@@ -1,10 +1,10 @@
-% Fig08_single_parameter_LHS: redraws Fig 8. Which change of a single rate constant or total removes which switch.
+% Fig5_single_parameter_LHS: redraws Fig 5. Which change of a single rate constant or total removes which switch.
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig08_single_parameter_LHS.mat (exported from the analysis that produced the published figure).
-function Fig08_single_parameter_LHS(outdir)
+% Data: data/Fig5_single_parameter_LHS.mat (exported from the analysis that produced the published figure).
+function Fig5_single_parameter_LHS(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig08_single_parameter_LHS.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig5_single_parameter_LHS.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 19.000 15.500], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [19.000 15.500], 'PaperPosition', [0 0 19.000 15.500]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -2228,6 +2228,6 @@ hl(10) = plot(ax, NaN, NaN, 'Color', [0.333 0.333 0.333], 'LineStyle', 'none', '
 lg = legend(ax, hl(1:10), {'tristable, coexisting (5 steady states at one kin_T)', ['tristable, separate: S' char(8211) 'S'], ['tristable, separate: Z' char(8211) 'S'], 'bistable: M1 switch (low \rightarrow{} intermediate e4F)', 'bistable: M2 switch (intermediate \rightarrow{} high e4F)', 'bistable: other (low \rightarrow{} high e4F)', 'monostable', 'outside admissible range', 'reference value', 'sampled values (41 per parameter, Latin hypercube)'}, 'Location', 'north', 'FontSize', 10.0, 'Interpreter', 'tex'); clear hl
 try, set(lg, 'Units', 'normalized', 'Position', [0.1468 0.9388 0.7064 0.0567]); catch, end
 legend(ax, 'boxoff');
-print(fig, fullfile(outdir, 'Fig08_single_parameter_LHS.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig08_single_parameter_LHS.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'Fig5_single_parameter_LHS.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'Fig5_single_parameter_LHS.png'), '-dpng', '-r150');
 end

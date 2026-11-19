@@ -1,4 +1,4 @@
-%% M01  Table 1 (reference parameter set), the thermodynamic checks of Section 2.2 and Section 8.2, and Table 7
+%% M01  Table 3 (reference parameter set, Methods 4.1), the thermodynamic checks of Section 2.2 and Methods 4.2, and Supplementary Table 4
 %       (stochastic rate constants of the 44 Gillespie channels).
 %  1. Reference rate constants and totals (p4e_ref) with the derived Michaelis and dissociation constants.
 %  2. For each of the four PdP cycles: the half-cycle constants K_kin = kf_a kf_b/(kb_a kb_b), K_P = kf_c kf_d/(kb_c kb_d),
@@ -6,8 +6,8 @@
 %     and the split u (Methods, Step 5): rho = kf_a kf_b kf_c kf_d/(kb_a kb_c Gamma), kb_b = sqrt(rho) 10^u,
 %     kb_d = sqrt(rho) 10^-u.
 %  3. Scaffold loop (Methods, Step 6): K_D21 = K_D18 K_D19 / K_D20 = 111 nM, and the loop ratio (must be 1).
-%  4. Table 7: c_mu = k_mu (first order) or k_mu/fac (second order), fac = N_A V 1e-24 molecules per nM, V = 1 fL.
-%  Runs in under a second. Output: printed, and Results/M01_parameters.csv, Results/M01_table7.csv.
+%  4. Supplementary Table 4: c_mu = k_mu (first order) or k_mu/fac (second order), fac = N_A V 1e-24 molecules per nM, V = 1 fL.
+%  Runs in under a second. Output: printed, and Results/M01_parameters.csv, Results/M01_SuppTable4.csv.
 clearvars -except QUICK; here = fileparts(mfilename('fullpath')); if isempty(here), here = pwd; end
 addpath(fullfile(here, '..')); RES = setup_p4e();
 P = p4e_ref(); kf = P.kf; kb = P.kb; RT = 8.314*310.15/1000;          % kJ/mol at 37 C
@@ -49,9 +49,9 @@ fprintf('\nScaffold: K_D18 %.4g, K_D19 %.4g, K_D20 %.4g nM; K_D21 = K_D18 K_D19/
         KD(18), KD(19), KD(20), KD(18)*KD(19)/KD(20), KD(21));
 fprintf('Loop ratio K_D20 K_D21/(K_D18 K_D19) = %.6f (must be 1)\n', KD(20)*KD(21)/(KD(18)*KD(19)));
 
-%% Table 7: stochastic rate constants at V = 1 fL
+%% Supplementary Table 4: stochastic rate constants at V = 1 fL
 fac = 6.02214076e23*1*1e-24;
-[Atab, ~] = p4e_ssa_tables(); fid = fopen(fullfile(RES, 'M01_table7.csv'), 'w');
+[Atab, ~] = p4e_ssa_tables(); fid = fopen(fullfile(RES, 'M01_SuppTable4.csv'), 'w');
 fprintf(fid, 'channel,order,c_mu at 1 fL,unit\n'); fprintf('\nTable 7 (fac = %.4f molecules per nM at 1 fL)\n', fac);
 for i = 1:22
     for dirn = 1:2

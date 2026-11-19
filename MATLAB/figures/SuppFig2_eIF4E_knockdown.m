@@ -1,10 +1,10 @@
-% Fig06_eIF4E_knockdown: redraws Fig 6. Model counterpart of the eIF4E knockdown.
+% SuppFig2_eIF4E_knockdown: redraws Supplementary Fig 2. Model counterpart of the eIF4E knockdown.
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig06_eIF4E_knockdown.mat (exported from the analysis that produced the published figure).
-function Fig06_eIF4E_knockdown(outdir)
+% Data: data/SuppFig2_eIF4E_knockdown.mat (exported from the analysis that produced the published figure).
+function SuppFig2_eIF4E_knockdown(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig06_eIF4E_knockdown.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'SuppFig2_eIF4E_knockdown.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 14.000 5.200], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [14.000 5.200], 'PaperPosition', [0 0 14.000 5.200]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -71,6 +71,6 @@ set(ax, 'XTick', [0 1 2 3], 'XTickLabel', {'control', 'eIF4E 10%', 'eIF4E 10% + 
 set(ax, 'XTickLabel', {});
 set(ax, 'YTick', [0 10 20 30 40 50 60 70], 'YTickLabel', {'0', '10', '20', '30', '40', '50', '60', '70'});
 set(ax, 'XMinorTick', 'off', 'YMinorTick', 'off');
-print(fig, fullfile(outdir, 'Fig06_eIF4E_knockdown.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig06_eIF4E_knockdown.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'SuppFig2_eIF4E_knockdown.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'SuppFig2_eIF4E_knockdown.png'), '-dpng', '-r150');
 end

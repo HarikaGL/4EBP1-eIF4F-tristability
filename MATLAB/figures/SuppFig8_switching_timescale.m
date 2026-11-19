@@ -1,8 +1,8 @@
-% FigS08_switching_timescale: redraws Supplementary Fig 8 (switching times) from Results/M13_timescale.mat.
+% SuppFig8_switching_timescale: redraws Supplementary Fig 8 (switching times) from Results/M13_timescale.mat.
 %% Edit freely: every graphics object is drawn by an explicit command below.
 % Data: Results/M13_timescale.mat, written by compute/M13_switching_timescale.m (parts A, B and C).
-% Run time: seconds. Output: figures/Figures/FigS08_switching_timescale.png and .pdf
-function FigS08_switching_timescale(outdir)
+% Run time: seconds. Output: figures/Figures/SuppFig8_switching_timescale.png and .pdf
+function SuppFig8_switching_timescale(outdir)
 here = fileparts(mfilename('fullpath'));
 if nargin < 1, outdir = fullfile(here, 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
@@ -35,6 +35,6 @@ set(ax, 'XScale', 'log', 'YScale', 'log', 'FontSize', 11, 'FontWeight', 'bold', 
 plot(ax, [30 30], [0.01 1e4], 'k:'); plot(ax, [0.1 1e4], [30 30], 'k:');
 xlabel(ax, 'switch on (min)', 'FontWeight', 'bold'); ylabel(ax, 'switch off (min)', 'FontWeight', 'bold'); legend(ax, h, lg, 'Location', 'northwest');
 text(ax, -0.15, 1.04, '(B)', 'Units', 'normalized', 'FontSize', 17, 'FontWeight', 'bold', 'VerticalAlignment', 'bottom');
-print(fig, fullfile(outdir, 'FigS08_switching_timescale.png'), '-dpng', '-r300');
-print(fig, fullfile(outdir, 'FigS08_switching_timescale.pdf'), '-dpdf', '-r300');
+print(fig, fullfile(outdir, 'SuppFig8_switching_timescale.png'), '-dpng', '-r300');
+print(fig, fullfile(outdir, 'SuppFig8_switching_timescale.pdf'), '-dpdf', '-r300');
 end

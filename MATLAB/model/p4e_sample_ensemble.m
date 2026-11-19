@@ -1,14 +1,15 @@
 function TH = p4e_sample_ensemble(kind, n, th_ref, w, seed)
 %P4E_SAMPLE_ENSEMBLE  Draw a new ensemble of primitive parameter vectors (p4e_prim order) by Latin hypercube sampling.
 %   kind = 'local': every primitive within +-w decades of th_ref (w = log10 of the fold: 0.301, 0.477, 1), lnG within
-%          +-w ln10 natural-log units, the split u within +-0.3, kf17 fixed; clipped to the admissible bounds.
+%          +-w ln10 natural-log units, the split u within +-0.3; clipped to the admissible bounds (kf17 lies at its
+%          upper bound in the reference set, so it can only decrease, as in the stored ensembles).
 %   kind = 'scaffold': only K_D18 (5-30 nM), K_D19 (50-1000 nM), K_D20 (50-1000 nM), e4G_T/e4E_T (0.3-3) and
 %          e4A_T/e4E_T (1-10) are drawn over their measured ranges; everything else at the reference set.
 %   Sets that p4e_to_params marks as inadmissible, and local sets with K_D20 outside 50-1000 nM, are removed.
 [names, B] = p4e_prim(); rng(seed); ix = @(s) find(strcmp(names, s));
 switch kind
     case 'local'
-        vary = find(~strcmp(names, 'kf17')); U = lhs_(n, numel(vary)); TH = repmat(th_ref(:)', n, 1);
+        vary = 1:numel(names); U = lhs_(n, numel(vary)); TH = repmat(th_ref(:)', n, 1);
         for jj = 1:numel(vary)
             i = vary(jj); half = w; if strcmp(names{i}, 'lnG'), half = w*log(10); elseif strcmp(names{i}, 'split'), half = 0.3; end
             TH(:, i) = th_ref(i) + (2*U(:, jj) - 1)*half;

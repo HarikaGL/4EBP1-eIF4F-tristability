@@ -1,10 +1,10 @@
-% Fig03_three_states: redraws Fig 3. Three states of eIF4F at the reference set.
+% Fig3_three_states: redraws Fig 3. Three states of eIF4F at the reference set.
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig03_three_states.mat (exported from the analysis that produced the published figure).
-function Fig03_three_states(outdir)
+% Data: data/Fig3_three_states.mat (exported from the analysis that produced the published figure).
+function Fig3_three_states(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig03_three_states.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig3_three_states.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 8.500 9.400], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [8.500 9.400], 'PaperPosition', [0 0 8.500 9.400]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -71,6 +71,6 @@ xlim(ax, [0 155.526]); ylim(ax, [-0.5 3]);
 set(ax, 'XTick', [0 20 40 60 80 100 120 140], 'XTickLabel', {'0', '20', '40', '60', '80', '100', '120', '140'});
 set(ax, 'YTick', [0 1 2], 'YTickLabel', {'State I (repressed)', 'State II (partially active)', 'State III (fully active)'});
 set(ax, 'XMinorTick', 'off', 'YMinorTick', 'off');
-print(fig, fullfile(outdir, 'Fig03_three_states.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig03_three_states.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'Fig3_three_states.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'Fig3_three_states.png'), '-dpng', '-r150');
 end

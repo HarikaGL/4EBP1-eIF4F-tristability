@@ -1,10 +1,10 @@
-% Fig12_kinase_steps: redraws Fig 12. Stochastic trajectories after a kinase step (reference set).
+% Fig8_kinase_steps: redraws Fig 8. Stochastic trajectories after a kinase step (reference set).
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig12_kinase_steps.mat (exported from the analysis that produced the published figure).
-function Fig12_kinase_steps(outdir)
+% Data: data/Fig8_kinase_steps.mat (exported from the analysis that produced the published figure).
+function Fig8_kinase_steps(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig12_kinase_steps.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig8_kinase_steps.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 18.000 15.000], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [18.000 15.000], 'PaperPosition', [0 0 18.000 15.000]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -381,6 +381,6 @@ xlim(ax, [1e-05 1.5]); ylim(ax, [-5 280]);
 set(ax, 'XTick', [0.0001 0.01 1], 'XTickLabel', {'10^{-4}', '10^{-2}', '1'});
 set(ax, 'YTick', [0 50 100 150 200 250], 'YTickLabel', {'', '', '', '', '', ''});
 set(ax, 'XMinorTick', 'off', 'YMinorTick', 'off');
-print(fig, fullfile(outdir, 'Fig12_kinase_steps.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig12_kinase_steps.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'Fig8_kinase_steps.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'Fig8_kinase_steps.png'), '-dpng', '-r150');
 end

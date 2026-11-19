@@ -1,8 +1,8 @@
-%% M02  Fig 2 and Section 3.1: each phosphorylation module alone is bistable, the two in series are tristable;
+%% M02  Fig 2 and Section 2.3: each phosphorylation module alone is bistable, the two in series are tristable;
 %       and the two ingredients of the switch (distributive multisite phosphorylation, enzyme sequestration).
 %  (A) M1 (R1-R8) with release and rebinding (R17, R22); (B) M2 (R9-R16) with R17, R22; (C) both modules in series
 %  (R1-R17, R22). No scaffold. Free eIF4E against total kinase, 0.01-5000 nM.
-%  Numbers of Section 3.1: the saddle-node points of each panel; free eIF4E before and after each jump of (C); the
+%  Numbers of Section 2.3: the saddle-node points of each panel; free eIF4E before and after each jump of (C); the
 %  fraction of eIF4E bound to 4E-BP and the fraction of it doubly phosphorylated after the first jump.
 %  Ingredient tests: (i) a single phosphorylation site per cycle (one link only, with release) has one steady state
 %  for every kin_T; (ii) with free kinase and phosphatase held fixed (no sequestration in complexes), free eIF4E is a

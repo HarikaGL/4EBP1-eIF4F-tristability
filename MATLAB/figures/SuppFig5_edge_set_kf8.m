@@ -1,10 +1,10 @@
-% Fig14_edge_set_kf14: redraws Fig 14. Stochastic behaviour at the edge of tristability, k_f14 x 0.114.
+% SuppFig5_edge_set_kf8: redraws Supplementary Fig 5. Stochastic behaviour at the edge of tristability, k_f8 x 8.94.
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig14_edge_set_kf14.mat (exported from the analysis that produced the published figure).
-function Fig14_edge_set_kf14(outdir)
+% Data: data/SuppFig5_edge_set_kf8.mat (exported from the analysis that produced the published figure).
+function SuppFig5_edge_set_kf8(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig14_edge_set_kf14.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'SuppFig5_edge_set_kf8.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 18.000 15.500], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [18.000 15.500], 'PaperPosition', [0 0 18.000 15.500]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -20,24 +20,24 @@ plot(ax, D.v13, D.v14, 'Color', [0.133 0.133 0.133], 'LineStyle', '-', 'LineWidt
 plot(ax, D.v15, D.v16, 'Color', [0.133 0.133 0.133], 'LineStyle', '--', 'LineWidth', 2.20);
 plot(ax, D.v17, D.v18, 'Color', [0.827 0.329 0.000], 'LineStyle', '--', 'LineWidth', 2.20);
 plot(ax, D.v19, D.v20, 'Color', [0.753 0.224 0.169], 'LineStyle', '--', 'LineWidth', 2.20);
-text(ax, 49.92, 300, '45.92 nM', 'Units', 'data', 'FontSize', 11.0, 'FontWeight', 'bold', 'Color', [0.133 0.133 0.133], 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', 'Rotation', 90, 'Interpreter', 'tex', 'Clipping', 'off');
-text(ax, 94, 300, '90 nM', 'Units', 'data', 'FontSize', 11.0, 'FontWeight', 'bold', 'Color', [0.827 0.329 0.000], 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', 'Rotation', 90, 'Interpreter', 'tex', 'Clipping', 'off');
-text(ax, 304, 300, '300 nM', 'Units', 'data', 'FontSize', 11.0, 'FontWeight', 'bold', 'Color', [0.753 0.224 0.169], 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', 'Rotation', 90, 'Interpreter', 'tex', 'Clipping', 'off');
-text(ax, 80.7125, -12, 'SN_1 80.7', 'Units', 'data', 'FontSize', 10.0, 'FontWeight', 'bold', 'Color', [0.122 0.306 0.612], 'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
-text(ax, 5.3031, -12, 'SN_4 5.3', 'Units', 'data', 'FontSize', 10.0, 'FontWeight', 'bold', 'Color', [0.122 0.306 0.612], 'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
+text(ax, 130.3, 300, '126.3 nM', 'Units', 'data', 'FontSize', 11.0, 'FontWeight', 'bold', 'Color', [0.133 0.133 0.133], 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', 'Rotation', 90, 'Interpreter', 'tex', 'Clipping', 'off');
+text(ax, 234, 300, '230 nM', 'Units', 'data', 'FontSize', 11.0, 'FontWeight', 'bold', 'Color', [0.827 0.329 0.000], 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', 'Rotation', 90, 'Interpreter', 'tex', 'Clipping', 'off');
+text(ax, 404, 300, '400 nM', 'Units', 'data', 'FontSize', 11.0, 'FontWeight', 'bold', 'Color', [0.753 0.224 0.169], 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', 'Rotation', 90, 'Interpreter', 'tex', 'Clipping', 'off');
+text(ax, 212.383, -12, 'SN_1 212.4', 'Units', 'data', 'FontSize', 10.0, 'FontWeight', 'bold', 'Color', [0.122 0.306 0.612], 'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
+text(ax, 37.2242, -12, 'SN_4 37.2', 'Units', 'data', 'FontSize', 10.0, 'FontWeight', 'bold', 'Color', [0.122 0.306 0.612], 'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
 text(ax, -0.07, 1.03, '(A)', 'Units', 'normalized', 'FontSize', 17.0, 'FontWeight', 'bold', 'Color', [0.000 0.000 0.000], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'bottom', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
 plot(ax, D.v21, D.v22, 'Color', [0.122 0.467 0.706], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 'o', 'MarkerSize', 7.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 2.00);
 plot(ax, D.v23, D.v24, 'Color', [1.000 0.498 0.055], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 'o', 'MarkerSize', 7.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 2.00);
 plot(ax, D.v25, D.v26, 'Color', [0.173 0.627 0.173], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 'o', 'MarkerSize', 7.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 2.00);
 plot(ax, D.v27, D.v28, 'Color', [0.839 0.153 0.157], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 'o', 'MarkerSize', 7.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 2.00);
 xlabel(ax, 'kin_T (nM)', 'FontSize', 12.0); ylabel(ax, 'e4F (nM)', 'FontSize', 12.0);
-title(ax, 'k_{f14} \times{} 0.114 (slower M2 phosphatase): deterministic steady states', 'FontSize', 11.0);
-xlim(ax, [0 330]); ylim(ax, [-35 330]);
-set(ax, 'XTick', [0 50 100 150 200 250 300], 'XTickLabel', {'0', '50', '100', '150', '200', '250', '300'});
+title(ax, 'k_{f8} \times{} 8.94 (faster M1 phosphatase): deterministic steady states', 'FontSize', 11.0);
+xlim(ax, [0 450]); ylim(ax, [-35 330]);
+set(ax, 'XTick', [0 50 100 150 200 250 300 350 400 450], 'XTickLabel', {'0', '50', '100', '150', '200', '250', '300', '350', '400', '450'});
 set(ax, 'YTick', [0 50 100 150 200 250 300], 'YTickLabel', {'0', '50', '100', '150', '200', '250', '300'});
 set(ax, 'XMinorTick', 'off', 'YMinorTick', 'off');
 % ---------------- axes 2 (inset_axes)
-ax = axes(fig, 'Position', [0.3179 0.7493 0.1745 0.0840]); hold(ax, 'on'); box(ax, 'on');
+ax = axes(fig, 'Position', [0.3822 0.7493 0.1332 0.0840]); hold(ax, 'on'); box(ax, 'on');
 set(ax, 'XScale', 'linear', 'YScale', 'linear', 'TickDir', 'in', 'LineWidth', 3.0, 'FontSize', 8.5, 'Layer', 'top');
 patch(ax, D.v29, D.v30, [0.604 0.604 0.604], 'FaceColor', [0.604 0.604 0.604], 'FaceAlpha', 1.00, 'EdgeColor', [0.604 0.604 0.604], 'LineWidth', 1.00, 'LineStyle', '-');
 plot(ax, D.v31, D.v32, 'Color', [0.133 0.133 0.133], 'LineStyle', '-', 'LineWidth', 2.20);
@@ -51,9 +51,9 @@ plot(ax, D.v45, D.v46, 'Color', [1.000 0.498 0.055], 'LineStyle', 'none', 'LineW
 plot(ax, D.v47, D.v48, 'Color', [0.173 0.627 0.173], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 'o', 'MarkerSize', 5.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 2.00);
 plot(ax, D.v49, D.v50, 'Color', [0.839 0.153 0.157], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 'o', 'MarkerSize', 5.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 2.00);
 xlabel(ax, 'kin_T (nM)', 'FontSize', 9.0); ylabel(ax, 'e4F (nM)', 'FontSize', 9.0);
-title(ax, 'State II: 45.84-46.00 nM only', 'FontSize', 9.5);
-xlim(ax, [45.5 46.4]); ylim(ax, [-5 260]);
-set(ax, 'XTick', [45.6 45.8 46 46.2 46.4], 'XTickLabel', {'45.6', '45.8', '46.0', '46.2', '46.4'});
+title(ax, 'State II: 125.24-127.32 nM only', 'FontSize', 9.5);
+xlim(ax, [123 130]); ylim(ax, [-5 260]);
+set(ax, 'XTick', [124 126 128 130], 'XTickLabel', {'124', '126', '128', '130'});
 set(ax, 'YTick', [0 100 200], 'YTickLabel', {'0', '100', '200'});
 set(ax, 'XMinorTick', 'off', 'YMinorTick', 'off');
 % ---------------- axes 3 
@@ -65,7 +65,7 @@ plot(ax, D.v55, D.v56, 'Color', [0.133 0.133 0.133], 'LineStyle', 'none', 'LineW
 plot(ax, D.v57, D.v58, 'Color', [0.541 0.541 0.541], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', 's', 'MarkerSize', 8.0, 'MarkerFaceColor', [0.541 0.541 0.541], 'MarkerEdgeColor', [0.541 0.541 0.541], 'LineWidth', 1.50);
 plot(ax, D.v59, D.v60, 'Color', [0.541 0.541 0.541], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', '^', 'MarkerSize', 9.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.541 0.541 0.541], 'LineWidth', 1.50);
 plot(ax, D.v61, D.v62, 'Color', [0.541 0.541 0.541], 'LineStyle', ':', 'LineWidth', 1.50);
-text(ax, 80.7125, 0.3, ' SN_1', 'Units', 'data', 'FontSize', 10.0, 'FontWeight', 'bold', 'Color', [0.541 0.541 0.541], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'baseline', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
+text(ax, 212.383, 0.3, ' SN_1', 'Units', 'data', 'FontSize', 10.0, 'FontWeight', 'bold', 'Color', [0.541 0.541 0.541], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'baseline', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
 text(ax, -0.2, 1.03, '(B)', 'Units', 'normalized', 'FontSize', 17.0, 'FontWeight', 'bold', 'Color', [0.000 0.000 0.000], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'bottom', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
 plot(ax, D.v63, D.v64, 'Color', [0.133 0.133 0.133], 'LineStyle', 'none', 'LineWidth', 1.50, 'Marker', '^', 'MarkerSize', 11.0, 'MarkerFaceColor', [1.000 1.000 1.000], 'MarkerEdgeColor', [0.133 0.133 0.133], 'LineWidth', 2.00);
 plot(ax, D.v65, D.v66, 'Color', [0.827 0.329 0.000], 'LineWidth', 2.00, 'LineStyle', '-');
@@ -77,8 +77,8 @@ plot(ax, D.v75, D.v76, 'Color', [0.753 0.224 0.169], 'LineStyle', 'none', 'LineW
 plot(ax, D.v77, D.v78, 'Color', [0.827 0.329 0.000], 'LineStyle', 'none', 'LineWidth', 2.00, 'Marker', 's', 'MarkerSize', 9.0, 'MarkerFaceColor', [0.827 0.329 0.000], 'MarkerEdgeColor', [0.827 0.329 0.000], 'LineWidth', 2.00);
 plot(ax, D.v79, D.v80, 'Color', [0.753 0.224 0.169], 'LineStyle', 'none', 'LineWidth', 2.00, 'Marker', 's', 'MarkerSize', 9.0, 'MarkerFaceColor', [0.753 0.224 0.169], 'MarkerEdgeColor', [0.753 0.224 0.169], 'LineWidth', 2.00);
 xlabel(ax, 'kin_T (nM)', 'FontSize', 12.0); ylabel(ax, 'time to leave State I (h)', 'FontSize', 12.0);
-xlim(ax, [0 330]); ylim(ax, [0 24]);
-set(ax, 'XTick', [0 50 100 150 200 250 300], 'XTickLabel', {'0', '50', '100', '150', '200', '250', '300'});
+xlim(ax, [0 450]); ylim(ax, [0 24]);
+set(ax, 'XTick', [0 100 200 300 400], 'XTickLabel', {'0', '100', '200', '300', '400'});
 set(ax, 'YTick', [0 5 10 15 20], 'YTickLabel', {'0', '5', '10', '15', '20'});
 set(ax, 'XMinorTick', 'off', 'YMinorTick', 'off');
 hl(1) = plot(ax, NaN, NaN, 'Color', [0.133 0.133 0.133], 'LineStyle', '-', 'LineWidth', 2.50, 'Marker', 'o', 'MarkerSize', 6.0, 'MarkerFaceColor', [0.133 0.133 0.133]);
@@ -105,7 +105,7 @@ plot(ax, D.v105, D.v106, 'Color', [0.106 0.498 0.231], 'LineStyle', '--', 'LineW
 plot(ax, D.v107, D.v108, 'Color', [0.753 0.224 0.169], 'LineStyle', '--', 'LineWidth', 1.30);
 text(ax, -0.12, 1.03, '(C)', 'Units', 'normalized', 'FontSize', 17.0, 'FontWeight', 'bold', 'Color', [0.000 0.000 0.000], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'bottom', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
 xlabel(ax, 'time (h)', 'FontSize', 12.0); ylabel(ax, 'e4F (nM)', 'FontSize', 12.0);
-title(ax, 'step to kin_T = 45.92 nM, inside the range of State II  (10 runs, 1 fL)', 'FontSize', 11.0);
+title(ax, 'step to kin_T = 126.3 nM, inside the range of State II  (10 runs, 1 fL)', 'FontSize', 11.0);
 xlim(ax, [0 20]); ylim(ax, [-5 280]);
 set(ax, 'XTick', [0 2.5 5 7.5 10 12.5 15 17.5 20], 'XTickLabel', {'0.0', '2.5', '5.0', '7.5', '10.0', '12.5', '15.0', '17.5', '20.0'});
 set(ax, 'YTick', [0 50 100 150 200 250], 'YTickLabel', {'0', '50', '100', '150', '200', '250'});
@@ -143,7 +143,7 @@ plot(ax, D.v139, D.v140, 'Color', [0.000 0.000 0.000], 'LineStyle', ':', 'LineWi
 plot(ax, D.v141, D.v142, 'Color', [0.753 0.224 0.169], 'LineStyle', '--', 'LineWidth', 1.30);
 text(ax, -0.12, 1.03, '(D)', 'Units', 'normalized', 'FontSize', 17.0, 'FontWeight', 'bold', 'Color', [0.000 0.000 0.000], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'bottom', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
 xlabel(ax, 'time (h)', 'FontSize', 12.0); ylabel(ax, 'e4F (nM)', 'FontSize', 12.0);
-title(ax, 'step to kin_T = 90 nM, just above SN_1  (10 runs, 1 fL)', 'FontSize', 11.0);
+title(ax, 'step to kin_T = 230 nM, just above SN_1  (10 runs, 1 fL)', 'FontSize', 11.0);
 xlim(ax, [0 20]); ylim(ax, [-5 280]);
 set(ax, 'XTick', [0 2.5 5 7.5 10 12.5 15 17.5 20], 'XTickLabel', {'0.0', '2.5', '5.0', '7.5', '10.0', '12.5', '15.0', '17.5', '20.0'});
 set(ax, 'YTick', [0 50 100 150 200 250], 'YTickLabel', {'0', '50', '100', '150', '200', '250'});
@@ -179,7 +179,7 @@ plot(ax, D.v169, D.v170, 'Color', [0.000 0.000 0.000], 'LineStyle', ':', 'LineWi
 plot(ax, D.v171, D.v172, 'Color', [0.753 0.224 0.169], 'LineStyle', '--', 'LineWidth', 1.30);
 text(ax, -0.12, 1.03, '(E)', 'Units', 'normalized', 'FontSize', 17.0, 'FontWeight', 'bold', 'Color', [0.000 0.000 0.000], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'bottom', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
 xlabel(ax, 'time (h)', 'FontSize', 12.0); ylabel(ax, 'e4F (nM)', 'FontSize', 12.0);
-title(ax, 'step to kin_T = 300 nM, far above SN_1  (10 runs, 1 fL)', 'FontSize', 11.0);
+title(ax, 'step to kin_T = 400 nM, far above SN_1  (10 runs, 1 fL)', 'FontSize', 11.0);
 xlim(ax, [0 20]); ylim(ax, [-5 280]);
 set(ax, 'XTick', [0 2.5 5 7.5 10 12.5 15 17.5 20], 'XTickLabel', {'0.0', '2.5', '5.0', '7.5', '10.0', '12.5', '15.0', '17.5', '20.0'});
 set(ax, 'YTick', [0 50 100 150 200 250], 'YTickLabel', {'0', '50', '100', '150', '200', '250'});
@@ -217,7 +217,7 @@ plot(ax, D.v203, D.v204, 'Color', [0.106 0.498 0.231], 'LineStyle', '--', 'LineW
 plot(ax, D.v205, D.v206, 'Color', [0.753 0.224 0.169], 'LineStyle', '--', 'LineWidth', 1.30);
 text(ax, -0.12, 1.03, '(F)', 'Units', 'normalized', 'FontSize', 17.0, 'FontWeight', 'bold', 'Color', [0.000 0.000 0.000], 'HorizontalAlignment', 'left', 'VerticalAlignment', 'bottom', 'Rotation', 0, 'Interpreter', 'tex', 'Clipping', 'off');
 xlabel(ax, 'time (h)', 'FontSize', 12.0); ylabel(ax, 'e4F (nM)', 'FontSize', 12.0);
-title(ax, 'start in State II at kin_T = 45.92 nM  (10 runs, 1 fL)', 'FontSize', 11.0);
+title(ax, 'start in State II at kin_T = 126.3 nM  (10 runs, 1 fL)', 'FontSize', 11.0);
 xlim(ax, [0 20]); ylim(ax, [-5 280]);
 set(ax, 'XTick', [0 2.5 5 7.5 10 12.5 15 17.5 20], 'XTickLabel', {'0.0', '2.5', '5.0', '7.5', '10.0', '12.5', '15.0', '17.5', '20.0'});
 set(ax, 'YTick', [0 50 100 150 200 250], 'YTickLabel', {'0', '50', '100', '150', '200', '250'});
@@ -238,6 +238,6 @@ xlim(ax, [1e-05 1.5]); ylim(ax, [-5 280]);
 set(ax, 'XTick', [0.0001 0.01 1], 'XTickLabel', {'10^{-4}', '10^{-2}', '1'});
 set(ax, 'YTick', [0 50 100 150 200 250], 'YTickLabel', {'', '', '', '', '', ''});
 set(ax, 'XMinorTick', 'off', 'YMinorTick', 'off');
-print(fig, fullfile(outdir, 'Fig14_edge_set_kf14.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig14_edge_set_kf14.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'SuppFig5_edge_set_kf8.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'SuppFig5_edge_set_kf8.png'), '-dpng', '-r150');
 end

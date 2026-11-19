@@ -1,11 +1,11 @@
-%% M08  Fig 8 and Table 5: one parameter at a time (and one module at a time) by Latin hypercube sampling.
+%% M08  Fig 5 and Supplementary Table 2: one parameter at a time (and one module at a time) by Latin hypercube sampling.
 %  One script for all the runs: the same sampler, the same thermodynamic builder (c08_build) and the
 %  same classification (p4e_attribute: from the two axes of the bifurcation diagram, kin_T and e4F, only) are used for
 %    MODE = 'single'  every rate constant k_f1..k_f22, k_b1..k_b22 and every total (e4E_T, BP_T, P_T, e4G_T, e4A_T)
 %                     sampled on its own: 41 Latin hypercube samples, log-uniform over its admissible range, all other
-%                     parameters at the reference set (Fig 8, Table 5);
+%                     parameters at the reference set (Fig 5, Supplementary Table 2);
 %    MODE = 'module'  all independent rate constants of one module sampled together (MODULE = 'M1', 'M2', 'M1M3',
-%                     'M2M3'; 12 000 sets; the module runs of Section 4.2).
+%                     'M2M3'; 12 000 sets; the module runs of Section 2.10).
 %  Classes: tristable, coexisting | tristable, separate (S-S, Z-S) | bistable: M1 switch, M2 switch,
 %  other | monostable (see p4e_attribute.m and c08_name.m).
 %  Samples: by default the exact samples of the manuscript are read from C08_lhs_samples.mat (the samples
@@ -43,7 +43,7 @@ if strcmp(MODE, 'single')
     end
     save(fullfile(RES, 'C08_lhs_single.mat'), 'OUT', '-v7');
 
-    %% thresholds of every class over each range, SN1-SN4 in separate columns (Table 5 is built from these ranges)
+    %% thresholds of every class over each range, SN1-SN4 in separate columns (Supplementary Table 2 is built from these ranges)
     fid = fopen(fullfile(RES, 'C08_thresholds.csv'), 'w');
     fprintf(fid, 'parameter,class,n,log10 change from,to,SN1 min,SN1 max,SN2 min,SN2 max,SN3 min,SN3 max,SN4 min,SN4 max\n');
     for k = 1:numel(OUT)

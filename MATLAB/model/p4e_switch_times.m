@@ -1,5 +1,5 @@
 function T = p4e_switch_times(P, fon, foff, tend)
-%P4E_SWITCH_TIMES  Deterministic switching times of one parameter set (M13, Section "Switching time-scale").
+%P4E_SWITCH_TIMES  Deterministic switching times of one parameter set (M13; Section 2.8, Methods 4.7).
 %   The steady-state curve is traced and classified (p4e_attribute, p4e_class4). With SN_hi the highest and SN_lo the
 %   lowest saddle-node point:
 %     switch on : from the repressed state (all eIF4E bound to unphosphorylated 4E-BP) at kin_T = fon*SN_hi, the time

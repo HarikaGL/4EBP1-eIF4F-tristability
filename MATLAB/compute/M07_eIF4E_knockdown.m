@@ -1,8 +1,8 @@
-%% M07  Fig 6 and Section 3.5: model counterpart of the eIF4E knockdown of Yanagiya et al. (2012).
+%% M07  Supplementary Fig 2 and Section 2.7: model counterpart of the eIF4E knockdown of Yanagiya et al. (2012).
 %  e4E_T at 10% of its reference value with 4E-BP unchanged, and with BP_T also at 10% or 30% (degradation of
 %  hypophosphorylated 4E-BP); all other parameters at the reference set. For each: the saddle-node points, eIF4F at
 %  kin_T = 300 nM and the percentage of total eIF4E in eIF4F.
-%  Run time: four continuations. Output: printed, Results/M07_knockdown.mat, Results/M07_Fig6.png.
+%  Run time: four continuations. Output: printed, Results/M07_knockdown.mat, Results/M07_SuppFig2.png.
 clearvars -except QUICK; here = fileparts(mfilename('fullpath')); if isempty(here), here = pwd; end
 addpath(fullfile(here, '..')); RES = setup_p4e();
 P = p4e_ref(); cases = {'control', 1, 1; 'e4E_T 10%', 0.1, 1; 'e4E_T 10%, BP_T 10%', 0.1, 0.1; 'e4E_T 10%, BP_T 30%', 0.1, 0.3};
@@ -15,5 +15,5 @@ for k = 1:4
 end
 xlim(ax, [0 400]); xlabel(ax, 'kin_T (nM)'); ylabel(ax, 'e4F (nM)'); legend(ax, cases(:, 1));
 ax = subplot(1, 2, 2); bar(ax, [F300; pct]'); set(ax, 'XTickLabel', cases(:, 1)); legend(ax, 'e4F (nM)', '% of eIF4E in eIF4F');
-print(fig, fullfile(RES, 'M07_Fig6.png'), '-dpng', '-r150');
+print(fig, fullfile(RES, 'M07_SuppFig2.png'), '-dpng', '-r150');
 save(fullfile(RES, 'M07_knockdown.mat'), 'cases', 'F300', 'pct', '-v7');

@@ -1,10 +1,10 @@
-% Fig09_accessible_range: redraws Fig 9. The most influential parameters of each switch against the accessible kinase range.
+% Fig6_accessible_range: redraws Fig 6. The most influential parameters of each switch against the accessible kinase range.
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig09_accessible_range.mat (exported from the analysis that produced the published figure).
-function Fig09_accessible_range(outdir)
+% Data: data/Fig6_accessible_range.mat (exported from the analysis that produced the published figure).
+function Fig6_accessible_range(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig09_accessible_range.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig6_accessible_range.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 15.000 6.600], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [15.000 6.600], 'PaperPosition', [0 0 15.000 6.600]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -158,6 +158,6 @@ hl(6) = plot(ax, NaN, NaN, 'Color', [0.000 0.000 0.000], 'LineStyle', '--', 'Lin
 lg = legend(ax, hl(1:6), {'experimentally accessible kinase total (10-500 nM)', 'kinase total outside the accessible range', 'saddle-node point inside the accessible range (large: the switch''s own points)', 'outside the accessible range: mathematically present, biologically inaccessible', 'stable', 'unstable'}, 'Location', 'north', 'FontSize', 10.5, 'Interpreter', 'tex'); clear hl
 try, set(lg, 'Units', 'normalized', 'Position', [0.0538 0.9160 0.8925 0.0729]); catch, end
 legend(ax, 'boxoff');
-print(fig, fullfile(outdir, 'Fig09_accessible_range.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig09_accessible_range.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'Fig6_accessible_range.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'Fig6_accessible_range.png'), '-dpng', '-r150');
 end

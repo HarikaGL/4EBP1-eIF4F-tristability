@@ -1,10 +1,10 @@
-% Fig02_modules_bistable: redraws Fig 2. Each phosphorylation module is bistable; the two in series are tristable.
+% Fig2_modules_bistable: redraws Fig 2. Each phosphorylation module is bistable; the two in series are tristable.
 %% Edit freely: every graphics object is drawn by an explicit command below.
-% Data: data/Fig02_modules_bistable.mat (exported from the analysis that produced the published figure).
-function Fig02_modules_bistable(outdir)
+% Data: data/Fig2_modules_bistable.mat (exported from the analysis that produced the published figure).
+function Fig2_modules_bistable(outdir)
 if nargin < 1, outdir = fullfile(fileparts(mfilename('fullpath')), 'Figures'); end
 if ~exist(outdir, 'dir'), mkdir(outdir); end
-D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig02_modules_bistable.mat'));
+D = load(fullfile(fileparts(mfilename('fullpath')), 'data', 'Fig2_modules_bistable.mat'));
 fig = figure('Units', 'inches', 'Position', [0.5 0.5 16.000 4.800], 'Color', 'w', 'PaperUnits', 'inches', 'PaperSize', [16.000 4.800], 'PaperPosition', [0 0 16.000 4.800]);
 set(fig, 'DefaultAxesFontWeight', 'bold', 'DefaultTextFontWeight', 'bold', 'DefaultAxesFontName', 'Helvetica', 'DefaultTextFontName', 'Helvetica');
 % ---------------- axes 1 
@@ -80,6 +80,6 @@ hl(1) = patch(ax, NaN, NaN, [0.122 0.306 0.612], 'FaceColor', [0.122 0.306 0.612
 hl(2) = patch(ax, NaN, NaN, [0.122 0.306 0.612], 'FaceColor', [0.122 0.306 0.612], 'FaceAlpha', 0.40, 'EdgeColor', [0.122 0.306 0.612]);
 lg = legend(ax, hl(1:2), {'\geq{} 2 stable states, SN_4-SN_3 (32.7-116.1 nM)', '3 stable states, SN_2-SN_1 (51.2-81.1 nM)'}, 'Location', 'west', 'FontSize', 9.0, 'Interpreter', 'tex'); clear hl
 try, set(lg, 'Units', 'normalized', 'Position', [0.7070 0.4692 0.2188 0.0880]); catch, end
-print(fig, fullfile(outdir, 'Fig02_modules_bistable.pdf'), '-dpdf', '-painters');
-print(fig, fullfile(outdir, 'Fig02_modules_bistable.png'), '-dpng', '-r150');
+print(fig, fullfile(outdir, 'Fig2_modules_bistable.pdf'), '-dpdf', '-painters');
+print(fig, fullfile(outdir, 'Fig2_modules_bistable.png'), '-dpng', '-r150');
 end

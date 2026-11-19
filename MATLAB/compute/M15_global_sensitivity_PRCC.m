@@ -1,5 +1,5 @@
 %% M15  Global sensitivity: partial rank correlation coefficients (PRCC) over the sampled ensembles
-%  (Results, "All parameters together"; Supplementary Fig S-PRCC and Table S-PRCC).
+%  (Section 2.12, "All parameters together"; Methods 4.8; Supplementary Fig 7).
 %  Inputs: the 42 primitive parameters of each set (p4e_prim; data/ensemble_samples.mat), sampled independently by
 %  Latin hypercube sampling, which is what PRCC assumes. Primitives that were not varied are left out.
 %  Outputs, for the tristable sets (coexisting or separate loops) of each ensemble:

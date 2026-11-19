@@ -38,7 +38,7 @@
 %  Run time with 64 workers (MATLAB): A a few minutes (serial); B about 1 h per 10 000 sets; C about NIT x 10 s.
 %  Output: printed and copied to Results/M13_log.txt; Results/M13_timescale.mat (all parts, saved after each part);
 %  Results/M13_B_<ensemble>.mat (each ensemble of part B as soon as it is done); Results/M13_timescale.csv (sets found
-%  by the search); Results/M13_timescale.png and .pdf (Supplementary Fig 8; figures/FigS08_switching_timescale.m redraws it).
+%  by the search); Results/M13_timescale.png and .pdf (Supplementary Fig 8; figures/SuppFig8_switching_timescale.m redraws it).
 %  Run on the server, for example:  matlab -batch "parpool; M13_switching_timescale"
 clearvars -except QUICK NSEED NIT PARTS NSUB TEND ENS RESUME
 here = fileparts(mfilename('fullpath')); if isempty(here), here = pwd; end
