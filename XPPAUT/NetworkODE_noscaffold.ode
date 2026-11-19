@@ -1,0 +1,91 @@
+# 4E-BP / eIF4F model, reference parameter set (Table 1 of the manuscript).
+# All bimolecular constants nM^-1 s^-1, unimolecular s^-1, concentrations nM.
+# Thermodynamic constraints satisfied by this set: one common cycle ratio for the four
+# ATP-driven PdP cycles (ln Gamma = 19.8), balanced scaffold loop (Gamma_M4 = 1),
+# association constants <= 0.1 nM^-1 s^-1, affinities in the reported ranges (Section 2.2).
+# Numbers identical to MATLAB/model/p4e_ref.m (rebinding constants rounded to 6 significant digits).
+# File: NetworkODE_noscaffold.ode   (R1-R17, R22; Fig 2C and Fig 5A)
+#  R1  BPe4E + kin <-> C1        R2  C1 <-> BPe4Ep + kin
+#  R3  BPe4Ep + kin <-> C2       R4  C2 <-> BPe4Epp + kin
+#  R5  BPe4Epp + P <-> C3        R6  C3 <-> BPe4Ep + P
+#  R7  BPe4Ep + P <-> C4         R8  C4 <-> BPe4E + P
+#  R9  BPe4Epp + kin <-> C5      R10 C5 <-> BPe4Ep3 + kin
+#  R11 BPe4Ep3 + kin <-> C6      R12 C6 <-> BPe4Ep4 + kin
+#  R13 BPe4Ep4 + P <-> C7        R14 C7 <-> BPe4Ep3 + P
+#  R15 BPe4Ep3 + P <-> C8        R16 C8 <-> BPe4Epp + P
+#  R17 BPe4Ep4 <-> e4E + BPp4    R22 BP + e4E <-> BPe4E
+#  R18 e4E + e4G <-> e4GE        R19 e4GE + e4A <-> e4F
+#  R20 e4G + e4A <-> e4GA        R21 e4GA + e4E <-> e4F
+
+# conservation relations
+P = Pt - (C3 + C4 + C7 + C8)
+kin = kint - (C1 + C2 + C5 + C6)
+e4E = e4Et - (BPe4E + BPe4Ep + BPe4Ep3 + BPe4Ep4 + BPe4Epp + C1 + C2 + C3 + C4 + C5 + C6 + C7 + C8)
+BP = BPt - (BPe4E + BPe4Ep + BPe4Ep3 + BPe4Ep4 + BPe4Epp + BPp4 + C1 + C2 + C3 + C4 + C5 + C6 + C7 + C8)
+r1 = kf1*BPe4E*kin - kb1*C1
+r2 = kf2*C1 - kb2*BPe4Ep*kin
+r3 = kf3*BPe4Ep*kin - kb3*C2
+r4 = kf4*C2 - kb4*BPe4Epp*kin
+r5 = kf5*BPe4Epp*P - kb5*C3
+r6 = kf6*C3 - kb6*BPe4Ep*P
+r7 = kf7*BPe4Ep*P - kb7*C4
+r8 = kf8*C4 - kb8*BPe4E*P
+r9 = kf9*BPe4Epp*kin - kb9*C5
+r10 = kf10*C5 - kb10*BPe4Ep3*kin
+r11 = kf11*BPe4Ep3*kin - kb11*C6
+r12 = kf12*C6 - kb12*BPe4Ep4*kin
+r13 = kf13*BPe4Ep4*P - kb13*C7
+r14 = kf14*C7 - kb14*BPe4Ep3*P
+r15 = kf15*BPe4Ep3*P - kb15*C8
+r16 = kf16*C8 - kb16*BPe4Epp*P
+r17 = kf17*BPe4Ep4 - kb17*e4E*BPp4
+r22 = kf22*BP*e4E - kb22*BPe4E
+# totals (nM); kint is the bifurcation parameter
+param kint=5
+param e4Et=1000, BPt=4500, Pt=41
+param kf1=0.031, kb1=0.11
+param kf2=0.0029, kb2=1.8118e-08
+param kf3=0.1, kb3=0.032
+param kf4=17, kb4=5.24819e-06
+param kf5=0.023, kb5=0.63
+param kf6=0.027, kb6=2.51194e-05
+param kf7=0.03, kb7=5.5
+param kf8=0.14, kb8=8.67184e-08
+param kf9=0.1, kb9=0.42
+param kf10=0.002, kb10=1.20595e-08
+param kf11=0.013, kb11=1.2
+param kf12=30, kb12=7.16122e-06
+param kf13=0.02, kb13=0.016
+param kf14=0.24, kb14=3.42757e-05
+param kf15=0.012, kb15=3.1
+param kf16=0.15, kb16=5.77205e-08
+param kf17=10, kb17=0.00204082
+param kf22=0.1, kb22=0.5
+BPe4Epp' = r4 - r5 - r9 + r16
+BPe4Ep4' = r12 - r13 - r17
+C1' = r1 - r2
+BPe4Ep' = r2 - r3 + r6 - r7
+C2' = r3 - r4
+C3' = r5 - r6
+C4' = r7 - r8
+C5' = r9 - r10
+BPe4Ep3' = r10 - r11 + r14 - r15
+C6' = r11 - r12
+C7' = r13 - r14
+C8' = r15 - r16
+BPp4' = r17
+BPe4E' = -r1 + r8 + r22
+# start from the repressed state: all eIF4E bound to unphosphorylated 4E-BP
+init BPe4E=1000
+aux free_e4E = e4E
+# plot free_e4E against kint in AUTO (Axes -> select free_e4E)
+aux free_BP = BP
+aux free_kin = kin
+aux free_P = P
+
+@ meth=cvode, tol=1e-9, atol=1e-9, total=300000, dt=50, maxstor=100000
+@ bounds=1e12, xp=t, yp=BPe4E, xlo=0, xhi=300000, ylo=0, yhi=300
+# AUTO: start from a steady state at small kint (integrate first), then continue in kint
+@ parmin=0.5, parmax=400, autoxmin=0, autoxmax=200, autoymin=0, autoymax=300
+@ Nmax=20000, NPr=500, Ds=0.02, Dsmin=1e-6, Dsmax=1, Normmax=1e8, epss=1e-7, epsl=1e-8, epsu=1e-8
+done

@@ -1,0 +1,13 @@
+{
+  "title": "Code and data for: Staged 4E-BP1 phosphorylation creates two switches in series that give eIF4F memory",
+  "upload_type": "software",
+  "description": "MATLAB code (scripts M01-M13, M15-M17 and one script per figure) that reproduces every result and figure of the article, the Mathematica notebook of the thermodynamic derivations, the parameter samples of every ensemble, the numerical results of our runs, and the 4E-BP1/eIF4F model in SBML (Level 3 Version 2) and XPPAUT formats. See README.md.",
+  "creators": [
+    {"name": "Harika, G L", "affiliation": "Indraprastha Institute of Information Technology Delhi (IIIT-Delhi), New Delhi, India"},
+    {"name": "Sriram, Krishnamachari", "affiliation": "Indraprastha Institute of Information Technology Delhi (IIIT-Delhi), New Delhi, India"}
+  ],
+  "license": "MIT",
+  "access_right": "open",
+  "version": "1.0.0",
+  "keywords": ["4E-BP1", "eIF4F", "mTORC1", "tristability", "bistability", "multisite phosphorylation", "translation initiation", "SBML", "MATLAB", "systems biology"]
+}

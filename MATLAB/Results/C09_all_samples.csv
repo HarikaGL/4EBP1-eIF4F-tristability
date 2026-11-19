@@ -1,0 +1,7 @@
+switch,class,samples with the switch,threshold outside accessible range
+M1,"tristable, coexisting",1329,0
+M1,"tristable, separate",153,17
+M1,"bistable, one switch",31,0
+M2,"tristable, coexisting",1329,12
+M2,"tristable, separate",153,10
+M2,"bistable, one switch",157,13

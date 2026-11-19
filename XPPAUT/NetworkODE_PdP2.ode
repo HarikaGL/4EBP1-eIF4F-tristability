@@ -1,0 +1,49 @@
+# 4E-BP / eIF4F model, reference parameter set (Table 1 of the manuscript).
+# All bimolecular constants nM^-1 s^-1, unimolecular s^-1, concentrations nM.
+# Thermodynamic constraints satisfied by this set: one common cycle ratio for the four
+# ATP-driven PdP cycles (ln Gamma = 19.8), balanced scaffold loop (Gamma_M4 = 1),
+# association constants <= 0.1 nM^-1 s^-1, affinities in the reported ranges (Section 2.2).
+# Numbers identical to MATLAB/model/p4e_ref.m (rebinding constants rounded to 6 significant digits).
+# File: NetworkODE_PdP2.ode   (Fig 2B): one dual phosphorylation cycle with the rate constants of the second cycle, R9-R16 (Thr70/Ser65),
+# coupled to eIF4E release (R17, from the doubly phosphorylated complex) and 4E-BP rebinding (R22). No scaffold.
+
+# S0 = BPe4E, S1 = BPe4Ep, S2 = BPe4Epp (doubly phosphorylated in this reduced model)
+P = Pt - (C3 + C4)
+kin = kint - (C1 + C2)
+e4E = e4Et - (BPe4E + BPe4Ep + BPe4Epp + C1 + C2 + C3 + C4)
+BP = BPt - (BPe4E + BPe4Ep + BPe4Epp + BPp + C1 + C2 + C3 + C4)
+r1 = ka1*BPe4E*kin - kd1*C1
+r2 = ka2*C1 - kd2*BPe4Ep*kin
+r3 = ka3*BPe4Ep*kin - kd3*C2
+r4 = ka4*C2 - kd4*BPe4Epp*kin
+r5 = ka5*BPe4Epp*P - kd5*C3
+r6 = ka6*C3 - kd6*BPe4Ep*P
+r7 = ka7*BPe4Ep*P - kd7*C4
+r8 = ka8*C4 - kd8*BPe4E*P
+r17 = kf17*BPe4Epp - kb17*e4E*BPp
+r22 = kf22*BP*e4E - kb22*BPe4E
+param kint=1
+param e4Et=1000, BPt=4500, Pt=41
+# constants of the second cycle, R9-R16 (Thr70/Ser65) (ka/kd = forward/backward of the cycle's eight steps)
+param ka1=0.1, kd1=0.42, ka2=0.002, kd2=1.20595e-08
+param ka3=0.013, kd3=1.2, ka4=30, kd4=7.16122e-06
+param ka5=0.02, kd5=0.016, ka6=0.24, kd6=3.42757e-05
+param ka7=0.012, kd7=3.1, ka8=0.15, kd8=5.77205e-08
+param kf17=10, kb17=0.00204082, kf22=0.1, kb22=0.5
+BPe4Epp' = r4 - r5 - r17
+C1' = r1 - r2
+BPe4Ep' = r2 - r3 + r6 - r7
+C2' = r3 - r4
+C3' = r5 - r6
+C4' = r7 - r8
+BPp' = r17
+BPe4E' = -r1 + r8 + r22
+init BPe4E=1000
+aux free_e4E = e4E
+
+@ meth=cvode, tol=1e-9, atol=1e-9, total=300000, dt=50, maxstor=100000
+@ bounds=1e12, xp=t, yp=BPe4E, xlo=0, xhi=300000, ylo=0, yhi=1100
+# AUTO: start from a steady state at small kint (integrate first), then continue in kint
+@ parmin=0.5, parmax=1000, autoxmin=0, autoxmax=600, autoymin=0, autoymax=1100
+@ Nmax=20000, NPr=500, Ds=0.02, Dsmin=1e-6, Dsmax=1, Normmax=1e8, epss=1e-7, epsl=1e-8, epsu=1e-8
+done

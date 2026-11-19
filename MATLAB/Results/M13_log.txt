@@ -1,0 +1,83 @@
+M13 started 19-Nov-2026 01:39:41; PARTS ABC; ensembles fold2,fold3,fold10,exp; NSUB Inf; TEND 24 h; NSEED 20; NIT 200
+
+A. Reference set. Largest factor admissible for each PdP cycle (Michaelis constants kept): 38.6  1  21.7  1.04  
+   only cycles 1 and 3 are made faster (cycles 2 and 4 already turn over fast)
+   lambda     1 (applied [1 1 1 1]): tri  SN = 80.8 51.2 115.2 37.2  nM; on 274.0 min, off 15.5 min
+   lambda     2 (applied [2 1 2 1]): tri  SN = 80.8 51.2 115.2 37.2  nM; on 143.8 min, off 9.2 min
+   lambda     5 (applied [5 1 5 1]): tri  SN = 80.8 51.2 115.2 37.2  nM; on 65.1 min, off 5.4 min
+   lambda    10 (applied [10 1 10 1]): tri  SN = 80.8 51.2 115.2 37.2  nM; on 38.3 min, off 4.2 min
+   lambda    20 (applied [20 1 20 1]): tri  SN = 80.8 51.2 115.2 37.2  nM; on 24.5 min, off 3.6 min
+   lambda    40 (applied [38.6 1 21.7 1]): tri  SN = 79.6 51.1 115.3 37.5  nM; on 20.1 min, off 3.5 min
+   lambda   100 (applied [38.6 1 21.7 1]): tri  SN = 79.6 51.1 115.3 37.5  nM; on 20.1 min, off 3.5 min
+   largest change of a threshold relative to lambda = 1: 0.00 0.00 0.00 0.01 0.03 1.45 1.45  %
+   part A done in 3.7 min
+
+B. fold2: timing 12966 tristable sets (started 01:43) ...
+Starting parallel pool (parpool) using the 'Processes' profile ...
+Preserving jobs with IDs: 1 because they contain crash dump files.
+You can use 'delete(myCluster.Jobs)' to remove all jobs created with profile Processes. To create 'myCluster' use 'myCluster = parcluster('Processes')'.
+Connected to parallel pool with 64 workers.
+   done in 99.4 min
+B. fold2  12966 sets timed: 0 without a measurable eIF4F switch (left out), 0 not tristable on recomputation (left out);
+          12966 tristable sets with a switch, 12960 of them switching both ways within the run (TEND);
+          switch on median 205 min (5-95%: 70-591), switch off median 17 min (5-95%: 4-62);
+          both within 30 min: 7 sets (0.1%), within 60 min: 388 sets (3.0%); fastest set: on 20.1, off 2.6 min
+
+B. fold3: timing 6586 tristable sets (started 03:22) ...
+   done in 42.5 min
+B. fold3  6586 sets timed: 2 without a measurable eIF4F switch (left out), 0 not tristable on recomputation (left out);
+          6584 tristable sets with a switch, 6464 of them switching both ways within the run (TEND);
+          switch on median 188 min (5-95%: 40-849), switch off median 18 min (5-95%: 2-118);
+          both within 30 min: 146 sets (2.2%), within 60 min: 725 sets (11.0%); fastest set: on 8.0, off 2.7 min
+
+B. fold10: timing 943 tristable sets (started 04:05) ...
+   done in 4.6 min
+B. fold10 943 sets timed: 115 without a measurable eIF4F switch (left out), 0 not tristable on recomputation (left out);
+          828 tristable sets with a switch, 686 of them switching both ways within the run (TEND);
+          switch on median 227 min (5-95%: 30-1208), switch off median 13 min (5-95%: 1-186);
+          both within 30 min: 34 sets (4.1%), within 60 min: 81 sets (9.8%); fastest set: on 7.2, off 0.3 min
+
+B. exp: timing 4 tristable sets (started 04:09) ...
+   done in 0.0 min
+B. exp    4 sets timed: 1 without a measurable eIF4F switch (left out), 0 not tristable on recomputation (left out);
+          3 tristable sets with a switch, 3 of them switching both ways within the run (TEND);
+          switch on median 375 min (5-95%: 79-605), switch off median 96 min (5-95%: 26-385);
+          both within 30 min: 0 sets (0.0%), within 60 min: 0 sets (0.0%); fastest set: on 46.6, off 96.3 min
+
+C. Search: 20 chains of 200 steps (started 04:09) ...
+   chain  6 done: slower time 8.4 -> 3.9 min (11 steps accepted)
+   chain 12 done: slower time 10.4 -> 0.4 min (14 steps accepted)
+   chain 14 done: slower time 11.7 -> 1.5 min (15 steps accepted)
+   chain 13 done: slower time 10.8 -> 1.3 min (13 steps accepted)
+   chain 20 done: slower time 13.3 -> 0.8 min (15 steps accepted)
+   chain  2 done: slower time 7.2 -> 1.4 min (9 steps accepted)
+   chain  4 done: slower time 8.0 -> 1.7 min (9 steps accepted)
+   chain 10 done: slower time 10.1 -> 1.1 min (17 steps accepted)
+   chain 17 done: slower time 12.5 -> 3.4 min (8 steps accepted)
+   chain 19 done: slower time 12.9 -> 1.3 min (13 steps accepted)
+   chain 16 done: slower time 12.2 -> 1.4 min (10 steps accepted)
+   chain  5 done: slower time 8.1 -> 3.5 min (11 steps accepted)
+   chain  9 done: slower time 9.7 -> 2.2 min (11 steps accepted)
+   chain 18 done: slower time 12.9 -> 0.8 min (8 steps accepted)
+   chain 15 done: slower time 12.1 -> 3.3 min (8 steps accepted)
+   chain  7 done: slower time 8.4 -> 2.9 min (6 steps accepted)
+   chain  1 done: slower time 274.0 -> 0.9 min (17 steps accepted)
+   chain  3 done: slower time 7.4 -> 2.3 min (9 steps accepted)
+   chain 11 done: slower time 10.3 -> 1.7 min (4 steps accepted)
+   chain  8 done: slower time 9.2 -> 2.0 min (8 steps accepted)
+
+C. Fastest tristable sets found (20 chains, 200 steps each; done in 60.7 min):
+   start            class  start min   on (min)  off (min)   SN1-SN4 (nM)
+   fold10 #6188     sep         10.4        0.4        0.2   46.6 45.1 494.5 494.4 
+   fold3 #4913      sep         12.9        0.8        0.7   127.5 109.2 533.5 285.7 
+   fold10 #3103     sep         13.3        0.8        0.6   201.4 180.7 550.9 403.4 
+   reference        sep        274.0        0.7        0.9   59.0 58.2 505.3 476.2 
+   fold10 #1009     sep         10.1        1.1        1.0   276.6 227.2 633.9 497.6 
+   fold10 #7608     sep         10.8        1.3        0.1   84.8 80.1 474.7 273.1 
+   fold10 #4612     sep         12.9        1.3        1.1   92.9 91.4 646.9 595.0 
+   fold10 #1158     sep          7.2        1.4        0.3   33.6 30.0 251.8 250.1 
+   fold3 #8260      sep         12.2        1.4        0.7   31.5 31.2 386.7 358.2 
+   fold10 #6425     sep         11.7        1.5        0.7   40.1 39.4 386.2 383.2 
+   largest changes from the start (log10 units, mean over the five fastest): kcat_K1 +0.71, split +0.25, kon_P3 -0.24, lnG -0.13, kcat_P2 +0.21, kcat_K3 +0.49, kon20 +0.04, kb_K1 -0.40
+
+M13 finished 19-Nov-2026 05:10:37

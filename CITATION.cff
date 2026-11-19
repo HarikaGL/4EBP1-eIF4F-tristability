@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the article and this software."
+title: "4E-BP1 / eIF4F tristability model: code for 'Staged 4E-BP1 phosphorylation creates two switches in series that give eIF4F memory'"
+type: software
+authors:
+  - family-names: "Harika"
+    given-names: "G L"
+    affiliation: "Department of Computational Biology, IIIT-Delhi, New Delhi, India"
+  - family-names: "Sriram"
+    given-names: "Krishnamachari"
+    affiliation: "Department of Computational Biology, IIIT-Delhi, New Delhi, India"
+    email: "sriramk@iiitd.ac.in"
+version: "1.0.0"
+date-released: "2026-11-19"
+license: MIT
+repository-code: "https://github.com/HarikaGL/4EBP1-eIF4F-tristability"
+keywords:
+  - 4E-BP1
+  - eIF4F
+  - mTORC1
+  - tristability
+  - bistability
+  - multisite phosphorylation
+  - translation initiation
+  - systems biology

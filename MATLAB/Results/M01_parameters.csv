@@ -1,0 +1,23 @@
+reaction,step,kf,kb,derived
+R1,BPe4E + kin <-> C1,0.031,0.11,Km = 3.64 nM
+R2,C1 <-> BPe4Ep + kin,0.0029,1.8118e-08,kcat; kb from Eq 1
+R3,BPe4Ep + kin <-> C2,0.1,0.032,Km = 170 nM
+R4,C2 <-> BPe4Epp + kin,17,5.24819e-06,kcat; kb from Eq 1
+R5,BPe4Epp + P <-> C3,0.023,0.63,Km = 28.6 nM
+R6,C3 <-> BPe4Ep + P,0.027,2.51194e-05,kcat; kb from Eq 1
+R7,BPe4Ep + P <-> C4,0.03,5.5,Km = 188 nM
+R8,C4 <-> BPe4E + P,0.14,8.67184e-08,kcat; kb from Eq 1
+R9,BPe4Epp + kin <-> C5,0.1,0.42,Km = 4.22 nM
+R10,C5 <-> BPe4Ep3 + kin,0.002,1.20595e-08,kcat; kb from Eq 1
+R11,BPe4Ep3 + kin <-> C6,0.013,1.2,Km = 2.4e+03 nM
+R12,C6 <-> BPe4Ep4 + kin,30,7.16122e-06,kcat; kb from Eq 1
+R13,BPe4Ep4 + P <-> C7,0.02,0.016,Km = 12.8 nM
+R14,C7 <-> BPe4Ep3 + P,0.24,3.42757e-05,kcat; kb from Eq 1
+R15,BPe4Ep3 + P <-> C8,0.012,3.1,Km = 271 nM
+R16,C8 <-> BPe4Epp + P,0.15,5.77205e-08,kcat; kb from Eq 1
+R17,BPe4Ep4 <-> e4E + BPp4,10,0.00204082,KD = kf/kb = 4.9e+03 nM
+R18,e4E + e4G <-> e4GE,0.095,2.565,KD = kb/kf = 27 nM
+R19,e4GE + e4A <-> e4F,0.061,14.03,KD = kb/kf = 230 nM
+R20,e4G + e4A <-> e4GA,0.076,4.256,KD = kb/kf = 56 nM
+R21,e4GA + e4E <-> e4F,0.0065,0.720804,KD = kb/kf = 111 nM
+R22,BP + e4E <-> BPe4E,0.1,0.5,KD = kb/kf = 5 nM

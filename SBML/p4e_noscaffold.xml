@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
+  <model id="p4e_noscaffold" name="4E-BP1 phosphorylation and eIF4F assembly (R1-R22)" substanceUnits="nanomole" timeUnits="second" volumeUnits="litre" extentUnits="nanomole">
+    <notes><body xmlns="http://www.w3.org/1999/xhtml"><p>Mass-action model of staged 4E-BP1 phosphorylation by mTORC1, eIF4E release and eIF4F assembly (Harika and Sriram). Reference parameter set; rate constants obey the thermodynamic cycle condition (Eq 1). Total kinase kin_T = 66 nM. Concentrations nM, time s.</p></body></notes>
+    <listOfUnitDefinitions>
+      <unitDefinition id="nanomole"><listOfUnits><unit kind="mole" exponent="1" scale="-9" multiplier="1"/></listOfUnits></unitDefinition>
+      <unitDefinition id="per_second"><listOfUnits><unit kind="second" exponent="-1" scale="0" multiplier="1"/></listOfUnits></unitDefinition>
+      <unitDefinition id="per_nM_per_second"><listOfUnits><unit kind="mole" exponent="-1" scale="-9" multiplier="1"/><unit kind="litre" exponent="1" scale="0" multiplier="1"/><unit kind="second" exponent="-1" scale="0" multiplier="1"/></listOfUnits></unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="cell" spatialDimensions="3" size="1" units="litre" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="kin" name="Total kinase (mTORC1) free" compartment="cell" initialConcentration="66" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="Ptase" name="Phosphatase free" compartment="cell" initialConcentration="41" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="e4E" name="eIF4E free" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="BP" name="4E-BP1 free, unphosphorylated" compartment="cell" initialConcentration="3500" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="S0" name="eIF4E:4E-BP1 (unphosphorylated)" compartment="cell" initialConcentration="1000" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="S1" name="eIF4E:4E-BP1, 1 stage-1 site" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="S2" name="eIF4E:4E-BP1, both stage-1 sites" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="S3" name="eIF4E:4E-BP1, stage 1 + one stage-2 site" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="S4" name="eIF4E:4E-BP1, fully phosphorylated" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="BPp4" name="4E-BP1 fully phosphorylated, free" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="C1" name="kinase:S0" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="C2" name="kinase:S1" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="C3" name="phosphatase:S2" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="C4" name="phosphatase:S1" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="C5" name="kinase:S2" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="C6" name="kinase:S3" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="C7" name="phosphatase:S4" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="C8" name="phosphatase:S3" compartment="cell" initialConcentration="0" substanceUnits="nanomole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="kf1" value="0.031" units="per_nM_per_second" constant="true"/>
+      <parameter id="kb1" value="0.11" units="per_second" constant="true"/>
+      <parameter id="kf2" value="0.0028999999999999998" units="per_second" constant="true"/>
+      <parameter id="kb2" value="1.8118049126429878e-08" units="per_nM_per_second" constant="true"/>
+      <parameter id="kf3" value="0.10000000000000001" units="per_nM_per_second" constant="true"/>
+      <parameter id="kb3" value="0.032000000000000001" units="per_second" constant="true"/>
+      <parameter id="kf4" value="17" units="per_second" constant="true"/>
+      <parameter id="kb4" value="5.2481909262885523e-06" units="per_nM_per_second" constant="true"/>
+      <parameter id="kf5" value="0.023" units="per_nM_per_second" constant="true"/>
+      <parameter id="kb5" value="0.63" units="per_second" constant="true"/>
+      <parameter id="kf6" value="0.027" units="per_second" constant="true"/>
+      <parameter id="kb6" value="2.5119421075763224e-05" units="per_nM_per_second" constant="true"/>
+      <parameter id="kf7" value="0.029999999999999999" units="per_nM_per_second" constant="true"/>
+      <parameter id="kb7" value="5.5" units="per_second" constant="true"/>
+      <parameter id="kf8" value="0.14000000000000001" units="per_second" constant="true"/>
+      <parameter id="kb8" value="8.6718435260892288e-08" units="per_nM_per_second" constant="true"/>
+      <parameter id="kf9" value="0.10000000000000001" units="per_nM_per_second" constant="true"/>
+      <parameter id="kb9" value="0.41999999999999998" units="per_second" constant="true"/>
+      <parameter id="kf10" value="0.002" units="per_second" constant="true"/>
+      <parameter id="kb10" value="1.2059530144173232e-08" units="per_nM_per_second" constant="true"/>
+      <parameter id="kf11" value="0.012999999999999999" units="per_nM_per_second" constant="true"/>
+      <parameter id="kb11" value="1.2" units="per_second" constant="true"/>
+      <parameter id="kf12" value="30" units="per_second" constant="true"/>
+      <parameter id="kb12" value="7.1612186990787973e-06" units="per_nM_per_second" constant="true"/>
+      <parameter id="kf13" value="0.02" units="per_nM_per_second" constant="true"/>
+      <parameter id="kb13" value="0.016" units="per_second" constant="true"/>
+      <parameter id="kf14" value="0.23999999999999999" units="per_second" constant="true"/>
+      <parameter id="kb14" value="3.4275747670826889e-05" units="per_nM_per_second" constant="true"/>
+      <parameter id="kf15" value="0.012" units="per_nM_per_second" constant="true"/>
+      <parameter id="kb15" value="3.1000000000000001" units="per_second" constant="true"/>
+      <parameter id="kf16" value="0.14999999999999999" units="per_second" constant="true"/>
+      <parameter id="kb16" value="5.7720540262732749e-08" units="per_nM_per_second" constant="true"/>
+      <parameter id="kf17" value="10" units="per_second" constant="true"/>
+      <parameter id="kb17" value="0.0020408163265306124" units="per_nM_per_second" constant="true"/>
+      <parameter id="kf22" value="0.10000000000000001" units="per_nM_per_second" constant="true"/>
+      <parameter id="kb22" value="0.5" units="per_second" constant="true"/>
+      <parameter id="kinT" value="66" units="nanomole" constant="true"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="R1" reversible="true">
+        <listOfReactants>
+          <speciesReference species="kin" stoichiometry="1" constant="true"/>
+          <speciesReference species="S0" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="C1" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf1</ci><ci>kin</ci><ci>S0</ci></apply><apply><times/><ci>kb1</ci><ci>C1</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R2" reversible="true">
+        <listOfReactants>
+          <speciesReference species="C1" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="kin" stoichiometry="1" constant="true"/>
+          <speciesReference species="S1" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf2</ci><ci>C1</ci></apply><apply><times/><ci>kb2</ci><ci>kin</ci><ci>S1</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R3" reversible="true">
+        <listOfReactants>
+          <speciesReference species="kin" stoichiometry="1" constant="true"/>
+          <speciesReference species="S1" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="C2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf3</ci><ci>kin</ci><ci>S1</ci></apply><apply><times/><ci>kb3</ci><ci>C2</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R4" reversible="true">
+        <listOfReactants>
+          <speciesReference species="C2" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="kin" stoichiometry="1" constant="true"/>
+          <speciesReference species="S2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf4</ci><ci>C2</ci></apply><apply><times/><ci>kb4</ci><ci>kin</ci><ci>S2</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R5" reversible="true">
+        <listOfReactants>
+          <speciesReference species="Ptase" stoichiometry="1" constant="true"/>
+          <speciesReference species="S2" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="C3" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf5</ci><ci>Ptase</ci><ci>S2</ci></apply><apply><times/><ci>kb5</ci><ci>C3</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R6" reversible="true">
+        <listOfReactants>
+          <speciesReference species="C3" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Ptase" stoichiometry="1" constant="true"/>
+          <speciesReference species="S1" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf6</ci><ci>C3</ci></apply><apply><times/><ci>kb6</ci><ci>Ptase</ci><ci>S1</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R7" reversible="true">
+        <listOfReactants>
+          <speciesReference species="Ptase" stoichiometry="1" constant="true"/>
+          <speciesReference species="S1" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="C4" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf7</ci><ci>Ptase</ci><ci>S1</ci></apply><apply><times/><ci>kb7</ci><ci>C4</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R8" reversible="true">
+        <listOfReactants>
+          <speciesReference species="C4" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Ptase" stoichiometry="1" constant="true"/>
+          <speciesReference species="S0" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf8</ci><ci>C4</ci></apply><apply><times/><ci>kb8</ci><ci>Ptase</ci><ci>S0</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R9" reversible="true">
+        <listOfReactants>
+          <speciesReference species="kin" stoichiometry="1" constant="true"/>
+          <speciesReference species="S2" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="C5" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf9</ci><ci>kin</ci><ci>S2</ci></apply><apply><times/><ci>kb9</ci><ci>C5</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R10" reversible="true">
+        <listOfReactants>
+          <speciesReference species="C5" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="kin" stoichiometry="1" constant="true"/>
+          <speciesReference species="S3" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf10</ci><ci>C5</ci></apply><apply><times/><ci>kb10</ci><ci>kin</ci><ci>S3</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R11" reversible="true">
+        <listOfReactants>
+          <speciesReference species="kin" stoichiometry="1" constant="true"/>
+          <speciesReference species="S3" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="C6" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf11</ci><ci>kin</ci><ci>S3</ci></apply><apply><times/><ci>kb11</ci><ci>C6</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R12" reversible="true">
+        <listOfReactants>
+          <speciesReference species="C6" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="kin" stoichiometry="1" constant="true"/>
+          <speciesReference species="S4" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf12</ci><ci>C6</ci></apply><apply><times/><ci>kb12</ci><ci>kin</ci><ci>S4</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R13" reversible="true">
+        <listOfReactants>
+          <speciesReference species="Ptase" stoichiometry="1" constant="true"/>
+          <speciesReference species="S4" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="C7" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf13</ci><ci>Ptase</ci><ci>S4</ci></apply><apply><times/><ci>kb13</ci><ci>C7</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R14" reversible="true">
+        <listOfReactants>
+          <speciesReference species="C7" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Ptase" stoichiometry="1" constant="true"/>
+          <speciesReference species="S3" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf14</ci><ci>C7</ci></apply><apply><times/><ci>kb14</ci><ci>Ptase</ci><ci>S3</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R15" reversible="true">
+        <listOfReactants>
+          <speciesReference species="Ptase" stoichiometry="1" constant="true"/>
+          <speciesReference species="S3" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="C8" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf15</ci><ci>Ptase</ci><ci>S3</ci></apply><apply><times/><ci>kb15</ci><ci>C8</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R16" reversible="true">
+        <listOfReactants>
+          <speciesReference species="C8" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Ptase" stoichiometry="1" constant="true"/>
+          <speciesReference species="S2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf16</ci><ci>C8</ci></apply><apply><times/><ci>kb16</ci><ci>Ptase</ci><ci>S2</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R17" reversible="true">
+        <listOfReactants>
+          <speciesReference species="S4" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="e4E" stoichiometry="1" constant="true"/>
+          <speciesReference species="BPp4" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf17</ci><ci>S4</ci></apply><apply><times/><ci>kb17</ci><ci>e4E</ci><ci>BPp4</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R22" reversible="true">
+        <listOfReactants>
+          <speciesReference species="e4E" stoichiometry="1" constant="true"/>
+          <speciesReference species="BP" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S0" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply><times/><ci>cell</ci><apply><minus/><apply><times/><ci>kf22</ci><ci>e4E</ci><ci>BP</ci></apply><apply><times/><ci>kb22</ci><ci>S0</ci></apply></apply></apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
